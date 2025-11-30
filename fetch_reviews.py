@@ -76,11 +76,18 @@ def fetch_groww_reviews():
     # Save to CSV
     output_file = 'groww_reviews_raw.csv'
     df_final.to_csv(output_file, index=False)
-    print(f"Saved to {output_file}")
     
-    # Stats
-    max_thumbs = df_final['thumbs_up_count'].max()
-    print(f"Max Thumbs Up found: {max_thumbs}")
+    print("\n=== DATA FETCH STATS ===")
+    print(f"Total Fetched: {len(result)}")
+    if not df_final.empty:
+        print(f"Date Range: {df_final['date'].min()} to {df_final['date'].max()}")
+    else:
+        print("Date Range: N/A")
+    print(f"Filtered (Last 12 wks): {len(df_filtered)}")
+    print(f"Final Count (after sort): {len(df_final)}")
+    print(f"Max Thumbs Up found: {df_final['thumbs_up_count'].max() if not df_final.empty else 0}")
+    print("========================")
+    print(f"Saved to {output_file}")
 
 if __name__ == "__main__":
     fetch_groww_reviews()

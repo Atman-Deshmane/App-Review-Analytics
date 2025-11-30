@@ -218,6 +218,14 @@ def analyze_and_report():
         f.write(report_content)
         
     print(f"Report generated successfully using Gemini 2.5 (or fallback). Saved to {output_file}")
+    
+    print("\n=== ANALYSIS STATS ===")
+    print(f"Unique Tags Found: {len(unique_tags)}")
+    print("Themes Generated:")
+    for t in top_themes_data:
+        print(f"- {t['theme']}")
+    print(f"Final Report: {output_file}")
+    print("======================")
 
 if __name__ == "__main__":
     analyze_and_report()

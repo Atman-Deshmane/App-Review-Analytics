@@ -176,7 +176,16 @@ def extract_tags():
     with open(output_file, 'w') as f:
         json.dump(json_output, f, indent=4, default=str) # default=str for datetime objects
         
-    print(f"Saved tagged reviews to {output_file}")
+    # Stats
+    success_count = len(df_results) if not df_results.empty else 0
+    total_count = len(reviews_to_process)
+    success_rate = (success_count / total_count * 100) if total_count > 0 else 0
+    
+    print("\n=== TAGGING STATS ===")
+    print(f"Total Reviews Processed: {total_count}")
+    print(f"Success Rate: {success_rate:.1f}%")
+    print(f"Output File: {output_file}")
+    print("=====================")
     
     # Verify
     if not df_final.empty:
