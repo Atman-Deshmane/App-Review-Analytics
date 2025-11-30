@@ -103,7 +103,7 @@ def archive_history():
         
     files_to_archive = [
         "weekly_pulse_report.md",
-        "reviews_tagged.json",
+        "reviews_analyzed_v2.json",
         "groww_reviews_raw.csv"
     ]
     
@@ -146,18 +146,15 @@ def main():
         return
 
     # Normal Analysis Mode
-    print("--- Standard Analysis Mode ---")
+    print("--- Standard Analysis Mode (V2 Architecture) ---")
     
     # Step 1: Fetch Reviews
     run_script("fetch_reviews.py")
     
-    # Step 2: Extract Tags
-    run_script("step1_extract_tags.py")
+    # Step 2: Core Analysis V2 (Replaces old Step 1 & 2)
+    run_script("core_analysis_v2.py")
     
-    # Step 3: Analyze and Report
-    run_script("step2_analyze_and_report.py")
-    
-    # Step 4: Send Email
+    # Step 3: Send Email
     if os.path.exists("weekly_pulse_report.md"):
         with open("weekly_pulse_report.md", "r") as f:
             report_content = f.read()
@@ -165,7 +162,7 @@ def main():
     else:
         print("Error: weekly_pulse_report.md not found after analysis.")
     
-    # Step 5: Archive
+    # Step 4: Archive
     archive_history()
     
     print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
