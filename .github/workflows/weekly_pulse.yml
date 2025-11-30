@@ -1,0 +1,41 @@
+name: Weekly App Review Pulse
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM IST (03:30 UTC)
+    - cron: '30 3 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  run-analysis:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Run Orchestrator Pipeline
+        env:
+          GEMINI_API_KEY_NEXTLEAP: ${{ secrets.GEMINI_API_KEY_NEXTLEAP }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+        run: python orchestrator.py
+        
+      - name: Commit and Push Report
+        # Only commit if the report changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add weekly_pulse_report.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update Weekly Pulse Report [skip ci]" && git push)
