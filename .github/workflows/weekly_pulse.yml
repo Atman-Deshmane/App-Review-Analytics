@@ -5,6 +5,11 @@ on:
     # Run every Monday at 9:00 AM IST (03:30 UTC)
     - cron: '30 3 * * 1'
   workflow_dispatch: # Allow manual trigger
+    inputs:
+      report_date:
+        description: 'Date of report to resend (YYYY-MM-DD). Leave blank for latest report.'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -33,6 +38,7 @@ jobs:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          INPUT_REPORT_DATE: ${{ github.event.inputs.report_date }}
         run: python orchestrator.py
         
       - name: Commit and Push History

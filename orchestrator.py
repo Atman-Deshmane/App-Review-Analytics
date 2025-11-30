@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 import datetime
+import markdown
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
@@ -21,7 +22,7 @@ def run_script(script_name):
         print(f"Error running {script_name}: {e}")
         sys.exit(1) # Exit with error code to fail the workflow
 
-def send_email():
+def send_email(report_content, date_str=None):
     sender_email = os.getenv("EMAIL_SENDER")
     sender_password = os.getenv("EMAIL_PASSWORD")
     recipient_email = os.getenv("EMAIL_RECIPIENT")
@@ -33,18 +34,46 @@ def send_email():
     print(f"[{datetime.datetime.now()}] Sending email to {recipient_email}...")
 
     try:
-        # Read the report content
-        with open("weekly_pulse_report.md", "r") as f:
-            report_content = f.read()
-
         # Create email message
-        msg = MIMEMultipart()
+        msg = MIMEMultipart('alternative')
         msg['From'] = sender_email
         msg['To'] = recipient_email
-        msg['Subject'] = f"Weekly App Pulse: Groww - {datetime.date.today()}"
+        
+        if date_str:
+            msg['Subject'] = f"Weekly App Pulse: Groww - {date_str} (Resend)"
+        else:
+            msg['Subject'] = f"Weekly App Pulse: Groww - {datetime.date.today()}"
 
-        # Convert Markdown to simple text (or just send as text)
-        msg.attach(MIMEText(report_content, 'plain'))
+        # Convert Markdown to HTML
+        # extensions=['tables'] ensures tables are rendered correctly
+        html_content = markdown.markdown(report_content, extensions=['tables'])
+        
+        # Add some basic styling to the HTML
+        styled_html = f"""
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                h1, h2, h3 {{ color: #2c3e50; }}
+                table {{ border-collapse: collapse; width: 100%; margin-bottom: 20px; }}
+                th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+                th {{ background-color: #f2f2f2; }}
+                tr:nth-child(even) {{ background-color: #f9f9f9; }}
+                blockquote {{ border-left: 4px solid #ccc; margin: 0; padding-left: 10px; color: #666; }}
+            </style>
+        </head>
+        <body>
+            {html_content}
+        </body>
+        </html>
+        """
+
+        # Attach both plain text and HTML versions
+        part1 = MIMEText(report_content, 'plain')
+        part2 = MIMEText(styled_html, 'html')
+        
+        msg.attach(part1)
+        msg.attach(part2)
 
         # Connect to SMTP server (Gmail/Outlook usually use 465 for SSL)
         try:
@@ -94,7 +123,30 @@ def archive_history():
     print(f"[{datetime.datetime.now()}] === ARCHIVING COMPLETE: Moved files to history/{today_str}/ ===\n")
 
 def main():
-    print(f"[{datetime.datetime.now()}] Starting Weekly Pulse Analysis Pipeline...")
+    print(f"[{datetime.datetime.now()}] Starting Weekly Pulse Orchestrator...")
+    
+    # Check for Resend Mode via Environment Variable
+    resend_date = os.getenv("INPUT_REPORT_DATE")
+    
+    if resend_date and resend_date.strip():
+        print(f"!!! RESEND MODE ACTIVATED for date: {resend_date} !!!")
+        
+        report_path = os.path.join("history", resend_date, "weekly_pulse_report.md")
+        
+        if not os.path.exists(report_path):
+            print(f"Error: Archived report not found at {report_path}")
+            sys.exit(1)
+            
+        print(f"Reading report from {report_path}...")
+        with open(report_path, "r") as f:
+            report_content = f.read()
+            
+        send_email(report_content, date_str=resend_date)
+        print("Resend complete.")
+        return
+
+    # Normal Analysis Mode
+    print("--- Standard Analysis Mode ---")
     
     # Step 1: Fetch Reviews
     run_script("fetch_reviews.py")
@@ -106,7 +158,12 @@ def main():
     run_script("step2_analyze_and_report.py")
     
     # Step 4: Send Email
-    send_email()
+    if os.path.exists("weekly_pulse_report.md"):
+        with open("weekly_pulse_report.md", "r") as f:
+            report_content = f.read()
+        send_email(report_content)
+    else:
+        print("Error: weekly_pulse_report.md not found after analysis.")
     
     # Step 5: Archive
     archive_history()
