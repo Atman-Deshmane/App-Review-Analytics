@@ -185,10 +185,27 @@ def step5_generate_report(df_final, themes):
             }
             
     # Prepare Data Context for LLM
+    # Convert to list of dicts and ensure native Python types for JSON serialization
+    themes_list = []
+    for _, row in theme_stats.iterrows():
+        themes_list.append({
+            "theme": row['theme'],
+            "impact_score": int(row['impact_score']), # Explicit cast to int
+            "review_count": int(row['review_count'])  # Explicit cast to int
+        })
+
+    # Ensure top quotes votes are also ints
+    top_quotes_clean = {}
+    for theme, data in top_quotes.items():
+        top_quotes_clean[theme] = {
+            "text": data['text'],
+            "votes": int(data['votes']) # Explicit cast to int
+        }
+
     report_context = {
-        "themes": theme_stats.to_dict(orient='records'),
-        "top_quotes": top_quotes,
-        "total_reviews": len(df_final),
+        "themes": themes_list,
+        "top_quotes": top_quotes_clean,
+        "total_reviews": int(len(df_final)), # Explicit cast to int
         "date_range": "Last 12 Weeks"
     }
     
