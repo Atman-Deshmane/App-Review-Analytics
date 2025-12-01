@@ -94,12 +94,18 @@ def send_email(report_content, date_str=None):
 
 def archive_history():
     today_str = datetime.date.today().strftime("%Y-%m-%d")
-    history_dir = os.path.join("history", today_str)
+    base_dir = os.path.join("history", today_str)
+    
+    # Versioning logic: Check if directory exists, if so, append _v2, _v3, etc.
+    history_dir = base_dir
+    version = 1
+    while os.path.exists(history_dir):
+        version += 1
+        history_dir = f"{base_dir}_v{version}"
     
     print(f"[{datetime.datetime.now()}] Archiving artifacts to {history_dir}...")
     
-    if not os.path.exists(history_dir):
-        os.makedirs(history_dir)
+    os.makedirs(history_dir, exist_ok=True)
         
     files_to_archive = [
         "weekly_pulse_report.md",
