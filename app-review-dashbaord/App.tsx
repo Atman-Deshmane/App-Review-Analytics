@@ -4,7 +4,7 @@ import { ThemeMetric, TagMetric, Review } from './types';
 import { ThemeCard } from './components/ThemeCard';
 import { BubbleViz } from './components/BubbleViz';
 import { ReviewDrawer } from './components/ReviewDrawer';
-import { TrendingUp, Users, MessageSquare, Menu, Loader2, AlertCircle } from 'lucide-react';
+import { TrendingUp, Users, MessageSquare, Menu, Loader2, AlertCircle, Calendar } from 'lucide-react';
 
 export default function App() {
     const [themes, setThemes] = useState<ThemeMetric[]>([]);
@@ -14,17 +14,53 @@ export default function App() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Initialize Data
+    // Versioning State
+    const [availableVersions, setAvailableVersions] = useState<string[]>([]);
+    const [selectedVersion, setSelectedVersion] = useState<string | null>(null);
+
+    // 1. Fetch Manifest on Mount
     useEffect(() => {
+        const fetchManifest = async () => {
+            try {
+                const response = await fetch('/manifest.json');
+                if (!response.ok) throw new Error('Failed to load version manifest');
+
+                const versions: string[] = await response.json();
+                setAvailableVersions(versions);
+
+                if (versions.length > 0) {
+                    // Default to the latest version (first in list)
+                    setSelectedVersion(versions[0]);
+                } else {
+                    throw new Error('No analysis versions found in manifest');
+                }
+            } catch (err) {
+                console.error("Error fetching manifest:", err);
+                setError(err instanceof Error ? err.message : 'Failed to load manifest');
+                setLoading(false);
+            }
+        };
+        fetchManifest();
+    }, []);
+
+    // 2. Fetch Data when Version Changes
+    useEffect(() => {
+        if (!selectedVersion) return;
+
         const fetchData = async () => {
             try {
                 setLoading(true);
-                // Fetch the JSON file from the root (public folder in standard React apps, or relative path)
-                // Assuming the build process places reviews_analyzed_v2.json accessible at root
-                const response = await fetch('/reviews_analyzed_v2.json');
+                setError(null);
+
+                // Construct path based on version
+                // e.g., /history/2025-12-01_v2/reviews_analyzed_v2.json
+                const dataPath = `/history/${selectedVersion}/reviews_analyzed_v2.json`;
+                console.log(`Fetching data from: ${dataPath}`);
+
+                const response = await fetch(dataPath);
 
                 if (!response.ok) {
-                    throw new Error(`Failed to load data: ${response.statusText}`);
+                    throw new Error(`Failed to load data for version ${selectedVersion}`);
                 }
 
                 const data: Review[] = await response.json();
@@ -33,9 +69,12 @@ export default function App() {
                 const processedThemes = processReviews(data);
                 setThemes(processedThemes);
 
+                // Reset selections when data changes
                 if (processedThemes.length > 0) {
                     setSelectedThemeName(processedThemes[0].name);
                 }
+                setSelectedTag(null);
+
             } catch (err) {
                 console.error("Error fetching data:", err);
                 setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -45,7 +84,7 @@ export default function App() {
         };
 
         fetchData();
-    }, []);
+    }, [selectedVersion]);
 
     const currentTheme = useMemo(() => {
         return themes.find(t => t.name === selectedThemeName);
@@ -54,20 +93,20 @@ export default function App() {
     const totalReviews = reviews.length;
     const totalLikes = reviews.reduce((acc, curr) => acc + (curr.thumbs_up_count || 0), 0);
 
-    if (loading) {
+    if (loading && !selectedVersion) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">
                 <Loader2 className="w-8 h-8 animate-spin mr-2" />
-                <span>Loading Analytics Data...</span>
+                <span>Initializing Dashboard...</span>
             </div>
         );
     }
 
-    if (error) {
+    if (error && !reviews.length) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50 text-rose-500">
                 <AlertCircle className="w-8 h-8 mr-2" />
-                <span>Error: {error}. Please ensure 'reviews_analyzed_v2.json' is present.</span>
+                <span>Error: {error}</span>
             </div>
         );
     }
@@ -87,13 +126,29 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Desktop Stats */}
+                    {/* Desktop Stats & Version Selector */}
                     <div className="hidden md:flex items-center space-x-6 text-sm">
+
+                        {/* Version Selector */}
                         <div className="flex flex-col items-end">
-                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Data Source</span>
-                            <span className="font-semibold text-slate-700">Live Analysis V2</span>
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Report Version</span>
+                            <div className="relative group">
+                                <select
+                                    value={selectedVersion || ''}
+                                    onChange={(e) => setSelectedVersion(e.target.value)}
+                                    className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold py-1 pl-2 pr-6 rounded cursor-pointer hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+                                    disabled={loading}
+                                >
+                                    {availableVersions.map(v => (
+                                        <option key={v} value={v}>{v}</option>
+                                    ))}
+                                </select>
+                                <Calendar className="w-3 h-3 text-slate-400 absolute right-2 top-1.5 pointer-events-none" />
+                            </div>
                         </div>
+
                         <div className="h-8 w-px bg-slate-200"></div>
+
                         <div className="flex flex-col items-end">
                             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Volume</span>
                             <span className="font-semibold text-slate-700 flex items-center">
@@ -111,11 +166,18 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Mobile Menu Placeholder (Visual Only for now) */}
+                    {/* Mobile Menu Placeholder */}
                     <button className="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-md">
                         <Menu className="w-5 h-5" />
                     </button>
                 </div>
+
+                {/* Loading Bar */}
+                {loading && (
+                    <div className="h-0.5 w-full bg-slate-100 overflow-hidden">
+                        <div className="h-full bg-slate-900 animate-progress origin-left"></div>
+                    </div>
+                )}
             </header>
 
             {/* Main Layout */}

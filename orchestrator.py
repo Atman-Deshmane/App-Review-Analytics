@@ -126,7 +126,15 @@ def archive_history():
         else:
             print(f"Warning: {filename} not found, skipping archive.")
             
-    print(f"[{datetime.datetime.now()}] === ARCHIVING COMPLETE: Moved files to {history_dir} ===\n")
+    # Sync to Dashboard Public Folder (for Localhost Dev)
+    dashboard_history_dir = os.path.join("app-review-dashbaord", "public", "history", os.path.basename(history_dir))
+    if os.path.exists("app-review-dashbaord"):
+        if os.path.exists(dashboard_history_dir):
+             shutil.rmtree(dashboard_history_dir)
+        shutil.copytree(history_dir, dashboard_history_dir)
+        print(f"Synced history to dashboard: {dashboard_history_dir}")
+            
+    print(f"[{datetime.datetime.now()}] === ARCHIVING COMPLETE: Moved files to history/{today_str}/ ===\n")
 
 def main():
     print(f"[{datetime.datetime.now()}] Starting Weekly Pulse Orchestrator...")

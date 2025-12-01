@@ -5,7 +5,8 @@ import datetime
 
 def generate_manifest():
     history_dir = "history"
-    manifest_file = "manifest.json"
+    # Save to dashboard public folder so React can access it locally
+    manifest_file = "app-review-dashbaord/public/manifest.json"
     
     print(f"[{datetime.datetime.now()}] Generating manifest from {history_dir}...")
     
