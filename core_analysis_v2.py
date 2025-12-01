@@ -118,7 +118,15 @@ def step2_classify_reviews(reviews_text, themes):
     try:
         # Increase token limit if needed, but 2.5 flash should handle it.
         response = model.generate_content(prompt)
-        classification_results = json.loads(response.text)
+        text = response.text
+        # Clean up potential markdown code blocks
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.endswith("```"):
+            text = text[:-3]
+        text = text.strip()
+        
+        classification_results = json.loads(text)
         
         print(f"Classified {len(classification_results)} reviews.")
         return classification_results
@@ -129,9 +137,9 @@ def step2_classify_reviews(reviews_text, themes):
         return []
 
 def step3_deep_dive_tags(df_classified, themes):
-    print("Step 3: Deep-Dive Tagging (Per-Theme Context)...")
+    print("Step 3: Deep-Dive Tagging (Dashboard-Ready)...")
     
-    all_tags = []
+    all_mappings = []
     
     for theme in themes:
         if theme == "Other":
@@ -150,15 +158,19 @@ def step3_deep_dive_tags(df_classified, themes):
             reviews_chunk += f"ID: {row['id']} | Review: {row['review_text']}\n"
             
         prompt = f"""
-        You are analyzing the '{theme}' bucket for the CEO.
+        You are cleaning up data for a dashboard. You are analyzing the '{theme}' category.
         
-        **Task:** For each review in this bucket, generate 1-2 word **Root Cause Tags**.
+        **Task:**
+        1. Analyze these {len(theme_reviews)} reviews.
+        2. Identify **Top 6 (Maximum)** generic, high-level tags that cover 90% of the issues.
+           * *Note:* You do NOT need to find 6 tags. If 3 tags cover everything, just use 3.
+           * *Rule:* Tags must be 1-3 words, simple English (e.g., "Hidden Charges", "App Crash", "Customer Support").
+           * *Rule:* If a review doesn't fit the top tags, label it "Other".
+        3. Map EVERY review ID to one of these tags.
         
-        **Style:** Be brutally specific. 
-        * 'Login' is bad. 'OTP Delay' is good. 
-        * 'Stock' is bad. 'F&O Order Failure' is good.
-        
-        **Output:** JSON list: `[{{"id": 123, "tags": ["tag1", "tag2"]}}, ...]`
+        **Output:** Return a JSON Object containing:
+        * `defined_tags`: [List of the 6 tags you created]
+        * `mappings`: A list of objects `{{'id': <review_id>, 'tag': <selected_tag>}}`
         
         Reviews:
         {reviews_chunk}
@@ -166,14 +178,19 @@ def step3_deep_dive_tags(df_classified, themes):
         
         try:
             response = model.generate_content(prompt)
-            tags_result = json.loads(response.text)
-            all_tags.extend(tags_result)
+            result = json.loads(response.text)
+            
+            defined_tags = result.get('defined_tags', [])
+            mappings = result.get('mappings', [])
+            
+            print(f"    Generated Tags: {defined_tags}")
+            all_mappings.extend(mappings)
             
         except Exception as e:
             print(f"  Error tagging theme {theme}: {e}")
             traceback.print_exc()
             
-    return all_tags
+    return all_mappings
 
 def step5_generate_report(df_final, themes, current_date_str):
     print("Step 5: Generating Weekly Pulse Report...")
@@ -298,10 +315,15 @@ def main():
     # Merge Tags
     if not df_tags.empty:
         df_tags['id'] = df_tags['id'].astype(int)
+        # Rename 'tag' column to 'tags' to match expected output format (list of 1 item)
+        # or keep as 'tag' string. Let's keep as 'tag' string for cleaner JSON.
         df_final = pd.merge(df_merged, df_tags, on='id', how='left')
+        
+        # Fill missing tags with 'Other'
+        df_final['tag'] = df_final['tag'].fillna('Other')
     else:
         df_final = df_merged.copy()
-        df_final['tags'] = [[] for _ in range(len(df_final))]
+        df_final['tag'] = 'Other'
 
     # Step 4: Output
     output_file = "reviews_analyzed_v2.json"

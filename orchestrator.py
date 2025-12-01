@@ -171,6 +171,9 @@ def main():
     # Step 4: Archive
     archive_history()
     
+    # Step 5: Generate Manifest
+    run_script("generate_manifest.py")
+    
     print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
 
 if __name__ == "__main__":
