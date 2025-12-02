@@ -22,7 +22,12 @@ export default function App() {
     useEffect(() => {
         const fetchManifest = async () => {
             try {
-                const response = await fetch('/manifest.json');
+                // Use BASE_URL to handle subdirectory hosting (e.g. /reviews/)
+                const baseUrl = import.meta.env.BASE_URL;
+                // Remove trailing slash if present to avoid double slashes
+                const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+
+                const response = await fetch(`${cleanBaseUrl}/manifest.json`);
                 if (!response.ok) throw new Error('Failed to load version manifest');
 
                 const versions: string[] = await response.json();
@@ -52,9 +57,13 @@ export default function App() {
                 setLoading(true);
                 setError(null);
 
+                // Use BASE_URL for data fetching as well
+                const baseUrl = import.meta.env.BASE_URL;
+                const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+
                 // Construct path based on version
-                // e.g., /history/2025-12-01_v2/reviews_analyzed_v2.json
-                const dataPath = `/history/${selectedVersion}/reviews_analyzed_v2.json`;
+                // e.g., /reviews/history/2025-12-01_v2/reviews_analyzed_v2.json
+                const dataPath = `${cleanBaseUrl}/history/${selectedVersion}/reviews_analyzed_v2.json`;
                 console.log(`Fetching data from: ${dataPath}`);
 
                 const response = await fetch(dataPath);
