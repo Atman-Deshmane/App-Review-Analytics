@@ -4,8 +4,30 @@ on:
   schedule:
     # Run every Monday at 9:00 AM IST (03:30 UTC)
     - cron: '30 3 * * 1'
+  repository_dispatch:
+    types: [start-analysis]
   workflow_dispatch: # Allow manual trigger
     inputs:
+      app_id:
+        description: 'Application ID (e.g., com.nextbillion.groww)'
+        required: false
+        default: 'com.nextbillion.groww'
+      count:
+        description: 'Number of reviews to fetch'
+        required: false
+        default: '300'
+      email:
+        description: 'Recipient Email'
+        required: false
+        default: ''
+      themes:
+        description: 'Comma-separated themes (optional)'
+        required: false
+        default: 'auto'
+      job_id:
+        description: 'Firebase Job ID (optional)'
+        required: false
+        default: ''
       report_date:
         description: 'Date of report to resend (YYYY-MM-DD). Leave blank for latest report.'
         required: false
@@ -39,14 +61,37 @@ jobs:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
           INPUT_REPORT_DATE: ${{ github.event.inputs.report_date }}
-        run: python orchestrator.py
+        run: |
+          # Determine inputs (prioritize payload, then inputs, then defaults)
+          APP_ID="${{ github.event.client_payload.app_id || inputs.app_id || 'com.nextbillion.groww' }}"
+          COUNT="${{ github.event.client_payload.count || inputs.count || '300' }}"
+          EMAIL="${{ github.event.client_payload.email || inputs.email }}"
+          THEMES="${{ github.event.client_payload.themes || inputs.themes || 'auto' }}"
+          JOB_ID="${{ github.event.client_payload.job_id || inputs.job_id }}"
+          
+          # Construct command
+          CMD="python orchestrator.py --app_id $APP_ID --count $COUNT --themes \"$THEMES\""
+          
+          if [ -n "$EMAIL" ]; then
+            CMD="$CMD --email $EMAIL"
+          fi
+          
+          if [ -n "$JOB_ID" ]; then
+            CMD="$CMD --job_id $JOB_ID"
+          fi
+          
+          echo "Running: $CMD"
+          eval $CMD
         
       - name: Commit and Push History
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add history/ app-review-dashbaord/public/history/ app-review-dashbaord/public/manifest.json weekly_pulse_report.md
+          # Add dashboard history and manifest
+          git add dashboard/public/history/ dashboard/public/manifest.json weekly_pulse_report.md
           git commit -m "Archive weekly report and update dashboard data [skip ci]" || echo "No changes to commit"
           git push
 
@@ -57,7 +102,7 @@ jobs:
           node-version: '18'
           
       - name: Install and Build Dashboard
-        working-directory: ./app-review-dashbaord
+        working-directory: ./dashboard
         run: |
           npm install
           npm run build
@@ -69,7 +114,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./app-review-dashbaord/dist/
+          local-dir: ./dashboard/dist/
           server-dir: ./
           protocol: ftps
           port: 21
@@ -80,4 +125,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: history-archive
-          path: history/
+          path: dashboard/public/history/

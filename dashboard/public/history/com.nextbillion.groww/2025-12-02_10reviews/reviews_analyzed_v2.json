@@ -1,0 +1,112 @@
+[
+    {
+        "date":"2025-11-12 22:41:06",
+        "rating":1,
+        "review_text":"Really disappointed been using the app from almost 8 months initially the app was very good but now its buggy like hell every other day cannot place orders. When placing order in intraday it place order really late and sometimes even after 20 mins order pending and when the place the order already miss on profits. Even today market is open from 15 mins and still can't place new orders really getting in my nerves now. If you guys keep on going like this wont take long for people to move to others",
+        "thumbs_up_count":688,
+        "title":null,
+        "id":1,
+        "theme":"Order & App Glitches",
+        "sentiment":"Negative",
+        "tag":"Order Placement Issues"
+    },
+    {
+        "date":"2025-10-23 13:36:22",
+        "rating":1,
+        "review_text":"The app is becoming worse day by day. I have seen too many glitches in the recent days, sometimes wallet balance is incorrect, sometimes login doesn't work, sometimes you can't make payments etc etc. With every glitch, my trust is eroding from this app. Update (23 Oct 2025) - I don't think they are able to handle the volume of transactions happening on their platform. Glitches still occur and now happen repeatedly. Price alerts for ETFs do not work at all.",
+        "thumbs_up_count":668,
+        "title":null,
+        "id":2,
+        "theme":"Order & App Glitches",
+        "sentiment":"Negative",
+        "tag":"Feature Failure"
+    },
+    {
+        "date":"2025-10-15 05:27:15",
+        "rating":1,
+        "review_text":"This is the worst platform for trading and investing, especially for beginners. They bail out on you at the very crucial moment. I have been trying to sell my share from yesterday, either app crashes during procedures or even after completing all procedures my order is not placed. It's just not that even during the purchase app crashes like it's deliberately doesn't want you to make profit. I'm so much disappointed.",
+        "thumbs_up_count":476,
+        "title":null,
+        "id":3,
+        "theme":"Order & App Glitches",
+        "sentiment":"Negative",
+        "tag":"App Crash\/Bugs"
+    },
+    {
+        "date":"2025-11-28 01:32:38",
+        "rating":4,
+        "review_text":"Very good app,though there is one limitation, that is a 10 year section not available for mutual funds when sorting or viewing any individual funds chart,it is important since it gives more long term perspective,and I would suggest for it to be added.And currently very few bonds available.",
+        "thumbs_up_count":180,
+        "title":null,
+        "id":4,
+        "theme":"Feature Requests",
+        "sentiment":"Positive",
+        "tag":"Data & Charting"
+    },
+    {
+        "date":"2025-11-29 13:49:49",
+        "rating":5,
+        "review_text":"it's all good.... pls avail the SL and Target trailing on the chart itself.. coz whenever I go in profit I need to trail the SL n target... and it's very irritating to go through the whole process to be done in a manual way. so pls add that feature.. I need all the features on the chart either it's sl target or dispose the position. it would be a good relief. pls look into this .",
+        "thumbs_up_count":46,
+        "title":null,
+        "id":5,
+        "theme":"Feature Requests",
+        "sentiment":"Negative",
+        "tag":"Order Placement"
+    },
+    {
+        "date":"2025-11-29 12:42:17",
+        "rating":2,
+        "review_text":"The app is good, but the call center experience isn\u2019t. I prefer your AI Voice Assistant because it solves my problem in just 30\u201350 seconds. In a human call, I first have to enter my date of birth, then select options based on my issue, and only after that do I get connected to a representative. The whole process takes around 7\u20138 minutes. The speed should be faster. In the end, my problem was solved. Thank you.",
+        "thumbs_up_count":24,
+        "title":null,
+        "id":6,
+        "theme":"Other",
+        "sentiment":"Positive",
+        "tag":"Other"
+    },
+    {
+        "date":"2025-11-28 23:06:31",
+        "rating":1,
+        "review_text":"Too late response in option trading.. Even after setting the stop loss at a particular price, it always exits later at a more lower price resulting in loss. And on top of that the hidden charges ..Resulting P&L shows different after the day and when the amount reflects it is always lower and then unnecessary deductions. There is always 200-500 rs difference than what actually should have been received deducted in the name of charges other than execution charges.",
+        "thumbs_up_count":11,
+        "title":null,
+        "id":7,
+        "theme":"Hidden Fees & Charges",
+        "sentiment":"Negative",
+        "tag":"Hidden Charges"
+    },
+    {
+        "date":"2025-11-27 14:24:37",
+        "rating":1,
+        "review_text":"Why trade value of stock is not added in mobile application as it is present in desktop version even though their is proper space for that. I would like to request to add that small feature in mobile version so that I could change my rating. I'm not asking for much technical features I just want a feature which is already present in Groww. Hope this would be helpful for other users as well. I would be waiting for your response.",
+        "thumbs_up_count":7,
+        "title":null,
+        "id":8,
+        "theme":"Feature Requests",
+        "sentiment":"Positive",
+        "tag":"Mobile Feature Parity"
+    },
+    {
+        "date":"2025-11-29 15:31:43",
+        "rating":2,
+        "review_text":"The brokerage rates are attractive, but the app has usability issues, instead if showing the dashboard after login, the app shows explore, in MF section, the executed orders do not show buying NAV rate and Units allocated. in Stocks there are more problems which cannot be written due to words limits.",
+        "thumbs_up_count":5,
+        "title":null,
+        "id":9,
+        "theme":"App Layout & Usability",
+        "sentiment":"Negative",
+        "tag":"Missing Data"
+    },
+    {
+        "date":"2025-11-27 14:34:16",
+        "rating":4,
+        "review_text":"Showing events in single place is a great update. One suggestion, it would be nice to be able add & edit notes in MF\/SIP, since everyone might have a reason for joining each SIP. Also, along with 52 week prof, dividend would be a good reference.",
+        "thumbs_up_count":3,
+        "title":null,
+        "id":10,
+        "theme":"Feature Requests",
+        "sentiment":"Positive",
+        "tag":"Note Taking"
+    }
+]
