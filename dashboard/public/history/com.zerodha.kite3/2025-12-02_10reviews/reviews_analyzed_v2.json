@@ -1,0 +1,13 @@
+[
+    {
+        "date":"2025-11-18 13:06:22",
+        "rating":3,
+        "review_text":"I have been using the app for the past 4 years. It was smooth earlier, but recently it has become really hard to trade. The main problem is that whenever I try to exit an options trade, it shows a confirmation signal for at least 10-30 seconds and does not exit the trade instantly. As a result, most of my profits are lost in those seconds, as you know those seconds really matter in options trading. I hope this issue will be resolved soon.",
+        "thumbs_up_count":16,
+        "title":null,
+        "id":1,
+        "theme":"App Slowness & Bugs",
+        "sentiment":"Negative",
+        "tag":"Slow Trade Execution"
+    }
+]

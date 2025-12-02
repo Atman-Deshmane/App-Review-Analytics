@@ -33,3 +33,13 @@ export interface DashboardState {
   selectedTheme: string | null;
   selectedTag: TagMetric | null;
 }
+
+export interface AppManifest {
+  name: string;
+  latest: string;
+  versions: string[];
+}
+
+export interface Manifest {
+  [appId: string]: AppManifest;
+}

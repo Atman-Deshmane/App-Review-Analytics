@@ -5,6 +5,8 @@ import sys
 import shutil
 import datetime
 import markdown
+import argparse
+import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
@@ -12,26 +14,87 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-def run_script(script_name):
+# Firebase Initialization
+try:
+    import firebase_admin
+    from firebase_admin import credentials, db
+    
+    FIREBASE_AVAILABLE = False
+    
+    # Load credentials from Environment Variable
+    cred_json_str = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+    db_url = os.getenv("FIREBASE_DB_URL")
+    
+    if cred_json_str and db_url:
+        try:
+            cred_json = json.loads(cred_json_str)
+            cred = credentials.Certificate(cred_json)
+            
+            # Check if app is already initialized to avoid error on re-run
+            if not firebase_admin._apps:
+                firebase_admin.initialize_app(cred, {
+                    'databaseURL': db_url
+                })
+            FIREBASE_AVAILABLE = True
+            print(f"[{datetime.datetime.now()}] Firebase initialized successfully.")
+        except Exception as e:
+            print(f"[{datetime.datetime.now()}] Error initializing Firebase: {e}")
+    else:
+        print(f"[{datetime.datetime.now()}] Firebase credentials or DB URL missing. Skipping Firebase init.")
+
+except ImportError:
+    print(f"[{datetime.datetime.now()}] firebase-admin module not found.")
+    FIREBASE_AVAILABLE = False
+
+def update_status(message, progress=None, job_id=None):
+    """
+    Updates status to console and Firebase Realtime DB if job_id is present.
+    """
+    timestamp = datetime.datetime.now().isoformat()
+    print(f"[STATUS] {message} ({progress}%)" if progress is not None else f"[STATUS] {message}")
+    
+    if FIREBASE_AVAILABLE and job_id:
+        try:
+            ref = db.reference(f'jobs/{job_id}')
+            update_data = {
+                'status': message,
+                'last_update': timestamp
+            }
+            if progress is not None:
+                update_data['progress'] = progress
+                
+            ref.update(update_data)
+        except Exception as e:
+            print(f"Error updating Firebase: {e}")
+
+def run_script(script_name, args=None, job_id=None):
     print(f"[{datetime.datetime.now()}] Running {script_name}...")
+    cmd = [sys.executable, script_name]
+    if args:
+        cmd.extend(args)
+    
     try:
         # Run the script and check for errors
-        subprocess.run([sys.executable, script_name], check=True)
+        subprocess.run(cmd, check=True)
         print(f"[{datetime.datetime.now()}] {script_name} completed successfully.\n")
     except subprocess.CalledProcessError as e:
         print(f"Error running {script_name}: {e}")
+        update_status(f"Error running {script_name}", job_id=job_id)
         sys.exit(1) # Exit with error code to fail the workflow
 
-def send_email(report_content, date_str=None):
+def send_email(report_content, recipient_email, date_str=None, job_id=None):
     sender_email = os.getenv("EMAIL_SENDER")
     sender_password = os.getenv("EMAIL_PASSWORD")
-    recipient_email = os.getenv("EMAIL_RECIPIENT")
+    
+    if not recipient_email:
+        recipient_email = os.getenv("EMAIL_RECIPIENT")
 
     if not sender_email or not sender_password or not recipient_email:
         print("Email credentials not found in .env - skipping email send.")
         return
 
     print(f"[{datetime.datetime.now()}] Sending email to {recipient_email}...")
+    update_status("Sending email report...", progress=80, job_id=job_id)
 
     try:
         # Create email message
@@ -40,12 +103,11 @@ def send_email(report_content, date_str=None):
         msg['To'] = recipient_email
         
         if date_str:
-            msg['Subject'] = f"Weekly App Pulse: Groww - {date_str} (Resend)"
+            msg['Subject'] = f"Weekly App Pulse: {date_str} (Resend)"
         else:
-            msg['Subject'] = f"Weekly App Pulse: Groww - {datetime.date.today()}"
+            msg['Subject'] = f"Weekly App Pulse: {datetime.date.today()}"
 
         # Convert Markdown to HTML
-        # extensions=['tables'] ensures tables are rendered correctly
         html_content = markdown.markdown(report_content, extensions=['tables'])
         
         # Add some basic styling to the HTML
@@ -88,101 +150,101 @@ def send_email(report_content, date_str=None):
                 server.send_message(msg)
 
         print(f"[{datetime.datetime.now()}] Email sent successfully.")
+        update_status("Email sent successfully.", progress=85, job_id=job_id)
 
     except Exception as e:
         print(f"Failed to send email: {e}")
+        update_status(f"Failed to send email: {e}", job_id=job_id)
 
-def archive_history():
+def archive_history(app_id, count, job_id=None):
     today_str = datetime.date.today().strftime("%Y-%m-%d")
-    base_dir = os.path.join("history", today_str)
     
-    # Versioning logic: Check if directory exists, if so, append _v2, _v3, etc.
-    history_dir = base_dir
+    # New Structure: dashboard/public/history/{app_id}/{date}_{count}reviews/
+    # We also keep a root history for backup if needed, but let's focus on the dashboard path as primary for now
+    # or maybe we just use the dashboard path directly.
+    
+    dashboard_history_base = os.path.join("dashboard", "public", "history", app_id)
+    
+    # Construct versioned folder name
+    base_folder_name = f"{today_str}_{count}reviews"
+    target_dir = os.path.join(dashboard_history_base, base_folder_name)
+    
+    # Versioning logic (v2, v3) if same day/count exists
     version = 1
-    while os.path.exists(history_dir):
+    final_target_dir = target_dir
+    while os.path.exists(final_target_dir):
         version += 1
-        history_dir = f"{base_dir}_v{version}"
+        final_target_dir = f"{target_dir}_v{version}"
     
-    print(f"[{datetime.datetime.now()}] Archiving artifacts to {history_dir}...")
+    print(f"[{datetime.datetime.now()}] Archiving artifacts to {final_target_dir}...")
+    update_status(f"Archiving data...", progress=90, job_id=job_id)
     
-    os.makedirs(history_dir, exist_ok=True)
+    os.makedirs(final_target_dir, exist_ok=True)
         
     files_to_archive = [
-        "weekly_pulse_report.md",
-        "reviews_analyzed_v2.json",
-        "groww_reviews_raw.csv"
+        ("weekly_pulse_report.md", "weekly_pulse_report.md"),
+        ("temp_reviews_analyzed.json", "reviews_analyzed_v2.json"), # Rename for dashboard compatibility
+        ("temp_reviews_raw.csv", "reviews_raw.csv")
     ]
     
-    for filename in files_to_archive:
-        if os.path.exists(filename):
+    for src, dest in files_to_archive:
+        if os.path.exists(src):
             # Move file to history
-            shutil.move(filename, os.path.join(history_dir, filename))
-            print(f"Moved {filename} to {history_dir}")
+            shutil.move(src, os.path.join(final_target_dir, dest))
+            print(f"Moved {src} to {final_target_dir}/{dest}")
             
-            # If it's the report, copy it back to root for README/latest view
-            if filename == "weekly_pulse_report.md":
-                shutil.copy(os.path.join(history_dir, filename), filename)
-                print(f"Copied {filename} back to root")
+            # If it's the report, copy it back to root for README/latest view (optional, maybe just keep one)
+            if src == "weekly_pulse_report.md":
+                shutil.copy(os.path.join(final_target_dir, dest), src)
+                print(f"Copied {dest} back to root as {src}")
         else:
-            print(f"Warning: {filename} not found, skipping archive.")
+            print(f"Warning: {src} not found, skipping archive.")
             
-    # Sync to Dashboard Public Folder (for Localhost Dev)
-    dashboard_history_dir = os.path.join("app-review-dashbaord", "public", "history", os.path.basename(history_dir))
-    if os.path.exists("app-review-dashbaord"):
-        if os.path.exists(dashboard_history_dir):
-             shutil.rmtree(dashboard_history_dir)
-        shutil.copytree(history_dir, dashboard_history_dir)
-        print(f"Synced history to dashboard: {dashboard_history_dir}")
-            
-    print(f"[{datetime.datetime.now()}] === ARCHIVING COMPLETE: Moved files to history/{today_str}/ ===\n")
+    print(f"[{datetime.datetime.now()}] === ARCHIVING COMPLETE ===\n")
+    return final_target_dir
 
 def main():
-    print(f"[{datetime.datetime.now()}] Starting Weekly Pulse Orchestrator...")
+    parser = argparse.ArgumentParser(description='SaaS Orchestrator')
+    parser.add_argument('--app_id', type=str, default='com.nextbillion.groww', help='Application ID')
+    parser.add_argument('--count', type=int, default=300, help='Number of reviews to fetch')
+    parser.add_argument('--themes', type=str, default='auto', help='Comma-separated themes')
+    parser.add_argument('--email', type=str, help='Recipient email')
+    parser.add_argument('--date_range', type=int, default=12, help='Weeks back')
+    parser.add_argument('--job_id', type=str, help='Firebase Job ID for status tracking')
     
-    # Check for Resend Mode via Environment Variable
-    resend_date = os.getenv("INPUT_REPORT_DATE")
+    args = parser.parse_args()
     
-    if resend_date and resend_date.strip():
-        print(f"!!! RESEND MODE ACTIVATED for date: {resend_date} !!!")
-        
-        report_path = os.path.join("history", resend_date, "weekly_pulse_report.md")
-        
-        if not os.path.exists(report_path):
-            print(f"Error: Archived report not found at {report_path}")
-            sys.exit(1)
-            
-        print(f"Reading report from {report_path}...")
-        with open(report_path, "r") as f:
-            report_content = f.read()
-            
-        send_email(report_content, date_str=resend_date)
-        print("Resend complete.")
-        return
-
-    # Normal Analysis Mode
-    print("--- Standard Analysis Mode (V2 Architecture) ---")
+    print(f"[{datetime.datetime.now()}] Starting Orchestrator for {args.app_id}...")
+    update_status("Initializing...", progress=0, job_id=args.job_id)
     
     # Step 1: Fetch Reviews
-    run_script("fetch_reviews.py")
+    update_status("Fetching reviews...", progress=10, job_id=args.job_id)
+    run_script("fetch_reviews.py", args=["--app_id", args.app_id, "--count", str(args.count)], job_id=args.job_id)
+    update_status("Reviews Fetched. Analyzing Themes...", progress=30, job_id=args.job_id)
     
-    # Step 2: Core Analysis V2 (Replaces old Step 1 & 2)
-    run_script("core_analysis_v2.py")
+    # Step 2: Core Analysis
+    update_status("Identifying Top Themes...", progress=50, job_id=args.job_id)
+    # We can't granularly update status inside the subprocess without IPC, so we update before/after
+    run_script("core_analysis_v2.py", args=["--themes", args.themes], job_id=args.job_id)
+    update_status("Tagging & Sentiment Analysis Complete.", progress=70, job_id=args.job_id)
     
     # Step 3: Send Email
     if os.path.exists("weekly_pulse_report.md"):
         with open("weekly_pulse_report.md", "r") as f:
             report_content = f.read()
-        send_email(report_content)
+        send_email(report_content, args.email, job_id=args.job_id)
     else:
         print("Error: weekly_pulse_report.md not found after analysis.")
     
     # Step 4: Archive
-    archive_history()
+    archive_history(args.app_id, args.count, job_id=args.job_id)
     
     # Step 5: Generate Manifest
-    run_script("generate_manifest.py")
+    update_status("Updating manifest...", progress=95, job_id=args.job_id)
+    run_script("generate_manifest.py", job_id=args.job_id)
     
     print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
+    update_status("COMPLETED", progress=100, job_id=args.job_id)
 
 if __name__ == "__main__":
     main()

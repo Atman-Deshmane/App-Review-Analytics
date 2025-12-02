@@ -7,6 +7,7 @@ import time
 import datetime
 import sys
 import traceback
+import argparse
 
 # 1. Setup & Global Configuration
 load_dotenv()
@@ -37,9 +38,10 @@ model = genai.GenerativeModel(
 def step0_prepare_data():
     print("Step 0: Loading and Preparing Data...")
     try:
-        df = pd.read_csv("groww_reviews_raw.csv")
+        # Read from temp file
+        df = pd.read_csv("temp_reviews_raw.csv")
     except FileNotFoundError:
-        print("Error: groww_reviews_raw.csv not found. Please run fetch_reviews.py first.")
+        print("Error: temp_reviews_raw.csv not found. Please run fetch_reviews.py first.")
         return None, None
 
     # Ensure thumbs_up_count is int
@@ -59,9 +61,16 @@ def step0_prepare_data():
     print(f"Prepared {len(df_top_300)} reviews for analysis.")
     return df_top_300, reviews_text
 
-def step1_strategic_themes(reviews_text, current_date_str):
+def step1_strategic_themes(reviews_text, current_date_str, manual_themes=None):
     print("Step 1: Identifying Strategic Themes (Global Context)...")
     
+    if manual_themes:
+        print(f"Using Manual Themes: {manual_themes}")
+        # Ensure 'Other' is present
+        if "Other" not in manual_themes:
+            manual_themes.append("Other")
+        return manual_themes
+
     prompt = f"""
     Today is {current_date_str}. You are analyzing user reviews for Groww.
     
@@ -279,6 +288,15 @@ def step5_generate_report(df_final, themes, current_date_str):
         return "Error generating report."
 
 def main():
+    parser = argparse.ArgumentParser(description='Analyze reviews using Gemini.')
+    parser.add_argument('--themes', type=str, default='auto', help='Comma-separated list of themes (e.g., "Login,Bugs,Fees")')
+    args = parser.parse_args()
+
+    # Parse themes if provided
+    manual_themes = None
+    if args.themes and args.themes.lower() != 'auto':
+        manual_themes = [t.strip() for t in args.themes.split(',')]
+
     # Capture current date
     current_date_str = datetime.datetime.now().strftime("%B %d, %Y")
     print(f"Analysis Date: {current_date_str}")
@@ -288,7 +306,7 @@ def main():
     if df_top_300 is None: return
 
     # Step 1
-    themes = step1_strategic_themes(reviews_text, current_date_str)
+    themes = step1_strategic_themes(reviews_text, current_date_str, manual_themes)
     
     # Step 2
     classification_results = step2_classify_reviews(reviews_text, themes)
@@ -326,7 +344,7 @@ def main():
         df_final['tag'] = 'Other'
 
     # Step 4: Output
-    output_file = "reviews_analyzed_v2.json"
+    output_file = "temp_reviews_analyzed.json"
     df_final.to_json(output_file, orient='records', indent=4)
     print(f"Analysis complete. Saved to {output_file}")
     

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { processReviews } from './utils/dataProcessing';
-import { ThemeMetric, TagMetric, Review } from './types';
+import { ThemeMetric, TagMetric, Review, Manifest, AppManifest } from './types';
 import { ThemeCard } from './components/ThemeCard';
 import { BubbleViz } from './components/BubbleViz';
 import { ReviewDrawer } from './components/ReviewDrawer';
-import { TrendingUp, Users, MessageSquare, Menu, Loader2, AlertCircle, Calendar } from 'lucide-react';
+import { TrendingUp, Users, MessageSquare, Menu, Loader2, AlertCircle, Calendar, Smartphone } from 'lucide-react';
 
 export default function App() {
     const [themes, setThemes] = useState<ThemeMetric[]>([]);
@@ -13,6 +13,11 @@ export default function App() {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Multi-Tenancy State
+    const [manifest, setManifest] = useState<Manifest | null>(null);
+    const [availableApps, setAvailableApps] = useState<string[]>([]);
+    const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
 
     // Versioning State
     const [availableVersions, setAvailableVersions] = useState<string[]>([]);
@@ -24,20 +29,23 @@ export default function App() {
             try {
                 // Use BASE_URL to handle subdirectory hosting (e.g. /reviews/)
                 const baseUrl = import.meta.env.BASE_URL;
-                // Remove trailing slash if present to avoid double slashes
                 const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 
                 const response = await fetch(`${cleanBaseUrl}/manifest.json`);
-                if (!response.ok) throw new Error('Failed to load version manifest');
+                if (!response.ok) throw new Error('Failed to load manifest');
 
-                const versions: string[] = await response.json();
-                setAvailableVersions(versions);
+                const data: Manifest = await response.json();
+                setManifest(data);
 
-                if (versions.length > 0) {
-                    // Default to the latest version (first in list)
-                    setSelectedVersion(versions[0]);
+                const apps = Object.keys(data);
+                setAvailableApps(apps);
+
+                if (apps.length > 0) {
+                    // Default to the first app
+                    const defaultApp = apps[0];
+                    setSelectedAppId(defaultApp);
                 } else {
-                    throw new Error('No analysis versions found in manifest');
+                    throw new Error('No apps found in manifest');
                 }
             } catch (err) {
                 console.error("Error fetching manifest:", err);
@@ -48,28 +56,41 @@ export default function App() {
         fetchManifest();
     }, []);
 
-    // 2. Fetch Data when Version Changes
+    // 2. Update Versions when App Changes
     useEffect(() => {
-        if (!selectedVersion) return;
+        if (!selectedAppId || !manifest) return;
+
+        const appData = manifest[selectedAppId];
+        if (appData && appData.versions.length > 0) {
+            setAvailableVersions(appData.versions);
+            // Default to latest version
+            setSelectedVersion(appData.versions[0]);
+        } else {
+            setAvailableVersions([]);
+            setSelectedVersion(null);
+        }
+    }, [selectedAppId, manifest]);
+
+    // 3. Fetch Data when Version (or App) Changes
+    useEffect(() => {
+        if (!selectedVersion || !selectedAppId) return;
 
         const fetchData = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                // Use BASE_URL for data fetching as well
                 const baseUrl = import.meta.env.BASE_URL;
                 const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 
-                // Construct path based on version
-                // e.g., /reviews/history/2025-12-01_v2/reviews_analyzed_v2.json
-                const dataPath = `${cleanBaseUrl}/history/${selectedVersion}/reviews_analyzed_v2.json`;
+                // Construct path: /history/{app_id}/{version}/reviews_analyzed_v2.json
+                const dataPath = `${cleanBaseUrl}/history/${selectedAppId}/${selectedVersion}/reviews_analyzed_v2.json`;
                 console.log(`Fetching data from: ${dataPath}`);
 
                 const response = await fetch(dataPath);
 
                 if (!response.ok) {
-                    throw new Error(`Failed to load data for version ${selectedVersion}`);
+                    throw new Error(`Failed to load data for ${selectedAppId} / ${selectedVersion}`);
                 }
 
                 const data: Review[] = await response.json();
@@ -93,7 +114,7 @@ export default function App() {
         };
 
         fetchData();
-    }, [selectedVersion]);
+    }, [selectedVersion, selectedAppId]);
 
     const currentTheme = useMemo(() => {
         return themes.find(t => t.name === selectedThemeName);
@@ -135,8 +156,30 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Desktop Stats & Version Selector */}
+                    {/* Desktop Stats & Selectors */}
                     <div className="hidden md:flex items-center space-x-6 text-sm">
+
+                        {/* App Selector */}
+                        <div className="flex flex-col items-end">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Application</span>
+                            <div className="relative group">
+                                <select
+                                    value={selectedAppId || ''}
+                                    onChange={(e) => setSelectedAppId(e.target.value)}
+                                    className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold py-1 pl-2 pr-6 rounded cursor-pointer hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors max-w-[150px] truncate"
+                                    disabled={loading && !selectedAppId}
+                                >
+                                    {availableApps.map(appId => (
+                                        <option key={appId} value={appId}>
+                                            {manifest?.[appId]?.name || appId}
+                                        </option>
+                                    ))}
+                                </select>
+                                <Smartphone className="w-3 h-3 text-slate-400 absolute right-2 top-1.5 pointer-events-none" />
+                            </div>
+                        </div>
+
+                        <div className="h-8 w-px bg-slate-200"></div>
 
                         {/* Version Selector */}
                         <div className="flex flex-col items-end">
