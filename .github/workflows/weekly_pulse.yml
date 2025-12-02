@@ -15,19 +15,20 @@ permissions:
   contents: write
 
 jobs:
-  run-analysis:
+  analyze-build-deploy:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         
+      # --- 1. ANALYSIS & ORCHESTRATION ---
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
           
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -45,28 +46,32 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add history/ manifest.json weekly_pulse_report.md
-          git commit -m "Archive weekly report and update manifest [skip ci]" || echo "No changes to commit"
+          git add history/ app-review-dashbaord/public/history/ app-review-dashbaord/public/manifest.json weekly_pulse_report.md
+          git commit -m "Archive weekly report and update dashboard data [skip ci]" || echo "No changes to commit"
           git push
 
+      # --- 2. BUILD DASHBOARD ---
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install and Build Dashboard
+        working-directory: ./app-review-dashbaord
+        run: |
+          npm install
+          npm run build
+          
+      # --- 3. DEPLOY TO HOSTINGER ---
       - name: 📂 FTP Deploy to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/venv/**
-            **/.env
-            **/.DS_Store
-            **/app-review-dashbaord/**
-            **/__pycache__/**
-
-
+          local-dir: ./app-review-dashbaord/dist/
+          server-dir: ./
+          
       - name: Upload History Artifact
         if: always()
         uses: actions/upload-artifact@v4
