@@ -1,8 +1,9 @@
 {
     "com.vlv.aravali": {
         "name": "com.vlv.aravali",
-        "latest": "2025-12-03_200reviews",
+        "latest": "2025-12-03_50reviews",
         "versions": [
+            "2025-12-03_50reviews",
             "2025-12-03_200reviews"
         ]
     },
