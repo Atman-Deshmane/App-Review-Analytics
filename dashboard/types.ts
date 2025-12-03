@@ -70,3 +70,13 @@ export interface AnalyzedData {
   intent_distribution: Record<string, number>;
   sentiment_distribution: Record<string, number>;
 }
+
+export interface ManifestApp {
+  name: string;
+  latest: string;
+  versions: string[];
+}
+
+export interface Manifest {
+  [appId: string]: ManifestApp;
+}

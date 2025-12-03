@@ -26,18 +26,19 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
 import { processReviews } from './utils/dataProcessing';
-import { AnalyzedData } from './types';
+import { AnalyzedData, Manifest } from './types';
 
 // --- Types ---
 // --- Types imported from ./types ---
 
 // --- Dashboard Component (Refactored from original App) ---
 const Dashboard: React.FC = () => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const appId = searchParams.get('app') || 'com.nextbillion.groww';
     const version = searchParams.get('version');
 
     const [data, setData] = useState<AnalyzedData | null>(null);
+    const [manifest, setManifest] = useState<Manifest | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'overview' | 'themes' | 'reviews'>('overview');
@@ -54,14 +55,16 @@ const Dashboard: React.FC = () => {
                 if (!targetVersion) {
                     const manifestRes = await fetch(`${import.meta.env.BASE_URL}manifest.json`);
                     if (!manifestRes.ok) throw new Error("Failed to load manifest");
-                    const manifest = await manifestRes.json();
+                    if (!manifestRes.ok) throw new Error("Failed to load manifest");
+                    const manifestData = await manifestRes.json();
+                    setManifest(manifestData);
 
-                    if (manifest[appId]) {
-                        targetVersion = manifest[appId].latest;
+                    if (manifestData[appId]) {
+                        targetVersion = manifestData[appId].latest;
                     } else {
                         // Fallback or error if app not found in manifest
                         // For now, try to find any app or default
-                        const firstApp = Object.values(manifest)[0] as any;
+                        const firstApp = Object.values(manifestData)[0] as any;
                         if (firstApp) targetVersion = firstApp.latest;
                         else throw new Error("App not found in history");
                     }
@@ -156,7 +159,14 @@ const Dashboard: React.FC = () => {
                             <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
                                 <Shield className="w-5 h-5 text-white" />
                             </div>
-                            <span className="text-xl font-bold tracking-tight">CX Sentinel</span>
+                            <div>
+                                <div className="text-sm font-bold tracking-tight leading-tight">
+                                    {manifest && manifest[appId] ? manifest[appId].name : 'App Review Analytics'}
+                                </div>
+                                <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
+                                    Review Analytics
+                                </div>
+                            </div>
                         </div>
                         <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white">
                             <X size={24} />
@@ -183,6 +193,31 @@ const Dashboard: React.FC = () => {
                             </button>
                         ))}
                     </nav>
+
+                    {/* History Section */}
+                    {manifest && manifest[appId] && (
+                        <div className="px-4 py-2 border-t border-slate-800">
+                            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">History</div>
+                            <div className="space-y-1 max-h-40 overflow-y-auto custom-scrollbar">
+                                {manifest[appId].versions.map((v) => (
+                                    <button
+                                        key={v}
+                                        onClick={() => {
+                                            const newParams = new URLSearchParams(searchParams);
+                                            newParams.set('version', v);
+                                            setSearchParams(newParams);
+                                        }}
+                                        className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors flex justify-between items-center ${version === v
+                                            ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
+                                            : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+                                    >
+                                        <span>{v.split('_')[0]}</span>
+                                        <span className="opacity-50 text-[10px]">{v.split('_')[1]?.replace('reviews', '')} revs</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="p-4 border-t border-slate-800">
                         <div className="bg-slate-800 rounded-xl p-4">

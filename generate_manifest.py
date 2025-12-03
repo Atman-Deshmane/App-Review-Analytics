@@ -20,6 +20,16 @@ def generate_manifest():
     
     manifest_data = {}
     
+    # App Name Mapping
+    app_names = {
+        "com.nextbillion.groww": "Groww",
+        "com.zerodha.kite3": "Kite by Zerodha",
+        "com.dot.app.sancharsaathi": "Sanchar Saathi",
+        "in.powerup.money": "PowerUp Money",
+        "com.wealthmonitor": "Wealth Monitor",
+        "com.kuvera.android": "Kuvera"
+    }
+
     try:
         # Iterate through each App ID folder
         for app_id in os.listdir(history_base):
@@ -45,7 +55,7 @@ def generate_manifest():
             
             if versions:
                 manifest_data[app_id] = {
-                    "name": app_id, # Can map this to friendly names later if needed
+                    "name": app_names.get(app_id, app_id),
                     "latest": versions[0],
                     "versions": versions
                 }

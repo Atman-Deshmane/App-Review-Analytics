@@ -5,16 +5,7 @@ import ConfigModal, { AnalysisConfig } from '../components/ConfigModal';
 import TerminalLoader from '../components/TerminalLoader';
 import { subscribeToJob, JobStatus } from '../utils/firebase';
 import { triggerAnalysis } from '../utils/githubApi';
-
-interface ManifestApp {
-    name: string;
-    latest: string;
-    versions: string[];
-}
-
-interface Manifest {
-    [appId: string]: ManifestApp;
-}
+import { Manifest, ManifestApp } from '../types';
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
