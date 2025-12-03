@@ -52,9 +52,23 @@ export interface ThemeAnalysis {
   theme: string;
   sentiment_score: number;
   volume: number;
+  totalLikes: number; // Added for Impact Score
   keywords: string[];
   summary: string;
   examples: string[];
+  sentiment_distribution: {
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
+  clusters: Array<{
+    name: string;
+    volume: number;
+    totalLikes: number; // Added for bubble size
+    sentiment: number;
+    positiveCount: number; // Added for gradient
+    negativeCount: number; // Added for gradient
+  }>;
 }
 
 export interface AnalyzedData {

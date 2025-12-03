@@ -43,6 +43,8 @@ const Dashboard: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'overview' | 'themes' | 'reviews'>('overview');
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [selectedThemeIndex, setSelectedThemeIndex] = useState(0);
+    const [selectedCluster, setSelectedCluster] = useState<string | null>(null);
 
     // Fetch Data
     useEffect(() => {
@@ -252,15 +254,25 @@ const Dashboard: React.FC = () => {
                             {activeTab === 'reviews' && 'Review Explorer'}
                         </h1>
                     </div>
-                    <div className="flex items-center space-x-4">
-                        <div className="hidden md:flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium border border-emerald-100">
-                            <Zap size={14} className="mr-1.5" />
-                            Live Analysis
+                    <div className="flex items-center space-x-8">
+                        <div className="hidden md:block text-right">
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Data Source</div>
+                            <div className="text-sm font-bold text-slate-800">Q4 2025 Review Dump</div>
                         </div>
-                        <button className="p-2 text-slate-400 hover:text-indigo-600 transition-colors relative">
-                            <AlertCircle size={20} />
-                            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
-                        </button>
+                        <div className="hidden md:block text-right">
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Volume</div>
+                            <div className="text-sm font-bold text-slate-800 flex items-center justify-end">
+                                <MessageSquare size={14} className="mr-1 text-slate-400" />
+                                {data.metadata.total_reviews.toLocaleString()} Likes
+                            </div>
+                        </div>
+                        <div className="hidden md:block text-right">
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Records</div>
+                            <div className="text-sm font-bold text-slate-800 flex items-center justify-end">
+                                <MessageSquare size={14} className="mr-1 text-slate-400" />
+                                {data.metadata.total_reviews}
+                            </div>
+                        </div>
                     </div>
                 </header>
 
@@ -366,36 +378,127 @@ const Dashboard: React.FC = () => {
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                                className="space-y-8"
                             >
-                                {data.themes.map((theme, idx) => (
-                                    <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <h3 className="text-lg font-bold text-slate-800">{theme.theme}</h3>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${theme.sentiment_score > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
-                                                }`}>
-                                                Score: {theme.sentiment_score.toFixed(2)}
-                                            </span>
-                                        </div>
-                                        <p className="text-slate-600 text-sm mb-4 leading-relaxed">{theme.summary}</p>
+                                {/* Strategic Themes Cards */}
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800 mb-4">Strategic Themes</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                                        {data.themes.slice(0, 5).map((theme, idx) => {
+                                            const total = theme.positiveCount + theme.negativeCount;
+                                            const positivePct = total > 0 ? Math.round((theme.positiveCount / total) * 100) : 0;
+                                            const impactScore = theme.totalLikes;
 
-                                        <div className="mb-4">
-                                            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Keywords</h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {theme.keywords.map((kw, k) => (
-                                                    <span key={k} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-md border border-slate-200">
-                                                        {kw}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => setSelectedThemeIndex(idx)}
+                                                    className={`text-left p-4 rounded-xl border transition-all duration-200 relative overflow-hidden ${selectedThemeIndex === idx
+                                                        ? 'bg-white border-slate-800 shadow-md'
+                                                        : 'bg-white border-slate-100 hover:border-slate-300'
+                                                        }`}
+                                                >
+                                                    {selectedThemeIndex === idx && (
+                                                        <motion.div
+                                                            layoutId="active-border"
+                                                            className="absolute top-0 left-0 w-full h-1 bg-slate-800"
+                                                        />
+                                                    )}
+                                                    <div className="mb-3">
+                                                        <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 truncate">{theme.theme}</div>
+                                                        <div className="flex items-baseline space-x-2">
+                                                            <span className="text-2xl font-bold text-slate-800">{impactScore.toLocaleString()}</span>
+                                                            <span className="text-[10px] text-slate-400 font-medium">IMPACT SCORE</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <div className="flex justify-between text-[10px] font-medium text-slate-400 uppercase">
+                                                            <span>Sentiment Split</span>
+                                                            <span>{positivePct}% Positive</span>
+                                                        </div>
+                                                        <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden flex">
+                                                            <div
+                                                                className="h-full bg-emerald-500"
+                                                                style={{ width: `${positivePct}%` }}
+                                                            ></div>
+                                                            <div
+                                                                className="h-full bg-rose-500"
+                                                                style={{ width: `${100 - positivePct}%` }}
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
 
-                                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                                            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">User Voice</h4>
-                                            <p className="text-sm text-slate-700 italic">"{theme.examples[0]}"</p>
+                                {/* Sentiment Clusters */}
+                                <div className="bg-white p-8 rounded-2xl border border-slate-100 min-h-[500px] relative">
+                                    <div className="flex justify-between items-center mb-8">
+                                        <h3 className="text-lg font-bold text-slate-800">
+                                            Sentiment Clusters: <span className="text-slate-500 font-normal">{data.themes[selectedThemeIndex]?.theme}</span>
+                                        </h3>
+                                        <div className="flex items-center space-x-2 text-xs font-medium text-slate-500">
+                                            <div className="w-2 h-2 rounded-full bg-rose-500"></div>
+                                            <span>Negative</span>
+                                            <div className="w-16 h-1 bg-gradient-to-r from-rose-500 via-slate-300 to-emerald-500 rounded-full mx-2"></div>
+                                            <span>Positive</span>
+                                            <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                                         </div>
                                     </div>
-                                ))}
+
+                                    <div className="flex flex-wrap items-center justify-center gap-6 py-12">
+                                        {data.themes[selectedThemeIndex]?.clusters.map((cluster, idx) => {
+                                            // Dynamic sizing based on volume relative to theme volume
+                                            const themeVolume = data.themes[selectedThemeIndex].volume;
+                                            const size = Math.max(80, Math.min(200, (cluster.volume / themeVolume) * 500));
+
+                                            // Color based on sentiment (-1 to 1)
+                                            // Map -1 -> Rose, 0 -> Slate, 1 -> Emerald
+                                            const totalSent = cluster.positiveCount + cluster.negativeCount;
+                                            const negPct = totalSent === 0 ? 0 : (cluster.negativeCount / totalSent) * 100;
+
+                                            // Smoother Gradient Logic
+                                            const transitionZone = 20;
+                                            const stop1 = Math.max(0, negPct - transitionZone);
+                                            const stop2 = Math.min(100, negPct + transitionZone);
+
+                                            const gradient = `linear-gradient(135deg, #e11d48 ${stop1}%, #059669 ${stop2}%)`;
+
+                                            return (
+                                                <motion.div
+                                                    key={idx}
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    transition={{ type: 'spring', stiffness: 100, delay: idx * 0.05 }}
+                                                    onClick={() => setSelectedCluster(cluster.name)}
+                                                    className={`rounded-full flex flex-col items-center justify-center text-white shadow-lg relative cursor-pointer hover:scale-105 transition-transform border-2 border-white ring-1 ring-slate-100/50`}
+                                                    style={{
+                                                        width: size,
+                                                        height: size,
+                                                        background: gradient
+                                                    }}
+                                                >
+                                                    <div className="absolute inset-0 bg-black/10 hover:bg-black/0 transition-colors duration-300 rounded-full" />
+                                                    <div className="text-center px-2 relative z-10">
+                                                        <div className="font-bold text-sm leading-tight mb-1 line-clamp-2 drop-shadow-md">
+                                                            {cluster.name}
+                                                        </div>
+                                                        <div className="text-xs opacity-90 font-mono bg-black/20 px-2 py-0.5 rounded-full inline-block backdrop-blur-sm">
+                                                            {cluster.totalLikes.toLocaleString()}
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                        {data.themes[selectedThemeIndex]?.clusters.length === 0 && (
+                                            <div className="text-slate-400 text-center">
+                                                No detailed clusters available for this theme.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </motion.div>
                         )}
 
@@ -443,6 +546,66 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
             </main>
+            {/* Topic Inspector Side Panel */}
+            <AnimatePresence>
+                {selectedCluster && (
+                    <motion.div
+                        initial={{ x: '100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '100%' }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="fixed inset-y-0 right-0 w-96 bg-white shadow-2xl z-50 border-l border-slate-200 flex flex-col"
+                    >
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
+                            <div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Topic Inspector</div>
+                                <h3 className="text-xl font-bold text-slate-800">{selectedCluster}</h3>
+                                <div className="flex items-center space-x-4 mt-2 text-xs font-medium text-slate-500">
+                                    <span className="flex items-center"><ThumbsUp size={12} className="mr-1" /> {data?.themes[selectedThemeIndex].clusters.find(c => c.name === selectedCluster)?.volume} Impact</span>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setSelectedCluster(null)}
+                                className="text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-200 transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-50/50">
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">User Verbatim</div>
+                            <div className="space-y-4">
+                                {data?.reviews
+                                    .filter(r => r.themes.includes(data.themes[selectedThemeIndex].theme) && (r.intent === selectedCluster || r.category === selectedCluster || selectedCluster === 'Other')) // Match theme and cluster (tag)
+                                    .slice(0, 20) // Limit to 20 for performance
+                                    .map((review) => (
+                                        <div key={review.reviewId} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${review.sentiment === 'Positive' ? 'bg-emerald-100 text-emerald-700' :
+                                                    review.sentiment === 'Negative' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'
+                                                    }`}>
+                                                    {review.sentiment}
+                                                </span>
+                                                <span className="text-[10px] text-slate-400">{new Date(review.at).toLocaleDateString()}</span>
+                                            </div>
+                                            <p className="text-slate-700 text-xs leading-relaxed mb-3">{review.content}</p>
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex text-yellow-400">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <Star key={i} size={10} fill={i < review.score ? "currentColor" : "none"} className={i < review.score ? "" : "text-slate-200"} />
+                                                    ))}
+                                                </div>
+                                                <div className="text-[10px] text-slate-400 flex items-center">
+                                                    +{review.thumbsUpCount} likes
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
