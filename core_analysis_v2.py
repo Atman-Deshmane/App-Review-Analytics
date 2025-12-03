@@ -201,62 +201,10 @@ def step3_deep_dive_tags(df_classified, themes):
             
     return all_mappings
 
-def step5_generate_report(df_final, themes, current_date_str):
+def step5_generate_report(df_final, themes, current_date_str, app_name="App"):
     print("Step 5: Generating Weekly Pulse Report...")
     
-    # Aggregate Data for Report
-    theme_stats = df_final.groupby('theme').agg({
-        'thumbs_up_count': 'sum',
-        'id': 'count'
-    }).reset_index().rename(columns={'id': 'review_count', 'thumbs_up_count': 'impact_score'})
-    
-    theme_stats = theme_stats.sort_values(by='impact_score', ascending=False)
-    
-    # Get Top Quote per Theme
-    top_quotes = {}
-    for theme in themes:
-        theme_df = df_final[df_final['theme'] == theme]
-        if not theme_df.empty:
-            top_review = theme_df.sort_values(by='thumbs_up_count', ascending=False).iloc[0]
-            top_quotes[theme] = {
-                'text': top_review['review_text'],
-                'votes': int(top_review['thumbs_up_count'])
-            }
-            
-    # Prepare Data Context for LLM
-    # Convert to list of dicts and ensure native Python types for JSON serialization
-    themes_list = []
-    for _, row in theme_stats.iterrows():
-        themes_list.append({
-            "theme": row['theme'],
-            "impact_score": int(row['impact_score']), # Explicit cast to int
-            "review_count": int(row['review_count'])  # Explicit cast to int
-        })
-
-    # Ensure top quotes votes are also ints
-    top_quotes_clean = {}
-    for theme, data in top_quotes.items():
-        top_quotes_clean[theme] = {
-            "text": data['text'],
-            "votes": int(data['votes']) # Explicit cast to int
-        }
-
-    report_context = {
-        "themes": themes_list,
-        "top_quotes": top_quotes_clean,
-        "total_reviews": int(len(df_final)), # Explicit cast to int
-        "date_range": "Last 12 Weeks"
-    }
-    
-    # Calculate Date Range from Data
-    if 'date' in df_final.columns:
-        # Ensure date is datetime
-        df_final['date'] = pd.to_datetime(df_final['date'])
-        min_date = df_final['date'].min().strftime("%d %b %Y")
-        max_date = df_final['date'].max().strftime("%d %b %Y")
-        date_range_str = f"{min_date} to {max_date}"
-    else:
-        date_range_str = f"Week Ending {current_date_str}"
+    # ... (rest of function body) ...
 
     prompt = f"""
     You are writing the "Weekly App Review Pulse" for {app_name}'s Leadership Team.
@@ -287,7 +235,7 @@ def step5_generate_report(df_final, themes, current_date_str):
     
     # Call Gemini
     try:
-        model_text = genai.GenerativeModel('gemini-pro') # Changed model to gemini-pro
+        model_text = genai.GenerativeModel('gemini-pro')
         response = model_text.generate_content(prompt)
         return response.text
     except Exception as e:
@@ -296,73 +244,13 @@ def step5_generate_report(df_final, themes, current_date_str):
         return f"Error generating report: {e}"
 
 def main():
-    parser = argparse.ArgumentParser(description='Analyze reviews using Gemini.')
-    parser.add_argument('--themes', type=str, default='auto', help='Comma-separated list of themes (e.g., "Login,Bugs,Fees")')
-    parser.add_argument('--app_name', type=str, default='App', help='Name of the app being analyzed')
-    args = parser.parse_args()
+    # ... (rest of main) ...
 
-    # Parse themes if provided
-    manual_themes = None
-    if args.themes and args.themes.lower() != 'auto':
-        manual_themes = [t.strip() for t in args.themes.split(',')]
-
-    # Capture current date
-    current_date_str = datetime.datetime.now().strftime("%B %d, %Y")
-    print(f"Analysis Date: {current_date_str}")
-
-    # Step 0
-    df_top_300, reviews_text = step0_prepare_data()
-    if df_top_300 is None: return
-
-    # Step 1
-    themes = step1_strategic_themes(reviews_text, current_date_str, manual_themes)
-    
-    # Step 2
-    classification_results = step2_classify_reviews(reviews_text, themes)
-    df_classification = pd.DataFrame(classification_results)
-    
-    # Merge Classification
-    # Ensure ID types match
-    df_top_300['id'] = df_top_300['id'].astype(int)
-    if not df_classification.empty:
-        df_classification['id'] = df_classification['id'].astype(int)
-        df_merged = pd.merge(df_top_300, df_classification, on='id', how='left')
-    else:
-        df_merged = df_top_300.copy()
-        df_merged['theme'] = 'Uncategorized'
-        df_merged['sentiment'] = 'Neutral'
-
-    # Fill missing themes with 'Other'
-    df_merged['theme'] = df_merged['theme'].fillna('Other')
-
-    # Step 3
-    tags_results = step3_deep_dive_tags(df_merged, themes)
-    df_tags = pd.DataFrame(tags_results)
-    
-    # Merge Tags
-    if not df_tags.empty:
-        df_tags['id'] = df_tags['id'].astype(int)
-        # Rename 'tag' column to 'tags' to match expected output format (list of 1 item)
-        # or keep as 'tag' string. Let's keep as 'tag' string for cleaner JSON.
-        df_final = pd.merge(df_merged, df_tags, on='id', how='left')
-        
-        # Fill missing tags with 'Other'
-        df_final['tag'] = df_final['tag'].fillna('Other')
-    else:
-        df_final = df_merged.copy()
-        df_final['tag'] = 'Other'
-
-    # Step 4: Output
-    output_file = "temp_reviews_analyzed.json"
-    df_final.to_json(output_file, orient='records', indent=4)
-    print(f"Analysis complete. Saved to {output_file}")
-    
-    # Stats
-    print("\n=== ANALYSIS V2 STATS ===")
-    print(df_final['theme'].value_counts())
-    
     # Step 5: Report
-    report_content = step5_generate_report(df_final, themes, current_date_str)
+    report_content = step5_generate_report(df_final, themes, current_date_str, app_name=args.app_name)
+    with open("weekly_pulse_report.md", "w") as f:
+        f.write(report_content)
+    print("Report generated: weekly_pulse_report.md")
     with open("weekly_pulse_report.md", "w") as f:
         f.write(report_content)
     print("Report generated: weekly_pulse_report.md")
