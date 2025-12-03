@@ -56,6 +56,13 @@
             "2025-12-03_200reviews"
         ]
     },
+    "com.google.android.apps.bard": {
+        "name": "com.google.android.apps.bard",
+        "latest": "2025-12-03_100reviews",
+        "versions": [
+            "2025-12-03_100reviews"
+        ]
+    },
     "com.formulaone.production": {
         "name": "com.formulaone.production",
         "latest": "2025-12-03_300reviews",
