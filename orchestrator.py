@@ -292,8 +292,6 @@ def main():
     run_script("fetch_reviews.py", args=fetch_args, job_id=args.job_id)
     update_status("Reviews Fetched. Analyzing Themes...", progress=30, job_id=args.job_id)
     
-    # Step 2: Core Analysis
-    update_status("Identifying Top Themes...", progress=50, job_id=args.job_id)
     # Step 2: Run Core Analysis (AI)
     print(f"[{datetime.datetime.now()}] Running core_analysis_v2.py...")
     update_status("Identifying Top Themes...", progress=50, job_id=args.job_id)
@@ -308,10 +306,16 @@ def main():
         "com.kuvera.android": "Kuvera",
         "com.whatsapp": "WhatsApp",
         "com.instagram.android": "Instagram",
-        "com.formulaone.production": "F1"
+        "com.formulaone.production": "F1",
+        "com.meesho.supply": "Meesho",
+        "com.flipkart.android": "Flipkart"
     }
     
     app_name = APP_NAMES.get(args.app_id, args.app_id)
+    
+    # CRITICAL: Actually run the analysis script
+    run_script("core_analysis_v2.py", args=["--themes", args.themes, "--app_name", app_name], job_id=args.job_id)
+    update_status("Tagging & Sentiment Analysis Complete.", progress=70, job_id=args.job_id)
 
     # Step 3: Archive (Moved before email to get version)
     final_archive_path = archive_history(args.app_id, args.count, job_id=args.job_id)
