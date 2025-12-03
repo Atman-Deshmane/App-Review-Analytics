@@ -300,6 +300,7 @@ def step5_generate_report(df_final, themes, current_date_str):
 def main():
     parser = argparse.ArgumentParser(description='Analyze reviews using Gemini.')
     parser.add_argument('--themes', type=str, default='auto', help='Comma-separated list of themes (e.g., "Login,Bugs,Fees")')
+    parser.add_argument('--app_name', type=str, default='App', help='Name of the app being analyzed')
     args = parser.parse_args()
 
     # Parse themes if provided
