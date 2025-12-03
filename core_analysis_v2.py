@@ -244,13 +244,73 @@ def step5_generate_report(df_final, themes, current_date_str, app_name="App"):
         return f"Error generating report: {e}"
 
 def main():
-    # ... (rest of main) ...
+    parser = argparse.ArgumentParser(description='Analyze reviews using Gemini.')
+    parser.add_argument('--themes', type=str, default='auto', help='Comma-separated list of themes (e.g., "Login,Bugs,Fees")')
+    parser.add_argument('--app_name', type=str, default='App', help='Name of the app being analyzed')
+    args = parser.parse_args()
 
+    # Parse themes if provided
+    manual_themes = None
+    if args.themes and args.themes.lower() != 'auto':
+        manual_themes = [t.strip() for t in args.themes.split(',')]
+
+    # Capture current date
+    current_date_str = datetime.datetime.now().strftime("%B %d, %Y")
+    print(f"Analysis Date: {current_date_str}")
+
+    # Step 0
+    df_top_300, reviews_text = step0_prepare_data()
+    if df_top_300 is None: return
+
+    # Step 1
+    themes = step1_strategic_themes(reviews_text, current_date_str, manual_themes)
+    
+    # Step 2
+    classification_results = step2_classify_reviews(reviews_text, themes)
+    df_classification = pd.DataFrame(classification_results)
+    
+    # Merge Classification
+    # Ensure ID types match
+    df_top_300['id'] = df_top_300['id'].astype(int)
+    if not df_classification.empty:
+        df_classification['id'] = df_classification['id'].astype(int)
+        df_merged = pd.merge(df_top_300, df_classification, on='id', how='left')
+    else:
+        df_merged = df_top_300.copy()
+        df_merged['theme'] = 'Uncategorized'
+        df_merged['sentiment'] = 'Neutral'
+
+    # Fill missing themes with 'Other'
+    df_merged['theme'] = df_merged['theme'].fillna('Other')
+
+    # Step 3
+    tags_results = step3_deep_dive_tags(df_merged, themes)
+    df_tags = pd.DataFrame(tags_results)
+    
+    # Merge Tags
+    if not df_tags.empty:
+        df_tags['id'] = df_tags['id'].astype(int)
+        # Rename 'tag' column to 'tags' to match expected output format (list of 1 item)
+        # or keep as 'tag' string. Let's keep as 'tag' string for cleaner JSON.
+        df_final = pd.merge(df_merged, df_tags, on='id', how='left')
+        
+        # Fill missing tags with 'Other'
+        df_final['tag'] = df_final['tag'].fillna('Other')
+    else:
+        df_final = df_merged.copy()
+        df_final['tag'] = 'Other'
+
+    # Step 4: Output
+    output_file = "temp_reviews_analyzed.json"
+    df_final.to_json(output_file, orient='records', indent=4)
+    print(f"Analysis complete. Saved to {output_file}")
+    
+    # Stats
+    print("\n=== ANALYSIS V2 STATS ===")
+    print(df_final['theme'].value_counts())
+    
     # Step 5: Report
     report_content = step5_generate_report(df_final, themes, current_date_str, app_name=args.app_name)
-    with open("weekly_pulse_report.md", "w") as f:
-        f.write(report_content)
-    print("Report generated: weekly_pulse_report.md")
     with open("weekly_pulse_report.md", "w") as f:
         f.write(report_content)
     print("Report generated: weekly_pulse_report.md")
