@@ -159,19 +159,40 @@ def send_email(report_content, recipient_email, app_name="App", job_id=None):
                 blockquote {{ border-left: 4px solid #ccc; margin: 0; padding-left: 10px; color: #666; }}
                 .button {{
                     display: inline-block;
-                    padding: 10px 20px;
+                    padding: 12px 24px;
                     background-color: #4F46E5;
                     color: white;
                     text-decoration: none;
-                    border-radius: 5px;
+                    border-radius: 6px;
                     font-weight: bold;
-                    margin-top: 20px;
+                    font-family: sans-serif;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }}
+                @media (prefers-color-scheme: dark) {{
+                    body {{ background-color: #1a1a1a; color: #e0e0e0; }}
+                    h1, h2, h3 {{ color: #ffffff; }}
+                    table {{ border: 1px solid #444; }}
+                    th, td {{ border: 1px solid #444; color: #e0e0e0; }}
+                    th {{ background-color: #333; }}
+                    tr:nth-child(even) {{ background-color: #2a2a2a; }}
+                    blockquote {{ border-left: 4px solid #777; color: #bbb; }}
+                    .button {{
+                        background-color: #6D28D9; /* Darker purple for dark mode */
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                    }}
                 }}
             </style>
         </head>
         <body>
             <p>Here is your weekly app review pulse.</p>
-            <a href="{dashboard_url}" class="button">View Full Interactive Dashboard</a>
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="https://app-review-analytics.hostingerapp.com/" class="button">
+                   View Full Interactive Dashboard
+                </a>
+                <p style="margin-top: 15px; font-size: 12px; color: #6B7280;">
+                    (Best viewed on Desktop)
+                </p>
+            </div>
             <br/><br/>
             {html_content}
         </body>
@@ -281,9 +302,9 @@ def main():
     
     # Step 2: Core Analysis
     update_status("Identifying Top Themes...", progress=50, job_id=args.job_id)
-    # We can't granularly update status inside the subprocess without IPC, so we update before/after
-    run_script("core_analysis_v2.py", args=["--themes", args.themes], job_id=args.job_id)
-    update_status("Tagging & Sentiment Analysis Complete.", progress=70, job_id=args.job_id)
+    # Step 2: Run Core Analysis (AI)
+    print(f"[{datetime.datetime.now()}] Running core_analysis_v2.py...")
+    update_status("Identifying Top Themes...", progress=50, job_id=args.job_id)
     
     # App Name Mapping
     APP_NAMES = {

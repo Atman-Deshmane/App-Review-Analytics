@@ -259,7 +259,7 @@ def step5_generate_report(df_final, themes, current_date_str):
         date_range_str = f"Week Ending {current_date_str}"
 
     prompt = f"""
-    You are writing the "Weekly App Review Pulse" for Groww's Leadership Team.
+    You are writing the "Weekly App Review Pulse" for {app_name}'s Leadership Team.
     
     **The Reporting Period is:** {date_range_str}.
     
@@ -269,7 +269,7 @@ def step5_generate_report(df_final, themes, current_date_str):
     **Task:** Write a high-impact Markdown report.
     
     **Format:**
-    ## Weekly App Review Pulse: Groww Leadership Briefing
+    ## Weekly App Review Pulse: {app_name} Leadership Briefing
     **Reporting Period:** {date_range_str}
     
     ### Executive Summary
