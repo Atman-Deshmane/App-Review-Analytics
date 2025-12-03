@@ -1,0 +1,46 @@
+[
+    {
+        "date":"2025-11-28 15:11:33",
+        "rating":5,
+        "review_text":"lack of special features,,,,,,",
+        "thumbs_up_count":1,
+        "title":null,
+        "id":1,
+        "theme":"Missing Tools \/ Features",
+        "sentiment":"Negative",
+        "tag":"Missing Features"
+    },
+    {
+        "date":"2025-11-03 08:59:41",
+        "rating":1,
+        "review_text":"unable to follow claim status why it was rejected claim amount calculation etc",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":2,
+        "theme":"Claims & Calculation Issues",
+        "sentiment":"Negative",
+        "tag":"Claim Status Tracking"
+    },
+    {
+        "date":"2025-11-27 10:56:53",
+        "rating":5,
+        "review_text":"very very good",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":3,
+        "theme":"Positive App Feedback",
+        "sentiment":"Positive",
+        "tag":"Overall Positive"
+    },
+    {
+        "date":"2025-11-30 05:16:56",
+        "rating":1,
+        "review_text":"on registration after entry of IFSC code no further process is complete",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":4,
+        "theme":"Registration & Setup Issues",
+        "sentiment":"Negative",
+        "tag":"Registration Failure"
+    }
+]
