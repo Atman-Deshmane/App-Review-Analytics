@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ConfigModal, { AnalysisConfig } from '../components/ConfigModal';
 import TerminalLoader from '../components/TerminalLoader';
 import { subscribeToJob, JobStatus } from '../utils/firebase';
+import { triggerAnalysis } from '../utils/githubApi';
 
 interface ManifestApp {
     name: string;
@@ -29,6 +30,7 @@ const Home: React.FC = () => {
     // Loading State
     const [jobStatus, setJobStatus] = useState<JobStatus>({ status: 'Initializing...', progress: 0, last_update: '' });
     const [logs, setLogs] = useState<string[]>([]);
+    const [debugError, setDebugError] = useState<string | null>(null);
 
     useEffect(() => {
         // Load Manifest
@@ -59,14 +61,21 @@ const Home: React.FC = () => {
         setJobId(newJobId);
         setLogs(prev => [...prev, `Starting analysis for ${targetAppId}...`]);
 
-        // Trigger GitHub Dispatch
-        try {
-            // Note: In a real app, this should be a backend proxy to hide the token.
-            // For this prototype, we assume the user might have a proxy or we use a public dispatch if configured.
-            // OR we just simulate it if we can't actually call GH Actions from client without exposing secrets.
-            // For now, let's assume we call a local function or just simulate the "Trigger" log.
 
+
+        try {
+            // Trigger GitHub Dispatch
             setLogs(prev => [...prev, `Dispatching workflow... (Job ID: ${newJobId})`]);
+
+            await triggerAnalysis({
+                appId: targetAppId,
+                count: config.count,
+                email: config.email,
+                themes: config.themes,
+                jobId: newJobId
+            });
+
+            setLogs(prev => [...prev, `Workflow dispatched successfully.`]);
 
             // Subscribe to Firebase
             const unsubscribe = subscribeToJob(newJobId, (data) => {
@@ -82,20 +91,23 @@ const Home: React.FC = () => {
 
             // Cleanup subscription on unmount (not handled here fully for simplicity)
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to start analysis:", error);
-            setLogs(prev => [...prev, `Error: ${error}`]);
+            const errorMessage = error.message || String(error);
+            setDebugError(errorMessage);
+            setLogs(prev => [...prev, `> [FATAL ERROR] ${errorMessage}`]);
         }
     };
 
     if (viewState === 'LOADING') {
-        return <TerminalLoader status={jobStatus.status} progress={jobStatus.progress} logs={logs} />;
+        return <TerminalLoader status={jobStatus.status} progress={jobStatus.progress} logs={logs} error={debugError} />;
     }
 
-    const filteredHistory = Object.entries(history).filter(([id, app]) =>
-        id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (app.name && app.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    const filteredHistory: [string, ManifestApp][] = Object.entries(history).filter(([id, app]) => {
+        const manifestApp = app as ManifestApp;
+        return id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (manifestApp.name && manifestApp.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }) as [string, ManifestApp][];
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">

@@ -24,6 +24,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose, onStart, app
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log("Start Analysis clicked. Payload:", { count, themes: themes || 'auto', email, dateRange });
         if (!email) return;
         onStart({ count, themes: themes || 'auto', email, dateRange });
     };
@@ -74,8 +75,8 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose, onStart, app
                                                 type="button"
                                                 onClick={() => setCount(option.value)}
                                                 className={`p-3 rounded-xl border text-left transition-all ${count === option.value
-                                                        ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600'
-                                                        : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                                                    ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600'
+                                                    : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
                                                     }`}
                                             >
                                                 <div className={`font-medium ${count === option.value ? 'text-indigo-900' : 'text-slate-700'}`}>

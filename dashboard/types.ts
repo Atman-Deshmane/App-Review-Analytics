@@ -1,4 +1,4 @@
-export interface Review {
+export interface RawReview {
   date: string;
   rating: number;
   review_text: string;
@@ -10,13 +10,33 @@ export interface Review {
   tag: string;
 }
 
+// --- Dashboard Interfaces ---
+
+export interface DashboardReview {
+  reviewId: string;
+  userName: string;
+  content: string;
+  score: number;
+  thumbsUpCount: number;
+  at: string;
+  appVersion: string | null;
+  sentiment: 'Positive' | 'Negative' | 'Neutral';
+  sentiment_score: number;
+  themes: string[];
+  intent: string;
+  keywords: string[];
+  category: string;
+  rationale: string;
+}
+
+// Legacy Types for unused components
 export interface TagMetric {
   name: string;
   totalLikes: number;
   count: number;
   positiveCount: number;
   negativeCount: number;
-  reviews: Review[];
+  reviews: RawReview[];
 }
 
 export interface ThemeMetric {
@@ -28,8 +48,25 @@ export interface ThemeMetric {
   tags: TagMetric[];
 }
 
-export interface DashboardState {
-  themes: ThemeMetric[];
-  selectedTheme: string | null;
-  selectedTag: TagMetric | null;
+export interface ThemeAnalysis {
+  theme: string;
+  sentiment_score: number;
+  volume: number;
+  keywords: string[];
+  summary: string;
+  examples: string[];
+}
+
+export interface AnalyzedData {
+  metadata: {
+    app_id: string;
+    total_reviews: number;
+    date_range: { start: string; end: string };
+    average_rating: number;
+  };
+  reviews: DashboardReview[];
+  themes: ThemeAnalysis[];
+  top_keywords: Array<{ keyword: string; count: number; sentiment: number }>;
+  intent_distribution: Record<string, number>;
+  sentiment_distribution: Record<string, number>;
 }

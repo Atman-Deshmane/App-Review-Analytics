@@ -25,47 +25,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
+import { processReviews } from './utils/dataProcessing';
+import { AnalyzedData } from './types';
 
 // --- Types ---
-interface Review {
-    reviewId: string;
-    userName: string;
-    content: string;
-    score: number;
-    thumbsUpCount: number;
-    at: string;
-    appVersion: string | null;
-    sentiment: 'Positive' | 'Negative' | 'Neutral';
-    sentiment_score: number;
-    themes: string[];
-    intent: string;
-    keywords: string[];
-    category: string;
-    rationale: string;
-}
-
-interface ThemeAnalysis {
-    theme: string;
-    sentiment_score: number;
-    volume: number;
-    keywords: string[];
-    summary: string;
-    examples: string[];
-}
-
-interface AnalyzedData {
-    metadata: {
-        app_id: string;
-        total_reviews: number;
-        date_range: { start: string; end: string };
-        average_rating: number;
-    };
-    reviews: Review[];
-    themes: ThemeAnalysis[];
-    top_keywords: Array<{ keyword: string; count: number; sentiment: number }>;
-    intent_distribution: Record<string, number>;
-    sentiment_distribution: Record<string, number>;
-}
+// --- Types imported from ./types ---
 
 // --- Dashboard Component (Refactored from original App) ---
 const Dashboard: React.FC = () => {
@@ -107,8 +71,16 @@ const Dashboard: React.FC = () => {
                 const dataPath = `${import.meta.env.BASE_URL}history/${appId}/${targetVersion}/reviews_analyzed_v2.json`;
                 const res = await fetch(dataPath);
                 if (!res.ok) throw new Error(`Failed to load data from ${dataPath}`);
-                const jsonData = await res.json();
-                setData(jsonData);
+                const text = await res.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(text);
+                } catch (e) {
+                    console.error("JSON Parse Error. Raw text:", text.slice(0, 500));
+                    throw new Error("Invalid JSON format in analysis file");
+                }
+                const processedData = processReviews(jsonData, appId);
+                setData(processedData);
             } catch (err) {
                 console.error(err);
                 setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -202,8 +174,8 @@ const Dashboard: React.FC = () => {
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id as any)}
                                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${activeTab === item.id
-                                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/50'
-                                        : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/50'
+                                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                                     }`}
                             >
                                 <item.icon size={20} />
@@ -400,7 +372,7 @@ const Dashboard: React.FC = () => {
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="flex items-center space-x-3">
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${review.sentiment === 'Positive' ? 'bg-emerald-500' :
-                                                        review.sentiment === 'Negative' ? 'bg-rose-500' : 'bg-slate-400'
+                                                    review.sentiment === 'Negative' ? 'bg-rose-500' : 'bg-slate-400'
                                                     }`}>
                                                     {review.score}
                                                 </div>
