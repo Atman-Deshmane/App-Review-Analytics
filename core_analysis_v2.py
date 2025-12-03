@@ -206,6 +206,16 @@ def step5_generate_report(df_final, themes, current_date_str, app_name="App"):
     
     # ... (rest of function body) ...
 
+    # Calculate Date Range from Data
+    if 'date' in df_final.columns:
+        # Ensure date is datetime
+        df_final['date'] = pd.to_datetime(df_final['date'])
+        min_date = df_final['date'].min().strftime("%d %b %Y")
+        max_date = df_final['date'].max().strftime("%d %b %Y")
+        date_range_str = f"{min_date} to {max_date}"
+    else:
+        date_range_str = f"Week Ending {current_date_str}"
+
     prompt = f"""
     You are writing the "Weekly App Review Pulse" for {app_name}'s Leadership Team.
     
