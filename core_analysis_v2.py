@@ -248,10 +248,20 @@ def step5_generate_report(df_final, themes, current_date_str):
         "date_range": "Last 12 Weeks"
     }
     
+    # Calculate Date Range from Data
+    if 'date' in df_final.columns:
+        # Ensure date is datetime
+        df_final['date'] = pd.to_datetime(df_final['date'])
+        min_date = df_final['date'].min().strftime("%d %b %Y")
+        max_date = df_final['date'].max().strftime("%d %b %Y")
+        date_range_str = f"{min_date} to {max_date}"
+    else:
+        date_range_str = f"Week Ending {current_date_str}"
+
     prompt = f"""
     You are writing the "Weekly App Review Pulse" for Groww's Leadership Team.
     
-    **The Reporting Period is:** Week Ending {current_date_str}.
+    **The Reporting Period is:** {date_range_str}.
     
     **Data Context:**
     {json.dumps(report_context, indent=2)}
@@ -260,7 +270,7 @@ def step5_generate_report(df_final, themes, current_date_str):
     
     **Format:**
     ## Weekly App Review Pulse: Groww Leadership Briefing
-    **Reporting Period:** Week Ending {current_date_str}
+    **Reporting Period:** {date_range_str}
     
     ### Executive Summary
     *   [3 Bullet points synthesizing the biggest strategic insights]

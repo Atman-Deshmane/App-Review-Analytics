@@ -129,20 +129,26 @@ export const processReviews = (rawReviews: RawReview[], appId: string): Analyzed
 
   // 4. Distributions
   const sentiment_distribution = { Positive: 0, Negative: 0, Neutral: 0 };
+  const sentiment_likes_distribution = { Positive: 0, Negative: 0, Neutral: 0 }; // New distribution by likes
   const intent_distribution: Record<string, number> = {};
 
   rawReviews.forEach(r => {
     if (sentiment_distribution[r.sentiment] !== undefined) {
       sentiment_distribution[r.sentiment]++;
+      sentiment_likes_distribution[r.sentiment] += r.thumbs_up_count; // Sum likes
     }
 
     intent_distribution[r.tag] = (intent_distribution[r.tag] || 0) + 1;
   });
 
+  // Calculate Total Likes
+  const totalLikes = rawReviews.reduce((acc, r) => acc + r.thumbs_up_count, 0);
+
   return {
     metadata: {
       app_id: appId,
       total_reviews,
+      totalLikes,
       date_range,
       average_rating
     },
@@ -150,6 +156,7 @@ export const processReviews = (rawReviews: RawReview[], appId: string): Analyzed
     themes,
     top_keywords: [], // Not available in raw data
     intent_distribution,
-    sentiment_distribution
+    sentiment_distribution,
+    sentiment_likes_distribution // Return new distribution
   };
 };

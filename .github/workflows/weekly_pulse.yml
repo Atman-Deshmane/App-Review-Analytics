@@ -15,7 +15,7 @@ on:
       count:
         description: 'Number of reviews to fetch'
         required: false
-        default: '300'
+        default: '200'
       email:
         description: 'Recipient Email'
         required: false
@@ -30,6 +30,14 @@ on:
         default: ''
       report_date:
         description: 'Date of report to resend (YYYY-MM-DD). Leave blank for latest report.'
+        required: false
+        default: ''
+      start_date:
+        description: 'Start Date (YYYY-MM-DD)'
+        required: false
+        default: ''
+      end_date:
+        description: 'End Date (YYYY-MM-DD)'
         required: false
         default: ''
 
@@ -70,7 +78,8 @@ jobs:
           COUNT="${{ github.event.client_payload.count || inputs.count || '300' }}"
           EMAIL="${{ github.event.client_payload.email || inputs.email }}"
           THEMES="${{ github.event.client_payload.themes || inputs.themes || 'auto' }}"
-          JOB_ID="${{ github.event.client_payload.job_id || inputs.job_id }}"
+          START_DATE="${{ github.event.client_payload.start_date || inputs.start_date }}"
+          END_DATE="${{ github.event.client_payload.end_date || inputs.end_date }}"
           
           # Construct command
           CMD="python orchestrator.py --app_id $APP_ID --count $COUNT --themes \"$THEMES\""
@@ -81,6 +90,14 @@ jobs:
           
           if [ -n "$JOB_ID" ]; then
             CMD="$CMD --job_id $JOB_ID"
+          fi
+
+          if [ -n "$START_DATE" ]; then
+            CMD="$CMD --start_date $START_DATE"
+          fi
+
+          if [ -n "$END_DATE" ]; then
+            CMD="$CMD --end_date $END_DATE"
           fi
           
           echo "Running: $CMD"

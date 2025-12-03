@@ -4,6 +4,8 @@ export interface TriggerConfig {
     email: string;
     themes: string;
     jobId: string;
+    startDate?: string;
+    endDate?: string;
 }
 
 export const triggerAnalysis = async (config: TriggerConfig) => {
@@ -30,7 +32,9 @@ export const triggerAnalysis = async (config: TriggerConfig) => {
             count: config.count,
             email: config.email,
             themes: config.themes,
-            job_id: config.jobId
+            job_id: config.jobId,
+            start_date: config.startDate,
+            end_date: config.endDate
         }
     };
 

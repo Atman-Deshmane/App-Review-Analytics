@@ -53,14 +53,15 @@ const Dashboard: React.FC = () => {
             setError(null);
             try {
                 // 1. Get Manifest to find latest version if not provided
+                // 1. Fetch Manifest (Always needed for sidebar history)
+                const manifestRes = await fetch(`${import.meta.env.BASE_URL}manifest.json`);
+                if (!manifestRes.ok) throw new Error("Failed to load manifest");
+                const manifestData = await manifestRes.json();
+                setManifest(manifestData);
+
+                // 2. Determine Target Version
                 let targetVersion = version;
                 if (!targetVersion) {
-                    const manifestRes = await fetch(`${import.meta.env.BASE_URL}manifest.json`);
-                    if (!manifestRes.ok) throw new Error("Failed to load manifest");
-                    if (!manifestRes.ok) throw new Error("Failed to load manifest");
-                    const manifestData = await manifestRes.json();
-                    setManifest(manifestData);
-
                     if (manifestData[appId]) {
                         targetVersion = manifestData[appId].latest;
                     } else {
@@ -163,7 +164,9 @@ const Dashboard: React.FC = () => {
                             </div>
                             <div>
                                 <div className="text-sm font-bold tracking-tight leading-tight">
-                                    {manifest && manifest[appId] ? manifest[appId].name : 'App Review Analytics'}
+                                    {manifest && manifest[appId]
+                                        ? manifest[appId].name
+                                        : (appId ? appId.split('.').pop()?.charAt(0).toUpperCase()! + appId.split('.').pop()?.slice(1) : 'App Review Analytics')}
                                 </div>
                                 <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
                                     Review Analytics
@@ -199,30 +202,46 @@ const Dashboard: React.FC = () => {
                     {/* History Section */}
                     {manifest && manifest[appId] && (
                         <div className="px-4 py-2 border-t border-slate-800">
-                            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">History</div>
+                            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">
+                                History: {manifest[appId].name}
+                            </div>
                             <div className="space-y-1 max-h-40 overflow-y-auto custom-scrollbar">
-                                {manifest[appId].versions.map((v) => (
-                                    <button
-                                        key={v}
-                                        onClick={() => {
-                                            const newParams = new URLSearchParams(searchParams);
-                                            newParams.set('version', v);
-                                            setSearchParams(newParams);
-                                        }}
-                                        className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors flex justify-between items-center ${version === v
-                                            ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
-                                            : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
-                                    >
-                                        <span>{v.split('_')[0]}</span>
-                                        <span className="opacity-50 text-[10px]">{v.split('_')[1]?.replace('reviews', '')} revs</span>
-                                    </button>
-                                ))}
+                                {manifest[appId].versions.map((v) => {
+                                    const [date, countStr] = v.split('_');
+                                    const count = countStr ? countStr.replace('reviews', '') : '0';
+                                    const formattedDate = new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+
+                                    return (
+                                        <button
+                                            key={v}
+                                            onClick={() => {
+                                                const newParams = new URLSearchParams(searchParams);
+                                                newParams.set('version', v);
+                                                setSearchParams(newParams);
+                                            }}
+                                            className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors flex justify-between items-center ${version === v
+                                                ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
+                                                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+                                        >
+                                            <span>{formattedDate}</span>
+                                            <span className="opacity-50 text-[10px]">{count} revs</span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
 
-                    <div className="p-4 border-t border-slate-800">
-                        <div className="bg-slate-800 rounded-xl p-4">
+                    <div className="p-4 border-t border-slate-800 mt-auto">
+                        <button
+                            onClick={() => window.location.href = import.meta.env.BASE_URL}
+                            className="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg transition-colors text-sm font-medium mb-4"
+                        >
+                            <Search size={16} />
+                            <span>Switch App</span>
+                        </button>
+
+                        <div className="bg-slate-800/50 rounded-xl p-4">
                             <div className="flex items-center space-x-3 mb-3">
                                 <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold">
                                     GD
@@ -257,27 +276,28 @@ const Dashboard: React.FC = () => {
                     <div className="flex items-center space-x-8">
                         <div className="hidden md:block text-right">
                             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Data Source</div>
-                            <div className="text-sm font-bold text-slate-800">Q4 2025 Review Dump</div>
+                            <div className="text-sm font-bold text-slate-800">
+                                {new Date(data.metadata.date_range.start).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {new Date(data.metadata.date_range.end).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </div>
                         </div>
                         <div className="hidden md:block text-right">
                             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Volume</div>
                             <div className="text-sm font-bold text-slate-800 flex items-center justify-end">
-                                <MessageSquare size={14} className="mr-1 text-slate-400" />
-                                {data.metadata.total_reviews.toLocaleString()} Likes
+                                <ThumbsUp size={14} className="mr-1 text-slate-400" />
+                                {data.metadata.totalLikes.toLocaleString()} Likes
                             </div>
                         </div>
                         <div className="hidden md:block text-right">
-                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Records</div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Reviews</div>
                             <div className="text-sm font-bold text-slate-800 flex items-center justify-end">
                                 <MessageSquare size={14} className="mr-1 text-slate-400" />
-                                {data.metadata.total_reviews}
+                                {data.metadata.total_reviews.toLocaleString()}
                             </div>
                         </div>
                     </div>
                 </header>
 
-                {/* Scrollable Content Area */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8">
+                <div className={`flex-1 overflow-y-auto p-4 md:p-8 transition-all duration-300 ${selectedCluster ? 'filter blur-sm pointer-events-none' : ''}`}>
                     <div className="max-w-7xl mx-auto space-y-8">
 
                         {/* OVERVIEW TAB */}
@@ -356,15 +376,15 @@ const Dashboard: React.FC = () => {
                                             <div className="text-center space-y-4">
                                                 <div className="flex items-center justify-center space-x-2">
                                                     <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                                                    <span className="text-sm text-slate-600">Positive: {data.sentiment_distribution.Positive}</span>
+                                                    <span className="text-sm text-slate-600">Positive: {data.sentiment_likes_distribution.Positive.toLocaleString()} likes</span>
                                                 </div>
                                                 <div className="flex items-center justify-center space-x-2">
                                                     <div className="w-3 h-3 bg-slate-400 rounded-full"></div>
-                                                    <span className="text-sm text-slate-600">Neutral: {data.sentiment_distribution.Neutral}</span>
+                                                    <span className="text-sm text-slate-600">Neutral: {data.sentiment_likes_distribution.Neutral.toLocaleString()} likes</span>
                                                 </div>
                                                 <div className="flex items-center justify-center space-x-2">
                                                     <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
-                                                    <span className="text-sm text-slate-600">Negative: {data.sentiment_distribution.Negative}</span>
+                                                    <span className="text-sm text-slate-600">Negative: {data.sentiment_likes_distribution.Negative.toLocaleString()} likes</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -383,7 +403,7 @@ const Dashboard: React.FC = () => {
                                 {/* Strategic Themes Cards */}
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-800 mb-4">Strategic Themes</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                                    <div className="flex overflow-x-auto pb-4 gap-4 snap-x md:grid md:grid-cols-2 lg:grid-cols-5 md:overflow-visible no-scrollbar">
                                         {data.themes.slice(0, 5).map((theme, idx) => {
                                             const total = theme.positiveCount + theme.negativeCount;
                                             const positivePct = total > 0 ? Math.round((theme.positiveCount / total) * 100) : 0;
@@ -393,7 +413,7 @@ const Dashboard: React.FC = () => {
                                                 <button
                                                     key={idx}
                                                     onClick={() => setSelectedThemeIndex(idx)}
-                                                    className={`text-left p-4 rounded-xl border transition-all duration-200 relative overflow-hidden ${selectedThemeIndex === idx
+                                                    className={`text-left p-4 rounded-xl border transition-all duration-200 relative overflow-hidden min-w-[260px] md:min-w-0 snap-center ${selectedThemeIndex === idx
                                                         ? 'bg-white border-slate-800 shadow-md'
                                                         : 'bg-white border-slate-100 hover:border-slate-300'
                                                         }`}
@@ -548,65 +568,67 @@ const Dashboard: React.FC = () => {
             </main>
             {/* Topic Inspector Side Panel */}
             <AnimatePresence>
-                {selectedCluster && (
-                    <motion.div
-                        initial={{ x: '100%' }}
-                        animate={{ x: 0 }}
-                        exit={{ x: '100%' }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed inset-y-0 right-0 w-96 bg-white shadow-2xl z-50 border-l border-slate-200 flex flex-col"
-                    >
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
-                            <div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Topic Inspector</div>
-                                <h3 className="text-xl font-bold text-slate-800">{selectedCluster}</h3>
-                                <div className="flex items-center space-x-4 mt-2 text-xs font-medium text-slate-500">
-                                    <span className="flex items-center"><ThumbsUp size={12} className="mr-1" /> {data?.themes[selectedThemeIndex].clusters.find(c => c.name === selectedCluster)?.volume} Impact</span>
+                {
+                    selectedCluster && (
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed inset-y-0 right-0 w-96 bg-white shadow-2xl z-50 border-l border-slate-200 flex flex-col"
+                        >
+                            <div className="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
+                                <div>
+                                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Topic Inspector</div>
+                                    <h3 className="text-xl font-bold text-slate-800">{selectedCluster}</h3>
+                                    <div className="flex items-center space-x-4 mt-2 text-xs font-medium text-slate-500">
+                                        <span className="flex items-center"><ThumbsUp size={12} className="mr-1" /> {data?.themes[selectedThemeIndex].clusters.find(c => c.name === selectedCluster)?.volume} Impact</span>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setSelectedCluster(null)}
+                                    className="text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-200 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-50/50">
+                                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">User Verbatim</div>
+                                <div className="space-y-4">
+                                    {data?.reviews
+                                        .filter(r => r.themes.includes(data.themes[selectedThemeIndex].theme) && (r.intent === selectedCluster || r.category === selectedCluster || selectedCluster === 'Other')) // Match theme and cluster (tag)
+                                        .slice(0, 20) // Limit to 20 for performance
+                                        .map((review) => (
+                                            <div key={review.reviewId} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${review.sentiment === 'Positive' ? 'bg-emerald-100 text-emerald-700' :
+                                                        review.sentiment === 'Negative' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'
+                                                        }`}>
+                                                        {review.sentiment}
+                                                    </span>
+                                                    <span className="text-[10px] text-slate-400">{new Date(review.at).toLocaleDateString()}</span>
+                                                </div>
+                                                <p className="text-slate-700 text-xs leading-relaxed mb-3">{review.content}</p>
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex text-yellow-400">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <Star key={i} size={10} fill={i < review.score ? "currentColor" : "none"} className={i < review.score ? "" : "text-slate-200"} />
+                                                        ))}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-400 flex items-center">
+                                                        +{review.thumbsUpCount} likes
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                 </div>
                             </div>
-                            <button
-                                onClick={() => setSelectedCluster(null)}
-                                className="text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-200 transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-50/50">
-                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">User Verbatim</div>
-                            <div className="space-y-4">
-                                {data?.reviews
-                                    .filter(r => r.themes.includes(data.themes[selectedThemeIndex].theme) && (r.intent === selectedCluster || r.category === selectedCluster || selectedCluster === 'Other')) // Match theme and cluster (tag)
-                                    .slice(0, 20) // Limit to 20 for performance
-                                    .map((review) => (
-                                        <div key={review.reviewId} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${review.sentiment === 'Positive' ? 'bg-emerald-100 text-emerald-700' :
-                                                    review.sentiment === 'Negative' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'
-                                                    }`}>
-                                                    {review.sentiment}
-                                                </span>
-                                                <span className="text-[10px] text-slate-400">{new Date(review.at).toLocaleDateString()}</span>
-                                            </div>
-                                            <p className="text-slate-700 text-xs leading-relaxed mb-3">{review.content}</p>
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex text-yellow-400">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star key={i} size={10} fill={i < review.score ? "currentColor" : "none"} className={i < review.score ? "" : "text-slate-200"} />
-                                                    ))}
-                                                </div>
-                                                <div className="text-[10px] text-slate-400 flex items-center">
-                                                    +{review.thumbsUpCount} likes
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
+                        </motion.div>
+                    )
+                }
+            </AnimatePresence >
+        </div >
     );
 };
 

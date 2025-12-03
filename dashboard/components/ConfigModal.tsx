@@ -14,19 +14,24 @@ export interface AnalysisConfig {
     themes: string;
     email: string;
     dateRange: number; // weeks
+    startDate?: string;
+    endDate?: string;
 }
 
 const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose, onStart, appId }) => {
-    const [count, setCount] = useState(300);
+    const [count, setCount] = useState(200);
     const [themes, setThemes] = useState('');
     const [email, setEmail] = useState('');
-    const [dateRange, setDateRange] = useState(12);
+    const [dateRange, setDateRange] = useState(2);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [showCustomDates, setShowCustomDates] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Start Analysis clicked. Payload:", { count, themes: themes || 'auto', email, dateRange });
+        console.log("Start Analysis clicked. Payload:", { count, themes: themes || 'auto', email, dateRange, startDate, endDate });
         if (!email) return;
-        onStart({ count, themes: themes || 'auto', email, dateRange });
+        onStart({ count, themes: themes || 'auto', email, dateRange, startDate, endDate });
     };
 
     const reviewOptions = [
@@ -90,6 +95,54 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose, onStart, app
                                     </div>
                                 </div>
 
+                                {/* Date Range Selection */}
+                                <div>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <label className="block text-sm font-medium text-slate-700">
+                                            Date Range <span className="text-slate-400 font-normal">(Default: Last 2 Weeks)</span>
+                                        </label>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCustomDates(!showCustomDates)}
+                                            className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                                        >
+                                            {showCustomDates ? 'Hide Custom Dates' : 'Select Custom Dates'}
+                                        </button>
+                                    </div>
+
+                                    <AnimatePresence>
+                                        {showCustomDates && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="grid grid-cols-2 gap-4 pt-1 pb-2">
+                                                    <div>
+                                                        <label className="block text-xs text-slate-500 mb-1">Start Date</label>
+                                                        <input
+                                                            type="date"
+                                                            value={startDate}
+                                                            onChange={(e) => setStartDate(e.target.value)}
+                                                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-sm"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs text-slate-500 mb-1">End Date</label>
+                                                        <input
+                                                            type="date"
+                                                            value={endDate}
+                                                            onChange={(e) => setEndDate(e.target.value)}
+                                                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-sm"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+
                                 {/* Themes Input */}
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -123,7 +176,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose, onStart, app
                                         />
                                     </div>
                                     <p className="text-xs text-slate-500 mt-1.5">
-                                        We'll send the full PDF report here once complete.
+                                        We'll send the full report here once complete.
                                     </p>
                                 </div>
 

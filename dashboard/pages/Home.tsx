@@ -63,7 +63,9 @@ const Home: React.FC = () => {
                 count: config.count,
                 email: config.email,
                 themes: config.themes,
-                jobId: newJobId
+                jobId: newJobId,
+                startDate: config.startDate,
+                endDate: config.endDate
             });
 
             setLogs(prev => [...prev, `Workflow dispatched successfully.`]);
@@ -74,9 +76,11 @@ const Home: React.FC = () => {
                 setLogs(prev => [...prev, `[${newJobId}] ${data.status}`]);
 
                 if (data.status === 'COMPLETED' || data.progress === 100) {
+                    // Add a delay to allow for deployment propagation
+                    setLogs(prev => [...prev, `Waiting for deployment propagation...`]);
                     setTimeout(() => {
                         navigate(`/dashboard?app=${targetAppId}&version=${new Date().toISOString().split('T')[0]}_${config.count}reviews`);
-                    }, 2000);
+                    }, 5000); // Increased delay to 5 seconds
                 }
             });
 
@@ -91,7 +95,17 @@ const Home: React.FC = () => {
     };
 
     if (viewState === 'LOADING') {
-        return <TerminalLoader status={jobStatus.status} progress={jobStatus.progress} logs={logs} error={debugError} />;
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white p-4">
+                <TerminalLoader status={jobStatus.status} progress={jobStatus.progress} logs={logs} error={debugError} />
+                <div className="mt-8 text-center space-y-2">
+                    <p className="text-slate-400 text-sm">Estimated time remaining: ~2 minutes</p>
+                    <p className="text-slate-500 text-xs">
+                        You can close this window. We'll email you the link when it's ready.
+                    </p>
+                </div>
+            </div>
+        );
     }
 
     const filteredHistory: [string, ManifestApp][] = Object.entries(history).filter(([id, app]) => {

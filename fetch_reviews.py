@@ -5,12 +5,12 @@ from datetime import datetime, timedelta
 
 # Defaults
 DEFAULT_APP_ID = 'com.nextbillion.groww'
-DEFAULT_COUNT = 300
+DEFAULT_COUNT = 200
 COUNTRY = 'in'
 LANGUAGE = 'en'
-WEEKS_BACK = 12
+WEEKS_BACK = 2
 
-def fetch_reviews(app_id, fetch_count):
+def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
     print(f"Fetching {fetch_count} most relevant reviews for {app_id}...")
     
     # Fetch reviews
@@ -38,12 +38,29 @@ def fetch_reviews(app_id, fetch_count):
     # Ensure date is datetime
     df['at'] = pd.to_datetime(df['at'])
     
-    # Filter for last 12 weeks
-    cutoff_date = datetime.now() - timedelta(weeks=WEEKS_BACK)
-    df_filtered = df[df['at'] >= cutoff_date].copy()
+    # Filter by Date Range
+    if start_date:
+        start_dt = pd.to_datetime(start_date)
+        print(f"Filtering reviews after {start_dt.date()}")
+        df = df[df['at'] >= start_dt]
+        
+    if end_date:
+        end_dt = pd.to_datetime(end_date)
+        # Set end date to end of day
+        end_dt = end_dt + timedelta(days=1) - timedelta(seconds=1)
+        print(f"Filtering reviews before {end_dt.date()}")
+        df = df[df['at'] <= end_dt]
+        
+    if not start_date and not end_date:
+        # Default: Filter for last 12 weeks
+        cutoff_date = datetime.now() - timedelta(weeks=WEEKS_BACK)
+        print(f"No custom date range. Filtering for last {WEEKS_BACK} weeks (>= {cutoff_date.date()})")
+        df = df[df['at'] >= cutoff_date]
+    
+    df_filtered = df.copy()
     
     kept_count = len(df_filtered)
-    print(f"Kept after date filter (>= {cutoff_date.date()}): {kept_count}")
+    print(f"Kept after date filter: {kept_count}")
     
     if kept_count < 20:
         print("WARNING: Most Relevant sort didn't yield enough recent data (< 20 reviews).")
@@ -81,7 +98,7 @@ def fetch_reviews(app_id, fetch_count):
         print(f"Date Range: {df_final['date'].min()} to {df_final['date'].max()}")
     else:
         print("Date Range: N/A")
-    print(f"Filtered (Last 12 wks): {len(df_filtered)}")
+    print(f"Filtered Count: {len(df_filtered)}")
     print(f"Final Count (after sort): {len(df_final)}")
     print(f"Max Thumbs Up found: {df_final['thumbs_up_count'].max() if not df_final.empty else 0}")
     print("========================")
@@ -91,7 +108,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Fetch reviews from Google Play Store.')
     parser.add_argument('--app_id', type=str, default=DEFAULT_APP_ID, help='Application ID (Package Name)')
     parser.add_argument('--count', type=int, default=DEFAULT_COUNT, help='Number of reviews to fetch')
+    parser.add_argument('--start_date', type=str, help='Start Date (YYYY-MM-DD)')
+    parser.add_argument('--end_date', type=str, help='End Date (YYYY-MM-DD)')
     
     args = parser.parse_args()
     
-    fetch_reviews(args.app_id, args.count)
+    fetch_reviews(args.app_id, args.count, args.start_date, args.end_date)

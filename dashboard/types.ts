@@ -75,6 +75,7 @@ export interface AnalyzedData {
   metadata: {
     app_id: string;
     total_reviews: number;
+    totalLikes: number; // Added for Total Volume
     date_range: { start: string; end: string };
     average_rating: number;
   };
@@ -83,6 +84,7 @@ export interface AnalyzedData {
   top_keywords: Array<{ keyword: string; count: number; sentiment: number }>;
   intent_distribution: Record<string, number>;
   sentiment_distribution: Record<string, number>;
+  sentiment_likes_distribution: Record<string, number>; // Added for likes-based sentiment split
 }
 
 export interface ManifestApp {

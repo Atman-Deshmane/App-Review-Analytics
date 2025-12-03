@@ -74,15 +74,36 @@ def run_script(script_name, args=None, job_id=None):
         cmd.extend(args)
     
     try:
-        # Run the script and check for errors
-        subprocess.run(cmd, check=True)
+        # Use Popen to capture output in real-time
+        process = subprocess.Popen(
+            cmd, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.STDOUT, # Merge stderr into stdout
+            text=True, 
+            bufsize=1 # Line buffered
+        )
+
+        # Read output line by line
+        for line in process.stdout:
+            line = line.strip()
+            if line:
+                print(line) # Print to local console
+                # Send to Firebase as status update
+                update_status(line, job_id=job_id)
+
+        # Wait for completion
+        return_code = process.wait()
+        
+        if return_code != 0:
+            raise subprocess.CalledProcessError(return_code, cmd)
+            
         print(f"[{datetime.datetime.now()}] {script_name} completed successfully.\n")
     except subprocess.CalledProcessError as e:
         print(f"Error running {script_name}: {e}")
         update_status(f"Error running {script_name}", job_id=job_id)
         sys.exit(1) # Exit with error code to fail the workflow
 
-def send_email(report_content, recipient_email, date_str=None, job_id=None):
+def send_email(report_content, recipient_email, app_name="App", job_id=None):
     sender_email = os.getenv("EMAIL_SENDER")
     sender_password = os.getenv("EMAIL_PASSWORD")
     
@@ -102,13 +123,27 @@ def send_email(report_content, recipient_email, date_str=None, job_id=None):
         msg['From'] = sender_email
         msg['To'] = recipient_email
         
-        if date_str:
-            msg['Subject'] = f"Weekly App Pulse: {date_str} (Resend)"
-        else:
-            msg['Subject'] = f"Weekly App Pulse: {datetime.date.today()}"
+        # Extract Date Range from Report Content
+        # Look for "**Reporting Period:** <date_range>"
+        import re
+        date_match = re.search(r"\*\*Reporting Period:\*\* (.*)", report_content)
+        date_range = date_match.group(1).strip() if date_match else f"Week Ending {datetime.date.today()}"
+        
+        msg['Subject'] = f"{app_name} Review Analytics, {date_range}"
 
         # Convert Markdown to HTML
         html_content = markdown.markdown(report_content, extensions=['tables'])
+        
+        # Construct Dashboard Link
+        # Assuming standard format: date_countreviews
+        # We need to reconstruct the version string here or pass it in.
+        # For simplicity, let's assume today's date and the count from args (we'll need to pass count to send_email)
+        # But wait, send_email doesn't have count. Let's add it or infer it.
+        # Actually, let's just pass the full link or version if possible.
+        # For now, let's add a generic link or try to construct it.
+        
+        dashboard_url = "https://100cr.cloud/reviews/dashboard" 
+        # If we had the version, it would be: f"{dashboard_url}?app={app_id}&version={version}"
         
         # Add some basic styling to the HTML
         styled_html = f"""
@@ -122,9 +157,22 @@ def send_email(report_content, recipient_email, date_str=None, job_id=None):
                 th {{ background-color: #f2f2f2; }}
                 tr:nth-child(even) {{ background-color: #f9f9f9; }}
                 blockquote {{ border-left: 4px solid #ccc; margin: 0; padding-left: 10px; color: #666; }}
+                .button {{
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #4F46E5;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    margin-top: 20px;
+                }}
             </style>
         </head>
         <body>
+            <p>Here is your weekly app review pulse.</p>
+            <a href="{dashboard_url}" class="button">View Full Interactive Dashboard</a>
+            <br/><br/>
             {html_content}
         </body>
         </html>
@@ -205,11 +253,13 @@ def archive_history(app_id, count, job_id=None):
 
 def main():
     parser = argparse.ArgumentParser(description='SaaS Orchestrator')
-    parser.add_argument('--app_id', type=str, default='com.nextbillion.groww', help='Application ID')
-    parser.add_argument('--count', type=int, default=300, help='Number of reviews to fetch')
+    parser.add_argument('--app_id', type=str, default='com.nextbillion.groww', help='Application ID (Package Name)')
+    parser.add_argument('--count', type=int, default=200, help='Number of reviews to fetch')
     parser.add_argument('--themes', type=str, default='auto', help='Comma-separated themes')
     parser.add_argument('--email', type=str, help='Recipient email')
-    parser.add_argument('--date_range', type=int, default=12, help='Weeks back')
+    parser.add_argument('--date_range', type=int, default=2, help='Weeks back (Deprecated if start/end date used)')
+    parser.add_argument('--start_date', type=str, help='Start Date (YYYY-MM-DD)')
+    parser.add_argument('--end_date', type=str, help='End Date (YYYY-MM-DD)')
     parser.add_argument('--job_id', type=str, help='Firebase Job ID for status tracking')
     
     args = parser.parse_args()
@@ -219,7 +269,14 @@ def main():
     
     # Step 1: Fetch Reviews
     update_status("Fetching reviews...", progress=10, job_id=args.job_id)
-    run_script("fetch_reviews.py", args=["--app_id", args.app_id, "--count", str(args.count)], job_id=args.job_id)
+    
+    fetch_args = ["--app_id", args.app_id, "--count", str(args.count)]
+    if args.start_date:
+        fetch_args.extend(["--start_date", args.start_date])
+    if args.end_date:
+        fetch_args.extend(["--end_date", args.end_date])
+        
+    run_script("fetch_reviews.py", args=fetch_args, job_id=args.job_id)
     update_status("Reviews Fetched. Analyzing Themes...", progress=30, job_id=args.job_id)
     
     # Step 2: Core Analysis
@@ -228,11 +285,26 @@ def main():
     run_script("core_analysis_v2.py", args=["--themes", args.themes], job_id=args.job_id)
     update_status("Tagging & Sentiment Analysis Complete.", progress=70, job_id=args.job_id)
     
+    # App Name Mapping
+    APP_NAMES = {
+        "com.nextbillion.groww": "Groww",
+        "com.zerodha.kite3": "Kite by Zerodha",
+        "com.dot.app.sancharsaathi": "Sanchar Saathi",
+        "in.powerup.money": "PowerUp Money",
+        "com.wealthmonitor": "Wealth Monitor",
+        "com.kuvera.android": "Kuvera",
+        "com.whatsapp": "WhatsApp",
+        "com.instagram.android": "Instagram",
+        "com.formulaone.production": "F1"
+    }
+    
+    app_name = APP_NAMES.get(args.app_id, args.app_id)
+
     # Step 3: Send Email
     if os.path.exists("weekly_pulse_report.md"):
         with open("weekly_pulse_report.md", "r") as f:
             report_content = f.read()
-        send_email(report_content, args.email, job_id=args.job_id)
+        send_email(report_content, args.email, app_name=app_name, job_id=args.job_id)
     else:
         print("Error: weekly_pulse_report.md not found after analysis.")
     
