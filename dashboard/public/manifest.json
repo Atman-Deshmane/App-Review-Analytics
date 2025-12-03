@@ -1,4 +1,11 @@
 {
+    "com.meesho.supply": {
+        "name": "com.meesho.supply",
+        "latest": "2025-12-03_200reviews",
+        "versions": [
+            "2025-12-03_200reviews"
+        ]
+    },
     "com.whatsapp": {
         "name": "com.whatsapp",
         "latest": "2025-12-03_300reviews",
