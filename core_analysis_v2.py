@@ -220,7 +220,7 @@ def step5_generate_report(df_final, themes, current_date_str):
             top_review = theme_df.sort_values(by='thumbs_up_count', ascending=False).iloc[0]
             top_quotes[theme] = {
                 'text': top_review['review_text'],
-                'votes': top_review['thumbs_up_count']
+                'votes': int(top_review['thumbs_up_count'])
             }
             
     # Prepare Data Context for LLM
@@ -273,29 +273,27 @@ def step5_generate_report(df_final, themes, current_date_str):
     **Reporting Period:** {date_range_str}
     
     ### Executive Summary
-    *   [3 Bullet points synthesizing the biggest strategic insights]
+    (2-3 sentences max. Focus on the biggest shift or insight this week.)
     
-    ### Top 5 Themes (Ranked by User Impact)
-    | Theme Name | Community Impact Score (Total Thumbs Up) | Voice of the Customer | Quote Votes |
-    | :--- | :--- | :--- | :--- |
-    | [Theme 1] | [Score] | "[Quote text...]" | (Votes: [N]) |
-    ... (List all 5 themes)
+    ### 1. Top Themes & Strategic Insights
+    (For each of the top 3 themes, provide a brief analysis. Use the data provided.)
     
-    ### Strategic Recommendations
-    1.  [Actionable recommendation based on Theme 1]
-    2.  [Actionable recommendation based on Theme 2]
-    3.  [Actionable recommendation based on Theme 3]
+    ### 2. Voice of the Customer (Quotes)
+    (Select 3 most impactful quotes from the provided list that illustrate the themes.)
+    
+    ### 3. Recommended Actions
+    (3 bullet points. Be specific and actionable based on the insights.)
     """
     
+    # Call Gemini
     try:
-        # Use a text model or the same flash model
-        model_text = genai.GenerativeModel("gemini-2.5-flash-preview-09-2025") # Using same model as it's good
+        model_text = genai.GenerativeModel('gemini-pro') # Changed model to gemini-pro
         response = model_text.generate_content(prompt)
         return response.text
     except Exception as e:
-        print(f"Error generating report: {e}")
+        print(f"Error generating report with Gemini: {e}")
         traceback.print_exc()
-        return "Error generating report."
+        return f"Error generating report: {e}"
 
 def main():
     parser = argparse.ArgumentParser(description='Analyze reviews using Gemini.')
