@@ -151,14 +151,19 @@ def send_email(report_content, recipient_email, app_name="App", dashboard_url="h
                 blockquote {{ border-left: 4px solid #ccc; margin: 0; padding-left: 10px; color: #666; }}
                 .button {{
                     display: inline-block;
-                    padding: 12px 24px;
-                    background-color: #4F46E5;
-                    color: white;
+                    padding: 14px 28px;
+                    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+                    color: #ffffff !important;
                     text-decoration: none;
-                    border-radius: 6px;
-                    font-weight: bold;
-                    font-family: sans-serif;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+                    transition: all 0.2s ease;
+                }}
+                .button:hover {{
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
                 }}
                 @media (prefers-color-scheme: dark) {{
                     body {{ background-color: #1a1a1a; color: #e0e0e0; }}
@@ -169,24 +174,28 @@ def send_email(report_content, recipient_email, app_name="App", dashboard_url="h
                     tr:nth-child(even) {{ background-color: #2a2a2a; }}
                     blockquote {{ border-left: 4px solid #777; color: #bbb; }}
                     .button {{
-                        background-color: #6D28D9; /* Darker purple for dark mode */
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+                        box-shadow: 0 4px 14px rgba(109, 40, 217, 0.5);
+                    }}
+                    .button:hover {{
+                        box-shadow: 0 6px 20px rgba(109, 40, 217, 0.6);
                     }}
                 }}
             </style>
         </head>
         <body>
             <p>Here is your weekly app review pulse.</p>
-            <div style="margin-top: 30px; text-align: center;">
-                <a href="https://app-review-analytics.hostingerapp.com/" class="button">
-                   View Full Interactive Dashboard
-                </a>
-                <p style="margin-top: 15px; font-size: 12px; color: #6B7280;">
-                    (Best viewed on Desktop)
-                </p>
-            </div>
             <br/><br/>
             {html_content}
+            <br/><br/>
+            <div style="margin-top: 40px; margin-bottom: 20px; text-align: left; border-top: 2px solid #e5e7eb; padding-top: 30px;">
+                <a href="{dashboard_url}" class="button">
+                   📊 View Full Interactive Dashboard
+                </a>
+                <p style="margin-top: 15px; font-size: 12px; color: #6B7280;">
+                    Best viewed on Desktop • Click to explore detailed insights
+                </p>
+            </div>
         </body>
         </html>
         """
