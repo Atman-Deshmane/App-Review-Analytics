@@ -77,6 +77,13 @@
             "2025-12-03_50reviews"
         ]
     },
+    "in.swiggy.android": {
+        "name": "in.swiggy.android",
+        "latest": "2025-12-03_200reviews",
+        "versions": [
+            "2025-12-03_200reviews"
+        ]
+    },
     "com.dot.app.sancharsaathi": {
         "name": "Sanchar Saathi",
         "latest": "2025-12-03_100reviews",
