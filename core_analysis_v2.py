@@ -287,7 +287,7 @@ def step5_generate_report(df_final, themes, current_date_str, app_name="App"):
     
     # Call Gemini
     try:
-        model_text = genai.GenerativeModel('gemini-pro')
+        model_text = genai.GenerativeModel(MODEL_NAME)
         response = model_text.generate_content(prompt)
         return response.text
     except Exception as e:
