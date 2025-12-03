@@ -1,4 +1,31 @@
 {
+    "com.nextbillion.groww": {
+        "name": "Groww",
+        "latest": "2025-12-02_25reviews_v2",
+        "versions": [
+            "2025-12-02_25reviews_v2",
+            "2025-12-02_25reviews",
+            "2025-12-02_10reviews",
+            "2025-12-01_v3",
+            "2025-12-01_v2",
+            "2025-12-01",
+            "2025-11-30"
+        ]
+    },
+    "com.zerodha.kite3": {
+        "name": "Kite by Zerodha",
+        "latest": "2025-12-02_10reviews",
+        "versions": [
+            "2025-12-02_10reviews"
+        ]
+    },
+    "com.formulaone.production": {
+        "name": "com.formulaone.production",
+        "latest": "2025-12-03_300reviews",
+        "versions": [
+            "2025-12-03_300reviews"
+        ]
+    },
     "com.instagram.android": {
         "name": "com.instagram.android",
         "latest": "2025-12-03_50reviews",
@@ -11,26 +38,6 @@
         "latest": "2025-12-03_100reviews",
         "versions": [
             "2025-12-03_100reviews"
-        ]
-    },
-    "com.zerodha.kite3": {
-        "name": "Kite by Zerodha",
-        "latest": "2025-12-02_10reviews",
-        "versions": [
-            "2025-12-02_10reviews"
-        ]
-    },
-    "com.nextbillion.groww": {
-        "name": "Groww",
-        "latest": "2025-12-02_25reviews_v2",
-        "versions": [
-            "2025-12-02_25reviews_v2",
-            "2025-12-02_25reviews",
-            "2025-12-02_10reviews",
-            "2025-12-01_v3",
-            "2025-12-01_v2",
-            "2025-12-01",
-            "2025-11-30"
         ]
     }
 }
