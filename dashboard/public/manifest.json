@@ -1,4 +1,11 @@
 {
+    "com.whatsapp": {
+        "name": "com.whatsapp",
+        "latest": "2025-12-03_300reviews",
+        "versions": [
+            "2025-12-03_300reviews"
+        ]
+    },
     "com.nextbillion.groww": {
         "name": "Groww",
         "latest": "2025-12-02_25reviews_v2",
