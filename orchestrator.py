@@ -103,7 +103,7 @@ def run_script(script_name, args=None, job_id=None):
         update_status(f"Error running {script_name}", job_id=job_id)
         sys.exit(1) # Exit with error code to fail the workflow
 
-def send_email(report_content, recipient_email, app_name="App", job_id=None):
+def send_email(report_content, recipient_email, app_name="App", dashboard_url="https://100cr.cloud/reviews/dashboard", job_id=None):
     sender_email = os.getenv("EMAIL_SENDER")
     sender_password = os.getenv("EMAIL_PASSWORD")
     
@@ -134,16 +134,8 @@ def send_email(report_content, recipient_email, app_name="App", job_id=None):
         # Convert Markdown to HTML
         html_content = markdown.markdown(report_content, extensions=['tables'])
         
-        # Construct Dashboard Link
-        # Assuming standard format: date_countreviews
-        # We need to reconstruct the version string here or pass it in.
-        # For simplicity, let's assume today's date and the count from args (we'll need to pass count to send_email)
-        # But wait, send_email doesn't have count. Let's add it or infer it.
-        # Actually, let's just pass the full link or version if possible.
-        # For now, let's add a generic link or try to construct it.
-        
-        dashboard_url = "https://100cr.cloud/reviews/dashboard" 
-        # If we had the version, it would be: f"{dashboard_url}?app={app_id}&version={version}"
+        # Use provided dashboard_url
+        # dashboard_url is passed as argument
         
         # Add some basic styling to the HTML
         styled_html = f"""
@@ -321,16 +313,23 @@ def main():
     
     app_name = APP_NAMES.get(args.app_id, args.app_id)
 
-    # Step 3: Send Email
+    # Step 3: Archive (Moved before email to get version)
+    final_archive_path = archive_history(args.app_id, args.count, job_id=args.job_id)
+    version_id = os.path.basename(final_archive_path)
+    
+    # Construct Dynamic Dashboard URL
+    # Base URL: https://100cr.cloud/reviews/dashboard
+    # Query Params: ?app={app_id}&version={version_id}
+    dashboard_url = f"https://100cr.cloud/reviews/dashboard?app={args.app_id}&version={version_id}"
+    print(f"Generated Dashboard URL: {dashboard_url}")
+
+    # Step 4: Send Email
     if os.path.exists("weekly_pulse_report.md"):
         with open("weekly_pulse_report.md", "r") as f:
             report_content = f.read()
-        send_email(report_content, args.email, app_name=app_name, job_id=args.job_id)
+        send_email(report_content, args.email, app_name=app_name, dashboard_url=dashboard_url, job_id=args.job_id)
     else:
         print("Error: weekly_pulse_report.md not found after analysis.")
-    
-    # Step 4: Archive
-    archive_history(args.app_id, args.count, job_id=args.job_id)
     
     # Step 5: Generate Manifest
     update_status("Updating manifest...", progress=95, job_id=args.job_id)
