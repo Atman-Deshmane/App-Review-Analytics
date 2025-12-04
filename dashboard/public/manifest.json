@@ -29,6 +29,13 @@
             "2025-12-03_300reviews"
         ]
     },
+    "com.ubercab": {
+        "name": "com.ubercab",
+        "latest": "2025-12-04_50reviews",
+        "versions": [
+            "2025-12-04_50reviews"
+        ]
+    },
     "com.nextbillion.groww": {
         "name": "Groww",
         "latest": "2025-12-02_25reviews_v2",

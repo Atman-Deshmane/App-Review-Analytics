@@ -1,0 +1,35 @@
+[
+    {
+        "date":"2025-11-27 19:34:30",
+        "rating":1,
+        "review_text":"This is a very important feature that seems to be missing. While booking a ride, the app should always clearly show the drop-off location. Today, I booked a ride and wanted to recheck the drop-off name, but the ride arrived before I could verify it. After the trip, I realized that the location was incorrect. Please ensure that the drop location is always visible on the booking screen. Also, the fare that the rider needs to pay should be shown clearly before the trip ends, instead of only showing",
+        "thumbs_up_count":79,
+        "title":null,
+        "id":1,
+        "theme":"Usability & Experience (UI\/UX)",
+        "sentiment":"Negative",
+        "tag":"Missing Drop-off Detail"
+    },
+    {
+        "date":"2025-11-30 04:47:01",
+        "rating":2,
+        "review_text":"I like the built-in safety features: PIN to start trip; You can share route progress with someone; car and driver details to verify ride; A check-in feature during the ride if there's an extended stop. I also like that we can rate drivers easily. However, I don't appreciate their unreliable pricing! It's really not good business to raise prices, even during busier periods when extra volume = more money earned!! Please stop, it's not good business! Also, location pickup is really off lately!",
+        "thumbs_up_count":31,
+        "title":null,
+        "id":2,
+        "theme":"Performance & Reliability",
+        "sentiment":"Negative",
+        "tag":"Unreliable Pricing"
+    },
+    {
+        "date":"2025-11-30 08:02:01",
+        "rating":1,
+        "review_text":"They are very opportunist business men. no care for their clients beware. I was getting a fare of 375 for a place with 3 minutes waiting time. The app offered 10% discount by joining uber 1. i clicked and 268 got deducted and my new fair was 395 and waiting time 7 minutes. now as I had already paid 268 I booked the cab. Don't subscribe to any of the offers by uber they are totally misleading and will just take money out of you. You may try other apps like rapido",
+        "thumbs_up_count":13,
+        "title":null,
+        "id":3,
+        "theme":"Other",
+        "sentiment":"Negative",
+        "tag":"Other"
+    }
+]
