@@ -7,3 +7,4 @@ streamlit
 plotly
 markdown
 importlib-metadata>=4.6.4
+premailer

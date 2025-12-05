@@ -362,7 +362,8 @@ def main():
         email_payload = {
             "recipient": args.email,
             "subject": f"Weekly Pulse: {app_name} Review Insights",
-            "body_html": email_body_html
+            "body_html": email_body_html,
+            "body_md": report_content
         }
         
         with open('email_payload.json', 'w') as f:
