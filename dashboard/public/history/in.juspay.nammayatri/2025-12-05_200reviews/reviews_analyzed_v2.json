@@ -1,0 +1,233 @@
+[
+    {
+        "date":"2025-11-26 16:44:31",
+        "rating":1,
+        "review_text":"no support or customer care. app suddenly increased price my recent trip.I was traveling from my house in BTM Layout to the metro and the distance is 1.1 km. However, the app showed a wrong \/ higher amount. The app was wrongly showing an additional 1.5 km distance traveled, whereas the total distance of the entire trip was less than 1.1 km. The driver also confirmed that we did not travel more, but still the app no support from customer care. the app doesn't take the request at all.",
+        "thumbs_up_count":3,
+        "title":null,
+        "id":1,
+        "theme":"Lack of Customer Support",
+        "sentiment":"Negative",
+        "tag":"Fare Overcharge"
+    },
+    {
+        "date":"2025-11-29 12:23:00",
+        "rating":1,
+        "review_text":"third rate app now, it used to be good earlier. Now it books me a driver EVEN AFTER I EXPLICITLY CANCEL A REQUEST due to no one accepting a ride, and does not even update the GUI to let me know that a driver is coming. The drivers come and then fight with me for no fault of mine or theirs! This has happened so many times! They really have a lot of critical UI bugs to fix. And I have not had any positive experience with their online customer service so far.",
+        "thumbs_up_count":2,
+        "title":null,
+        "id":2,
+        "theme":"App Glitches & Errors",
+        "sentiment":"Negative",
+        "tag":"Booking Status Error"
+    },
+    {
+        "date":"2025-11-22 03:20:31",
+        "rating":3,
+        "review_text":"Better experience than Uber or Ola. One suggestion to all drivers is to use a body deodarant. After long hours in the cab, especially in hot weather, it's natural for humans to sweat and smell bad. Use a deodarant every 3 hours. Wet wipe the inside of your car everyday. Drivers get used to their own smell, they won't notice it But we do. The track ride option asks u to download the app even though we already have the app. So sharing the ride details doesn't work. NightSafety issue for females",
+        "thumbs_up_count":1,
+        "title":null,
+        "id":3,
+        "theme":"Driver Behavior & Safety",
+        "sentiment":"Negative",
+        "tag":"Vehicle Hygiene"
+    },
+    {
+        "date":"2025-11-22 03:50:59",
+        "rating":1,
+        "review_text":"worst application because the drivers charging extra fare and if they refused to give they started shouting with you till you pay \ud83d\ude24\ud83d\ude24\ud83d\ude24 one of the worst application I have used till date.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":4,
+        "theme":"Driver Behavior & Safety",
+        "sentiment":"Negative",
+        "tag":"Extra Charges"
+    },
+    {
+        "date":"2025-11-22 08:20:41",
+        "rating":3,
+        "review_text":"Doesn't allow you to screenshot within the app. This means they are trying to hide something. Prices maybe spiked later due to whatsoever reason and you won't remember the original price. This is not good.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":5,
+        "theme":"App Glitches & Errors",
+        "sentiment":"Negative",
+        "tag":"Other"
+    },
+    {
+        "date":"2025-11-22 09:18:59",
+        "rating":1,
+        "review_text":"better app compare to other riding apps , even I got positive comments from all drivers , which I have used to ride but as i observed in Chennai , no one auto driver will come to pickup without asking extra , they will ask 50-100 extra for every ride , they won't come to pick up , if we denied that, and even they won't cancel the ride , at the same time they will work with other apps in the same mobile, we need to cancel that ride and needs to book",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":6,
+        "theme":"Driver Behavior & Safety",
+        "sentiment":"Negative",
+        "tag":"Refusal to Ride"
+    },
+    {
+        "date":"2025-11-23 02:26:24",
+        "rating":1,
+        "review_text":"I booked a cab to Gandhinagar, it showed 2.5km and 62rs while booking. The driver who accepted was tricked by the app since it showed Gandhi bazaar to him and after the ride the price was changed to 96Rs for 3.7 km. App is decieving everyone to make money.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":7,
+        "theme":"Hidden Fares & Extra Fees",
+        "sentiment":"Negative",
+        "tag":"Fare Discrepancy"
+    },
+    {
+        "date":"2025-11-23 07:01:03",
+        "rating":1,
+        "review_text":"very worst support from the team. I lost my mobile in cab KA 53AA0430 yesterday. i tried to call the driver and customer support. driver s.off and customer support not responding. raised complaint . but no response. dont use this service. no safety for us also.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":8,
+        "theme":"Lack of Customer Support",
+        "sentiment":"Negative",
+        "tag":"Lost Item Incident"
+    },
+    {
+        "date":"2025-11-23 13:50:58",
+        "rating":5,
+        "review_text":"I had a very good experience by taking a ride on Namma Yatri. One plus point is that the driver doesn't ask for an extra amount and that is very much appreciable. Moreover they keep the time once the ride is booked . A good app for commuting.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":9,
+        "theme":"Other",
+        "sentiment":"Positive",
+        "tag":"Other"
+    },
+    {
+        "date":"2025-11-23 15:50:39",
+        "rating":1,
+        "review_text":"Worst app , Not shows the proper location.. Even though driver is faraway from pickup it's showing arraived and Waiting timer starts counting..",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":10,
+        "theme":"App Glitches & Errors",
+        "sentiment":"Negative",
+        "tag":"Location Tracking Error"
+    },
+    {
+        "date":"2025-11-24 04:10:21",
+        "rating":5,
+        "review_text":"Quick booking, even short distances. \ud83d\udc4d better than other cab services",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":11,
+        "theme":"Other",
+        "sentiment":"Positive",
+        "tag":"Other"
+    },
+    {
+        "date":"2025-11-24 08:15:03",
+        "rating":1,
+        "review_text":"I had booked a rental ride & let me tell you how fishy their hidden pricing strategy is, Ola & Uber at least say that they take certain service charge from driver upfront but this application is so pathetic in the name of helping driver, they are cheating customers with no proper information display and charging double than estimated quote. I would never recommend anyone to fall for this scam. and customer care team is hopeless, the lady named Priyanka didn't even let me finish my sentence.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":12,
+        "theme":"Hidden Fares & Extra Fees",
+        "sentiment":"Negative",
+        "tag":"Hidden Charges"
+    },
+    {
+        "date":"2025-11-24 13:07:02",
+        "rating":1,
+        "review_text":"Left my bag with house key in it and the driver number is fake and the customer service is not calling me back. After finally getting the driver number he can return after his current ride. What if this was an emergency and i clicked on SOS. I called and chatted with the service centre and no proper response on the chat or picking my calls. I will never recommend this app any female traveler. Do you expect the female traveler to wait on the road till the driver comes and returns the lost items.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":13,
+        "theme":"Lack of Customer Support",
+        "sentiment":"Negative",
+        "tag":"Lost Item Incident"
+    },
+    {
+        "date":"2025-11-24 17:44:33",
+        "rating":1,
+        "review_text":"It was good initially, now it is hopeless to use. The customer support is pathetic, cannot call them, neither does the support team call you back. The fare keeps changing after the trip ends. The application has become useless. The drivers on the platform are even worse. Uninstalled and using other application.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":14,
+        "theme":"Lack of Customer Support",
+        "sentiment":"Negative",
+        "tag":"Fare Overcharge"
+    },
+    {
+        "date":"2025-11-26 14:55:03",
+        "rating":3,
+        "review_text":"while canceling the ride, it denies?!! says \"driver assignment in progress,\" though it won't be assigned even after 5 mins. If I want it to be canceled, then it has to be canceled.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":15,
+        "theme":"App Glitches & Errors",
+        "sentiment":"Negative",
+        "tag":"Booking Status Error"
+    },
+    {
+        "date":"2025-11-27 04:59:19",
+        "rating":2,
+        "review_text":"why is this map in dark mode and the entire interface in light mode, please make the map go to light mode, it just feels broken",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":16,
+        "theme":"App Glitches & Errors",
+        "sentiment":"Negative",
+        "tag":"User Interface Bug"
+    },
+    {
+        "date":"2025-11-27 11:08:30",
+        "rating":1,
+        "review_text":"in my opinion these people are overpriced. 2 days back also I tried to book at night, uber was showing almost half the price what namma yatri wash showing, i saw in multiple occasions that namma yatri is overpriced than other app.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":17,
+        "theme":"Hidden Fares & Extra Fees",
+        "sentiment":"Negative",
+        "tag":"Overpriced Fares"
+    },
+    {
+        "date":"2025-11-28 03:33:52",
+        "rating":2,
+        "review_text":"Its been 10 days Ive reported the issue, Ive tried 3 times with the same issue, all 3 of them are active. However, no one from the customer support contacted - as they mentioned within 24hours there will be contact.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":18,
+        "theme":"Lack of Customer Support",
+        "sentiment":"Negative",
+        "tag":"No Response\/Contact"
+    },
+    {
+        "date":"2025-11-29 12:55:24",
+        "rating":1,
+        "review_text":"Initially it was good but now it is similar to other similar apps like uber, ola and rapido. Even worse now, atleast in other apps all locations are allowed but in namma yatri even all the locations not allowed",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":19,
+        "theme":"Other",
+        "sentiment":"Negative",
+        "tag":"Other"
+    },
+    {
+        "date":"2025-11-30 11:06:10",
+        "rating":1,
+        "review_text":"the driver was taken 200\u20b9ruppes more but we are trying to contact the customer care number or message but they are not responding and not replying to us and this is the worst app in my life I had seen please do not install this app",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":20,
+        "theme":"Lack of Customer Support",
+        "sentiment":"Negative",
+        "tag":"Fare Overcharge"
+    },
+    {
+        "date":"2025-12-01 11:56:30",
+        "rating":1,
+        "review_text":"I can't able to book any auto for an emergency. It's asks for tips to search for auto... worst app.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":21,
+        "theme":"Hidden Fares & Extra Fees",
+        "sentiment":"Negative",
+        "tag":"Hidden Charges"
+    }
+]
