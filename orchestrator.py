@@ -3,6 +3,7 @@ import smtplib
 import os
 import sys
 import shutil
+import time
 import datetime
 import markdown
 import argparse
@@ -350,12 +351,18 @@ def main():
     
     print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
     
-    # Wait for FTP deployment to fully propagate before signaling completion
-    print(f"[{datetime.datetime.now()}] Waiting for deployment propagation...")
-    time.sleep(2)
+    print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
     
-    # Final status - this triggers the frontend redirect
-    update_status("COMPLETED", progress=100, job_id=args.job_id)
+    try:
+        # Wait for deployment propagation
+        print(f"[{datetime.datetime.now()}] Waiting for deployment propagation...")
+        time.sleep(2)
+        
+        # Final status - this triggers the frontend redirect
+        update_status("COMPLETED", progress=100, job_id=args.job_id)
+        print("[STATUS] COMPLETED (100%)")
+    except Exception as e:
+        print(f"Error sending final status: {e}")
 
 if __name__ == "__main__":
     main()
