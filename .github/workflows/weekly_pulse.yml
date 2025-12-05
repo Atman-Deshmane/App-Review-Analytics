@@ -80,6 +80,7 @@ jobs:
           THEMES="${{ github.event.client_payload.themes || inputs.themes || 'auto' }}"
           START_DATE="${{ github.event.client_payload.start_date || inputs.start_date }}"
           END_DATE="${{ github.event.client_payload.end_date || inputs.end_date }}"
+          JOB_ID="${{ github.event.client_payload.job_id || inputs.job_id }}"
           
           # Construct command
           CMD="python orchestrator.py --app_id $APP_ID --count $COUNT --themes \"$THEMES\""

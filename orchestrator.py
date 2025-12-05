@@ -207,7 +207,9 @@ def main():
     args = parser.parse_args()
     
     # Debug Logging
-    print(f"Job ID: {args.job_id}")
+    if not args.job_id:
+        print("WARNING: Running in Headless Mode (No Job ID). Updates will not be visible on Frontend.")
+    print(f"[DEBUG] Workflow Job ID: {args.job_id}")
     
     print(f"[{datetime.datetime.now()}] Starting Orchestrator for {args.app_id}...")
     update_status("Initializing...", progress=0, job_id=args.job_id)
