@@ -97,10 +97,21 @@ const Home: React.FC = () => {
                     setTimeout(() => {
                         setLogs(prev => [...prev, `🚀 Redirecting to your insights...`]);
 
-                        // Force redirect after another second
+                        // Construct target URL
+                        const today = new Date().toISOString().split('T')[0];
+                        const version = `${today}_${config.count}reviews`;
+
+                        // Redirect Logic
                         setTimeout(() => {
+                            // Try specific version first
                             navigate(`/dashboard?app=${targetAppId}&version=${version}`);
-                        }, 1000);
+
+                            // Fallback (if needed, though navigate is client-side)
+                            // If we wanted a harsh fallback we'd need to check existence, 
+                            // but Client Side Routing just changes URL. 
+                            // The Dashboard component handles the 404/Missing Version by defaulting to latest.
+                            // So pointing to a specific version is safe; if invalid, Dashboard handles it.
+                        }, 2000);
                     }, 2000);
 
                     // Unsubscribe after completion
