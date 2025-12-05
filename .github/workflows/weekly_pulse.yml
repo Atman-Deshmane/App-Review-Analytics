@@ -161,5 +161,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: history-archive
           path: dashboard/public/history/
+
+      - name: Finalize Job Status
+        if: always()
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
+          JOB_ID: ${{ env.JOB_ID }}
+        run: |
+          python -c "import firebase_admin; from firebase_admin import credentials, db; import os; import json; cred=credentials.Certificate(json.loads(os.environ['FIREBASE_SERVICE_ACCOUNT'])); firebase_admin.initialize_app(cred, {'databaseURL': os.environ['FIREBASE_DB_URL']}); db.reference('jobs/${{ env.JOB_ID }}').update({'status': 'COMPLETED', 'progress': 100})"

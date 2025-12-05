@@ -14,29 +14,17 @@ interface TerminalLoaderProps {
 
 // Hollywood-style log formatter
 const formatLogMessage = (rawLog: string): { message: string; highlight?: string; style?: string } | null => {
-    // Filter out jargon/technical logs
-    const jargonPatterns = [
-        /^Process ID/i,
-        /^Job ID/i,
-        /^Run python/i,
-        /^env:/i,
-        /download action/i,
-        /^Running:/i,
-        /pythonLocation/i,
-        /PKG_CONFIG/i,
-        /Python_ROOT/i,
-        /LD_LIBRARY/i,
-        /shell:/i,
-        /^\[job_/i,
-        /Dispatching workflow/i,
-        /Workflow dispatched/i,
+    // 1. HARD FILTERS (Technical Noise)
+    const noiseFilter = [
+        "csv", "json", "Saved to", "STATS", "metadata",
+        "Process ID", "Job ID", "Run python", "env:", "download action", "Running:",
+        "pythonLocation", "PKG_CONFIG", "Python_ROOT", "LD_LIBRARY", "shell:",
+        "[job_", "Dispatching workflow", "Workflow dispatched", "Displaying", "Using", "Filtering"
     ];
 
-    for (const pattern of jargonPatterns) {
-        if (pattern.test(rawLog)) return null;
+    if (noiseFilter.some(keyword => rawLog.toLowerCase().includes(keyword.toLowerCase()))) {
+        return null;
     }
-
-    // Transform logs into engaging messages (User Logic)
 
     // [HIGHLIGHT] Logic
     if (rawLog.startsWith("[HIGHLIGHT] Top Review:")) {
@@ -57,73 +45,61 @@ const formatLogMessage = (rawLog: string): { message: string; highlight?: string
         };
     }
 
+    // 2. EMOJI MAPPINGS
     if (rawLog.includes("Fetching")) {
         return { message: "📡 Intercepting app signals from Play Store..." };
     }
-
     if (rawLog.includes("Identifying Strategic Themes")) {
         return { message: "🧠 AI Neural Core: Pattern Recognition Active..." };
     }
-
-    if (rawLog.includes("Analyzing Theme")) {
-        // Extract theme name "Analyzing Theme: Pricing..." -> "🔍 Deep Dving: Pricing"
-        const themeMatch = rawLog.split(":")[1] || "Data";
-        const theme = themeMatch.replace(/\.{3}$/, '').trim(); // Remove trailing dots if any
-        return {
-            message: `🔍 Analyzing Segment:`,
-            highlight: theme
-        };
+    if (rawLog.includes("Analysing") || rawLog.includes("Analyzing")) {
+        return { message: "🧠 Analysing semantic patterns..." };
     }
-
     if (rawLog.includes("Tagging")) {
         return { message: "🏷️ Semantic Tagging & Sentiment Scoring..." };
     }
-
-    if (rawLog.includes("Archiving")) {
-        return { message: "💾 Encrypting and Securing Data Vault..." };
+    if (rawLog.includes("Uploading") || rawLog.includes("Archiving")) {
+        return { message: "☁️ Uploading to secure cloud storage..." };
     }
-
     if (rawLog.includes("Sending email")) {
         return { message: "📨 Dispatching Executive Briefing..." };
     }
-
     if (rawLog.includes('Report generated')) {
         return { message: `📊 Leadership briefing compiled successfully` };
     }
-
     if (rawLog.includes('COMPLETED') || rawLog.includes('100%')) {
         return { message: `✅ Analysis complete! Preparing your dashboard...` };
     }
-
     if (rawLog.includes('Firebase initialized')) {
         return { message: `🔥 Secure connection established` };
     }
 
-    // For any unmatched but interesting logs
-    if (rawLog.includes('Error') || rawLog.includes('FAILURE')) {
-        return { message: `⚠️ ${rawLog}` };
+    // 3. GEAR ICON FILTER (Only for Specific Ops)
+    if (rawLog.includes("Initializing") || rawLog.includes("Connecting")) {
+        return { message: `⚙️ ${rawLog}` };
     }
 
-    // Filter out remaining technical logs
-    const remainingFilter = [
-        "Process ID", "Job ID", "Displaying", "Using", "Filtering"
-    ];
-    if (remainingFilter.some(k => rawLog.includes(k))) return null;
+    // Default Filter: If it starts with a gear/default, assume it's noise unless allowed above
+    // Actually, looking at previous logic, we returned a gear icon for everything else. 
+    // Now user says: "Any log starting with ⚙️ unless it contains Initializing or Connecting."
+    // Since our default *adds* the gear, we basically filter out anything else not caught above?
+    // Let's be safe: If it's a short status or meaningful, keep it. 
+    // User instruction: "Update processLog to return null (hide) for ... Any log starting with ⚙️ unless..."
+    // This implies we should be aggressive with hiding.
 
-    // Skip empty or very short logs
-    if (rawLog.trim().length < 5) return null;
+    if (rawLog.length > 5 && !rawLog.includes("[STATUS]")) {
+        // Should we show it? The user only wants to hide generic gear logs.
+        // Let's return null for generic unknown logs to "clean up" completely as requested.
+        return null;
+    }
 
     // For [STATUS] prefixed logs, clean them up
     if (rawLog.includes('[STATUS]')) {
         const cleaned = rawLog.replace('[STATUS]', '').trim();
-        if (cleaned.length > 5) {
-            return { message: `⚙️ ${cleaned}` };
-        }
-        return null;
+        return { message: `⚙️ ${cleaned}` };
     }
 
-    // Default: return cleaned version
-    return { message: `⚙️ ${rawLog.substring(0, 60)}${rawLog.length > 60 ? '...' : ''}` };
+    return null;
 };
 
 // Format time remaining

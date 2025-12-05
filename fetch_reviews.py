@@ -36,7 +36,10 @@ def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
     except Exception as e:
         print(f"Warning: Could not fetch metadata: {e}")
 
-    print(f"Fetching {fetch_count} most relevant reviews for {app_id}...")
+    # Smart Fetching Logic
+    # Always fetch a larger pool to ensure we have enough after date filtering and quality sorting
+    initial_fetch_count = max(1000, fetch_count * 5)
+    print(f"Fetching {initial_fetch_count} reviews to build candidate pool...")
     
     # Fetch reviews
     try:
@@ -45,7 +48,7 @@ def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
             lang=LANGUAGE,
             country=COUNTRY,
             sort=Sort.MOST_RELEVANT,
-            count=fetch_count
+            count=initial_fetch_count
         )
     except Exception as e:
         print(f"Error fetching reviews: {e}")
@@ -54,8 +57,6 @@ def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
     if not result:
         print("No reviews found.")
         return
-
-    print(f"Total fetched: {len(result)}")
 
     # Convert to DataFrame
     df = pd.DataFrame(result)
@@ -66,30 +67,32 @@ def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
     # Filter by Date Range
     if start_date:
         start_dt = pd.to_datetime(start_date)
-        print(f"Filtering reviews after {start_dt.date()}")
         df = df[df['at'] >= start_dt]
         
     if end_date:
         end_dt = pd.to_datetime(end_date)
         # Set end date to end of day
         end_dt = end_dt + timedelta(days=1) - timedelta(seconds=1)
-        print(f"Filtering reviews before {end_dt.date()}")
         df = df[df['at'] <= end_dt]
         
     if not start_date and not end_date:
         # Default: Filter for last 12 weeks
         cutoff_date = datetime.now() - timedelta(weeks=WEEKS_BACK)
-        print(f"No custom date range. Filtering for last {WEEKS_BACK} weeks (>= {cutoff_date.date()})")
         df = df[df['at'] >= cutoff_date]
     
-    df_filtered = df.copy()
+    # Sort by thumbsUpCount (Data Quality)
+    if 'thumbsUpCount' in df.columns:
+        df = df.sort_values(by='thumbsUpCount', ascending=False)
+        
+    # Slice to requested count
+    df = df.head(fetch_count)
     
-    kept_count = len(df_filtered)
-    print(f"Kept after date filter: {kept_count}")
+    final_count = len(df)
+    print(f"Final Count after Date Filter & Quality Sort: {final_count}")
     
-    if kept_count < 20:
-        print("WARNING: Most Relevant sort didn't yield enough recent data (< 20 reviews).")
-        if kept_count == 0:
+    if final_count < 20:
+        print("WARNING: Low data volume after filtering.")
+        if final_count == 0:
              print("No reviews kept. Exiting.")
              return
 

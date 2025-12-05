@@ -378,11 +378,11 @@ def main():
         print(f"[{datetime.datetime.now()}] Waiting for deployment propagation...")
         time.sleep(2)
         
-        # Final status - this triggers the frontend redirect
-        update_status("COMPLETED: Deployment & Email Queued", progress=100, job_id=args.job_id)
-        print("[STATUS] COMPLETED (100%)")
+        # Trigger Uploading State (GitHub Actions will mark as COMPLETED)
+        update_status("UPLOADING", 95)
+        
     except Exception as e:
-        print(f"Error sending final status: {e}")
+        print(f"Error during final status update: {e}")
 
 if __name__ == "__main__":
     main()
