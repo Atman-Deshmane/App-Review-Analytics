@@ -17,8 +17,9 @@
     },
     "com.application.zomato": {
         "name": "com.application.zomato",
-        "latest": "2025-12-05_100reviews",
+        "latest": "2025-12-05_50reviews",
         "versions": [
+            "2025-12-05_50reviews",
             "2025-12-05_100reviews"
         ]
     },
