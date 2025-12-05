@@ -256,12 +256,7 @@ def main():
     dashboard_url = f"https://100cr.cloud/reviews/dashboard?app={args.app_id}&version={version_id}"
     print(f"Generated Dashboard URL: {dashboard_url}")
 
-    # Step 4: Send Email
-    if os.path.exists("weekly_pulse_report.md"):
-        with open("weekly_pulse_report.md", "r") as f:
-            report_content = f.read()
-        send_email(report_content, args.email, app_name=app_name, dashboard_url=dashboard_url, job_id=args.job_id)
-    else:
+
     # Step 4: Generate Manifest
     update_status("Updating manifest...", progress=95, job_id=args.job_id)
     run_script("generate_manifest.py", job_id=args.job_id)
@@ -306,4 +301,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+
