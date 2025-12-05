@@ -206,8 +206,10 @@ def main():
     
     args = parser.parse_args()
     
+    # Debug Logging
+    print(f"Job ID: {args.job_id}")
+    
     print(f"[{datetime.datetime.now()}] Starting Orchestrator for {args.app_id}...")
-    print(f"[DEBUG] Job ID: {args.job_id}")  # <-- Debug log for troubleshooting
     update_status("Initializing...", progress=0, job_id=args.job_id)
     
     # Step 1: Fetch Reviews
