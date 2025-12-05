@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
 
                 // 2. Fetch Data
                 const dataPath = `${import.meta.env.BASE_URL}history/${appId}/${targetVersion}/reviews_analyzed_v2.json`;
-                const res = await fetch(dataPath);
+                const res = await fetch(`${dataPath}?t=${Date.now()}`);
                 if (!res.ok) throw new Error(`Failed to load data from ${dataPath}`);
                 const text = await res.text();
                 let jsonData;

@@ -100,21 +100,14 @@ const Home: React.FC = () => {
                         setLogs(prev => [...prev, `🚀 Redirecting to your insights...`]);
 
                         // Construct target URL
-                        const today = new Date().toISOString().split('T')[0];
-                        const version = `${today}_${config.count}reviews`;
+                        // const today = new Date().toISOString().split('T')[0]; // Already defined above
+                        // const version = `${today}_${config.count}reviews`; // Already defined above
 
-                        // Redirect Logic
+                        // Redirect after delay
                         setTimeout(() => {
-                            // Try specific version first
-                            navigate(`/dashboard?app=${targetAppId}&version=${version}`);
-
-                            // Fallback (if needed, though navigate is client-side)
-                            // If we wanted a harsh fallback we'd need to check existence,
-                            // but Client Side Routing just changes URL.
-                            // The Dashboard component handles the 404/Missing Version by defaulting to latest.
-                            // So pointing to a specific version is safe; if invalid, Dashboard handles it.
-                        }, 2000);
-                    }, 2000);
+                            navigate(`/dashboard?app=${targetAppId}&version=${version}&t=${Date.now()}`);
+                        }, 15000); // 15s Delay for Deployment
+                    }, 2000); // 2s delay for "Preparing dashboard..." message
 
                     // Unsubscribe after completion
                     if (unsubscribe) unsubscribe();
@@ -122,7 +115,6 @@ const Home: React.FC = () => {
             });
 
         } catch (error: any) {
-            console.error("Failed to start analysis:", error);
             const errorMessage = error.message || String(error);
             setDebugError(errorMessage);
             setLogs(prev => [...prev, `⛔ [FATAL ERROR] ${errorMessage}`]);

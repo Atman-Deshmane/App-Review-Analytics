@@ -13,7 +13,7 @@ interface TerminalLoaderProps {
 }
 
 // Hollywood-style log formatter
-const formatLogMessage = (rawLog: string): { message: string; highlight?: string } | null => {
+const formatLogMessage = (rawLog: string): { message: string; highlight?: string; style?: string } | null => {
     // Filter out jargon/technical logs
     const jargonPatterns = [
         /^Process ID/i,
@@ -37,6 +37,25 @@ const formatLogMessage = (rawLog: string): { message: string; highlight?: string
     }
 
     // Transform logs into engaging messages (User Logic)
+
+    // [HIGHLIGHT] Logic
+    if (rawLog.startsWith("[HIGHLIGHT] Top Review:")) {
+        const content = rawLog.replace("[HIGHLIGHT] Top Review:", "").trim();
+        return {
+            message: content,
+            highlight: "💬 Featured Review", // Special indicator
+            style: "italic text-cyan-400"
+        };
+    }
+
+    if (rawLog.startsWith("[HIGHLIGHT] Themes Identified:") || rawLog.startsWith("[HIGHLIGHT] Themes Detected:")) {
+        const content = rawLog.split(":")[1].trim();
+        return {
+            message: "Themes Detected:",
+            highlight: content,
+            style: "font-bold text-green-400"
+        };
+    }
 
     if (rawLog.includes("Fetching")) {
         return { message: "📡 Intercepting app signals from Play Store..." };
@@ -68,18 +87,6 @@ const formatLogMessage = (rawLog: string): { message: string; highlight?: string
         return { message: "📨 Dispatching Executive Briefing..." };
     }
 
-    // Keep some existing useful mappings that don't conflict
-    if (rawLog.includes('Themes Identified') || rawLog.includes('Themes:')) {
-        const themesMatch = rawLog.match(/\[([^\]]+)\]/);
-        if (themesMatch) {
-            const themes = themesMatch[1].split(',').map(t => t.trim().replace(/'/g, '')).slice(0, 4);
-            return {
-                message: `🧠 AI Detected Patterns:`,
-                highlight: themes.join(' • ')
-            };
-        }
-    }
-
     if (rawLog.includes('Report generated')) {
         return { message: `📊 Leadership briefing compiled successfully` };
     }
@@ -96,6 +103,12 @@ const formatLogMessage = (rawLog: string): { message: string; highlight?: string
     if (rawLog.includes('Error') || rawLog.includes('FAILURE')) {
         return { message: `⚠️ ${rawLog}` };
     }
+
+    // Filter out remaining technical logs
+    const remainingFilter = [
+        "Process ID", "Job ID", "Displaying", "Using", "Filtering"
+    ];
+    if (remainingFilter.some(k => rawLog.includes(k))) return null;
 
     // Skip empty or very short logs
     if (rawLog.trim().length < 5) return null;
@@ -351,25 +364,46 @@ const TerminalLoader: React.FC<TerminalLoaderProps> = ({
                     </div>
                 </div>
 
-                {/* Footer */}
-                <div className="px-6 pb-4">
-                    <div className="text-center space-y-2">
-                        <div className={`text-sm ${isComplete ? 'text-emerald-400' : 'text-slate-500'}`}>
-                            {isComplete
-                                ? "🎉 Your insights are ready!"
-                                : "Analysis in progress..."}
-                        </div>
-
-                        {!isComplete && !error && (
-                            <div className="text-amber-400 font-bold text-lg animate-pulse">
-                                You can close this window.
+                <div className="border-t border-slate-800/50 p-3 bg-slate-900/30 flex justify-between items-center relative z-10 backdrop-blur-sm">
+                    <div className="flex items-center space-x-2">
+                        {isComplete ? (
+                            <div className="flex items-center space-x-2">
+                                <span className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                </span>
+                                <div>
+                                    <span className="text-emerald-400 font-bold text-sm tracking-wide">✨ generating a beautiful dashboard...</span>
+                                    <div className="text-slate-500 text-xs mt-0.5">Deployment in progress. Redirecting in 15 seconds.</div>
+                                </div>
+                            </div>
+                        ) : error ? (
+                            <div className="flex items-center space-x-2">
+                                <AlertTriangle size={14} className="text-rose-500" />
+                                <span className="text-rose-500 font-medium text-xs">Analysis Failed</span>
+                            </div>
+                        ) : (
+                            <div className="flex items-center space-x-2">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                                </span>
+                                <span className="text-slate-400 font-medium text-xs">
+                                    {progress >= 90 ? 'Finalizing Report...' : 'Processing Reviews...'}
+                                </span>
                             </div>
                         )}
+                    </div>
 
+                    <div className="text-right">
                         {!isComplete && !error && email && (
                             <div className="text-slate-400 text-xs">
-                                We will email the report to: <span className="text-slate-300 font-semibold">{email}</span> once deployment finishes.
+                                We will email the report to: <span className="text-amber-300 font-bold text-lg mx-1">{email}</span> once deployment finishes.
+                                <div className="text-slate-500 text-[10px] mt-1">You can close this window.</div>
                             </div>
+                        )}
+                        {!email && (
+                            <div className="text-slate-500 text-xs font-mono ml-4">v2.5.0-alpha</div>
                         )}
                     </div>
                 </div>
