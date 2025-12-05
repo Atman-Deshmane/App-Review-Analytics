@@ -8,6 +8,7 @@ interface TerminalLoaderProps {
     logs: string[];
     error?: string | null;
     reviewCount?: number;
+    email?: string;
     onComplete?: () => void;
 }
 
@@ -125,6 +126,7 @@ const TerminalLoader: React.FC<TerminalLoaderProps> = ({
     logs,
     error,
     reviewCount = 100,
+    email,
     onComplete
 }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -351,10 +353,24 @@ const TerminalLoader: React.FC<TerminalLoaderProps> = ({
 
                 {/* Footer */}
                 <div className="px-6 pb-4">
-                    <div className="text-center text-slate-500 text-xs">
-                        {isComplete
-                            ? "🎉 Your insights are ready!"
-                            : "You can close this window. We'll email you when it's ready."}
+                    <div className="text-center space-y-2">
+                        <div className={`text-sm ${isComplete ? 'text-emerald-400' : 'text-slate-500'}`}>
+                            {isComplete
+                                ? "🎉 Your insights are ready!"
+                                : "Analysis in progress..."}
+                        </div>
+
+                        {!isComplete && !error && (
+                            <div className="text-amber-400 font-bold text-lg animate-pulse">
+                                You can close this window.
+                            </div>
+                        )}
+
+                        {!isComplete && !error && email && (
+                            <div className="text-slate-400 text-xs">
+                                We will email the report to: <span className="text-slate-300 font-semibold">{email}</span> once deployment finishes.
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

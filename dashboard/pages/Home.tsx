@@ -18,6 +18,7 @@ const Home: React.FC = () => {
     const [targetAppId, setTargetAppId] = useState('');
     const [jobId, setJobId] = useState('');
     const [reviewCount, setReviewCount] = useState(100);
+    const [userEmail, setUserEmail] = useState('');
 
     // Loading State
     const [jobStatus, setJobStatus] = useState<JobStatus>({ status: 'Initializing...', progress: 0, last_update: '' });
@@ -25,8 +26,8 @@ const Home: React.FC = () => {
     const [debugError, setDebugError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Load Manifest
-        fetch(`${import.meta.env.BASE_URL}manifest.json`)
+        // Load Manifest with Cache Busting
+        fetch(`${import.meta.env.BASE_URL}manifest.json?t=${Date.now()}`)
             .then(res => res.json())
             .then(data => setHistory(data))
             .catch(err => console.error("Failed to load history:", err));
@@ -50,6 +51,7 @@ const Home: React.FC = () => {
     const startAnalysis = async (config: AnalysisConfig) => {
         setViewState('LOADING');
         setReviewCount(config.count);
+        setUserEmail(config.email);
         const newJobId = `job_${Date.now()}`;
         setJobId(newJobId);
         setLogs(['🚀 Initializing analysis pipeline...']);
@@ -107,8 +109,8 @@ const Home: React.FC = () => {
                             navigate(`/dashboard?app=${targetAppId}&version=${version}`);
 
                             // Fallback (if needed, though navigate is client-side)
-                            // If we wanted a harsh fallback we'd need to check existence, 
-                            // but Client Side Routing just changes URL. 
+                            // If we wanted a harsh fallback we'd need to check existence,
+                            // but Client Side Routing just changes URL.
                             // The Dashboard component handles the 404/Missing Version by defaulting to latest.
                             // So pointing to a specific version is safe; if invalid, Dashboard handles it.
                         }, 2000);
@@ -135,6 +137,7 @@ const Home: React.FC = () => {
                 logs={logs}
                 error={debugError}
                 reviewCount={reviewCount}
+                email={userEmail}
             />
         );
     }

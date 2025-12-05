@@ -83,7 +83,7 @@ const Dashboard: React.FC = () => {
                     jsonData = JSON.parse(text);
                 } catch (e) {
                     console.error("JSON Parse Error. Raw text:", text.slice(0, 500));
-                    throw new Error("Invalid JSON format in analysis file");
+                    throw new Error("Analysis data is syncing. Please refresh in 1-2 minutes.");
                 }
                 const processedData = processReviews(jsonData, appId);
                 setData(processedData);
@@ -114,8 +114,8 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-center min-h-screen bg-slate-50">
                 <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md text-center">
                     <AlertCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Failed to Load Data</h2>
-                    <p className="text-slate-600 mb-6">{error || "Data is missing or corrupt."}</p>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Syncing Analysis...</h2>
+                    <p className="text-slate-600 mb-6">{error || "Data is syncing. Please check back in 1-2 minutes."}</p>
                     <button
                         onClick={() => window.location.reload()}
                         className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"

@@ -1,5 +1,4 @@
 import subprocess
-import smtplib
 import os
 import sys
 import shutil
@@ -8,8 +7,6 @@ import datetime
 import markdown
 import argparse
 import json
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -130,93 +127,7 @@ def send_email(report_content, recipient_email, app_name="App", dashboard_url="h
         # Create email message
         msg = MIMEMultipart('alternative')
         msg['From'] = sender_email
-        msg['To'] = recipient_email
-        
-        # Extract Date Range from Report Content
-        # Look for "**Reporting Period:** <date_range>"
-        import re
-        date_match = re.search(r"\*\*Reporting Period:\*\* (.*)", report_content)
-        date_range = date_match.group(1).strip() if date_match else f"Week Ending {datetime.date.today()}"
-        
-        msg['Subject'] = f"{app_name} Review Analytics, {date_range}"
 
-        # Convert Markdown to HTML
-        html_content = markdown.markdown(report_content, extensions=['tables'])
-        
-        # Use provided dashboard_url
-        # dashboard_url is passed as argument
-        
-        # Add some basic styling to the HTML
-        styled_html = f"""
-        <html>
-        <head>
-            <style>
-                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-                h1, h2, h3 {{ color: #2c3e50; }}
-                table {{ border-collapse: collapse; width: 100%; margin-bottom: 20px; }}
-                th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-                th {{ background-color: #f2f2f2; }}
-                tr:nth-child(even) {{ background-color: #f9f9f9; }}
-                blockquote {{ border-left: 4px solid #ccc; margin: 0; padding-left: 10px; color: #666; }}
-                .button {{
-                    display: inline-block;
-                    padding: 14px 28px;
-                    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-                    color: #ffffff !important;
-                    text-decoration: none;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
-                    transition: all 0.2s ease;
-                }}
-                .button:hover {{
-                    transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
-                }}
-                @media (prefers-color-scheme: dark) {{
-                    body {{ background-color: #1a1a1a; color: #e0e0e0; }}
-                    h1, h2, h3 {{ color: #ffffff; }}
-                    table {{ border: 1px solid #444; }}
-                    th, td {{ border: 1px solid #444; color: #e0e0e0; }}
-                    th {{ background-color: #333; }}
-                    tr:nth-child(even) {{ background-color: #2a2a2a; }}
-                    blockquote {{ border-left: 4px solid #777; color: #bbb; }}
-                    .button {{
-                        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-                        box-shadow: 0 4px 14px rgba(109, 40, 217, 0.5);
-                    }}
-                    .button:hover {{
-                        box-shadow: 0 6px 20px rgba(109, 40, 217, 0.6);
-                    }}
-                }}
-            </style>
-        </head>
-        <body>
-            <p>Here is your weekly app review pulse.</p>
-            <br/><br/>
-            {html_content}
-            <br/><br/>
-            <div style="margin-top: 40px; margin-bottom: 20px; text-align: left; border-top: 2px solid #e5e7eb; padding-top: 30px;">
-                <a href="{dashboard_url}" class="button">
-                   📊 View Full Interactive Dashboard
-                </a>
-                <p style="margin-top: 15px; font-size: 12px; color: #6B7280;">
-                    Best viewed on Desktop • Click to explore detailed insights
-                </p>
-            </div>
-        </body>
-        </html>
-        """
-
-        # Attach both plain text and HTML versions
-        part1 = MIMEText(report_content, 'plain')
-        part2 = MIMEText(styled_html, 'html')
-        
-        msg.attach(part1)
-        msg.attach(part2)
-
-        # Connect to SMTP server (Gmail/Outlook usually use 465 for SSL)
         try:
             with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
                 server.login(sender_email, sender_password)
@@ -351,14 +262,35 @@ def main():
             report_content = f.read()
         send_email(report_content, args.email, app_name=app_name, dashboard_url=dashboard_url, job_id=args.job_id)
     else:
-        print("Error: weekly_pulse_report.md not found after analysis.")
-    
-    # Step 5: Generate Manifest
+    # Step 4: Generate Manifest
     update_status("Updating manifest...", progress=95, job_id=args.job_id)
     run_script("generate_manifest.py", job_id=args.job_id)
-    
-    print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
-    
+    # --- Generate Email Config (Decoupled Notification) ---
+    if args.email:
+        print(f"[{datetime.datetime.now()}] Preparing email configuration for {args.email}...")
+        
+        # Read the generated report
+        report_content = ""
+        report_file = "weekly_pulse_report.md" # Define report_file here
+        try:
+            with open(report_file, 'r') as f:
+                report_content = f.read()
+        except Exception as e:
+            print(f"Warning: Could not read report file for email: {e}")
+            report_content = "Report generation failed or file is missing."
+
+        email_config = {
+            "recipient": args.email,
+            "app_name": app_name,
+            "dashboard_url": dashboard_url,
+            "body_md": report_content
+        }
+        
+        with open('email_config.json', 'w') as f:
+            json.dump(email_config, f, indent=2)
+            
+        print(f"[{datetime.datetime.now()}] Email configuration saved. Notification queued after deployment.")
+
     print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
     
     try:
@@ -367,10 +299,11 @@ def main():
         time.sleep(2)
         
         # Final status - this triggers the frontend redirect
-        update_status("COMPLETED", progress=100, job_id=args.job_id)
+        update_status("COMPLETED: Deployment & Email Queued", progress=100, job_id=args.job_id)
         print("[STATUS] COMPLETED (100%)")
     except Exception as e:
         print(f"Error sending final status: {e}")
 
 if __name__ == "__main__":
     main()
+```

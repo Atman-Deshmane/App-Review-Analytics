@@ -138,17 +138,24 @@ jobs:
           VITE_GITHUB_REPO: ${{ secrets.VITE_GITHUB_REPO }}
           
       # --- 3. DEPLOY TO HOSTINGER ---
-      - name: 📂 FTP Deploy to Hostinger
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dashboard/dist/
           server-dir: ./
-          protocol: ftps
-          port: 21
-          timeout: 300000
+          
+      - name: Send Notification Email (Decoupled)
+        if: success()
+        env:
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+        run: |
+          pip install markdown python-dotenv
+          python utils/send_notification.py
 
       - name: Upload History Artifact
         if: always()
