@@ -19,33 +19,41 @@ load_dotenv()
 try:
     import firebase_admin
     from firebase_admin import credentials, db
-    
-    FIREBASE_AVAILABLE = False
-    
-    # Load credentials from Environment Variable
-    cred_json_str = os.getenv("FIREBASE_SERVICE_ACCOUNT")
-    db_url = os.getenv("FIREBASE_DB_URL")
-    
-    if cred_json_str and db_url:
-        try:
-            cred_json = json.loads(cred_json_str)
-            cred = credentials.Certificate(cred_json)
-            
-            # Check if app is already initialized to avoid error on re-run
-            if not firebase_admin._apps:
-                firebase_admin.initialize_app(cred, {
-                    'databaseURL': db_url
-                })
-            FIREBASE_AVAILABLE = True
-            print(f"[{datetime.datetime.now()}] Firebase initialized successfully.")
-        except Exception as e:
-            print(f"[{datetime.datetime.now()}] Error initializing Firebase: {e}")
-    else:
-        print(f"[{datetime.datetime.now()}] Firebase credentials or DB URL missing. Skipping Firebase init.")
-
 except ImportError:
-    print(f"[{datetime.datetime.now()}] firebase-admin module not found.")
-    FIREBASE_AVAILABLE = False
+    raise ImportError("firebase-admin module not found. Please install it using 'pip install firebase-admin'")
+
+FIREBASE_AVAILABLE = False
+
+# Load credentials from Environment Variable
+cred_json_str = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+db_url = os.getenv("FIREBASE_DB_URL")
+
+# Strict Enforcement
+if not cred_json_str:
+    raise ValueError("FIREBASE_SERVICE_ACCOUNT environment variable is missing!")
+if not db_url:
+    raise ValueError("FIREBASE_DB_URL environment variable is missing!")
+
+try:
+    cred_json = json.loads(cred_json_str)
+    cred = credentials.Certificate(cred_json)
+    
+    # Check if app is already initialized to avoid error on re-run
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': db_url
+        })
+    FIREBASE_AVAILABLE = True
+    print(f"[{datetime.datetime.now()}] FIREBASE CONNECTED: {db_url}")
+    
+    # Test Connection
+    print(f"[{datetime.datetime.now()}] Testing Firebase connection...")
+    db.reference('test_connection').set(True)
+    print(f"[{datetime.datetime.now()}] Firebase connection test PASSED.")
+    
+except Exception as e:
+    print(f"!!! CRITICAL FIREBASE ERROR: {e}")
+    raise e # Re-raise to fail the workflow
 
 def update_status(message, progress=None, job_id=None):
     """
@@ -66,7 +74,7 @@ def update_status(message, progress=None, job_id=None):
                 
             ref.update(update_data)
         except Exception as e:
-            print(f"Error updating Firebase: {e}")
+            print(f"!!! CRITICAL FIREBASE ERROR: {e}")
 
 def run_script(script_name, args=None, job_id=None):
     print(f"[{datetime.datetime.now()}] Running {script_name}...")
