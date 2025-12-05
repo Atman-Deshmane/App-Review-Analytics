@@ -179,32 +179,53 @@ const Home: React.FC = () => {
                             <div className="p-2 bg-slate-50 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center">
                                 <History size={12} className="mr-1.5" /> Recent Analysis
                             </div>
-                            <div className="max-h-64 overflow-y-auto">
+                            <div className="max-h-80 overflow-y-auto p-2">
                                 {filteredHistory.length > 0 ? (
-                                    filteredHistory.map(([id, app]) => (
-                                        <button
-                                            key={id}
-                                            onClick={() => navigate(`/dashboard?app=${id}&version=${app.latest}`)}
-                                            className="w-full p-3 hover:bg-slate-50 flex items-center justify-between group transition-colors"
-                                        >
-                                            <div className="flex items-center">
-                                                <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3 font-bold text-xs">
-                                                    {app.name.substring(0, 2).toUpperCase()}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {filteredHistory.map(([id, app]) => (
+                                            <button
+                                                key={id}
+                                                onClick={() => navigate(`/dashboard?app=${id}&version=${app.latest}`)}
+                                                className="p-3 text-left bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-md transition-all group flex items-start space-x-3"
+                                            >
+                                                {/* App Icon */}
+                                                <div className="flex-shrink-0">
+                                                    {app.icon ? (
+                                                        <img
+                                                            src={app.icon}
+                                                            alt={app.name}
+                                                            className="w-12 h-12 rounded-xl shadow-sm bg-slate-100 object-cover"
+                                                            onError={(e) => {
+                                                                (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${app.name}&background=random`
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                                                            {app.name.substring(0, 1).toUpperCase()}
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div className="text-left">
-                                                    <div className="font-medium text-slate-800">{app.name || id}</div>
-                                                    <div className="text-xs text-slate-500">{id}</div>
+
+                                                {/* Details */}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-semibold text-slate-900 truncate pr-4">
+                                                        {app.name || id}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-500 truncate font-mono mt-0.5">
+                                                        {id}
+                                                    </div>
+
+                                                    {/* Hover Action */}
+                                                    <div className="mt-2 flex items-center text-xs text-indigo-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-1 group-hover:translate-y-0">
+                                                        <span>View Analysis</span>
+                                                        <ArrowRight size={12} className="ml-1" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="flex items-center text-emerald-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Star size={12} className="mr-1 fill-current" />
-                                                Ready Instantly
-                                                <ArrowRight size={14} className="ml-2" />
-                                            </div>
-                                        </button>
-                                    ))
+                                            </button>
+                                        ))}
+                                    </div>
                                 ) : (
-                                    <div className="p-4 text-center text-slate-400 text-sm">
+                                    <div className="p-8 text-center text-slate-400 text-sm">
                                         No history found. Paste a link to start new.
                                     </div>
                                 )}

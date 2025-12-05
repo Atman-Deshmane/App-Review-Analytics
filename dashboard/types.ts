@@ -89,6 +89,7 @@ export interface AnalyzedData {
 
 export interface ManifestApp {
   name: string;
+  icon?: string;
   latest: string;
   versions: string[];
 }

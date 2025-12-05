@@ -53,9 +53,24 @@ def generate_manifest():
             # Sort descending (newest first)
             versions.sort(reverse=True)
             
+            # Try to read metadata.json
+            meta_file = os.path.join(app_dir, "metadata.json")
+            app_name = app_names.get(app_id, app_id)
+            app_icon = None
+            
+            if os.path.exists(meta_file):
+                try:
+                    with open(meta_file, 'r') as f:
+                        meta = json.load(f)
+                        app_name = meta.get('name', app_name)
+                        app_icon = meta.get('icon')
+                except:
+                    pass
+
             if versions:
                 manifest_data[app_id] = {
-                    "name": app_names.get(app_id, app_id),
+                    "name": app_name,
+                    "icon": app_icon,
                     "latest": versions[0],
                     "versions": versions
                 }

@@ -1,7 +1,9 @@
 import argparse
-from google_play_scraper import Sort, reviews
+from google_play_scraper import Sort, reviews, app as get_app_details
 import pandas as pd
 from datetime import datetime, timedelta
+import os
+import json
 
 # Defaults
 DEFAULT_APP_ID = 'com.nextbillion.groww'
@@ -11,6 +13,29 @@ LANGUAGE = 'en'
 WEEKS_BACK = 2
 
 def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
+    print(f"Fetching metadata for {app_id}...")
+    
+    # Save Metadata (Icon, Name)
+    try:
+        app_details = get_app_details(app_id, lang=LANGUAGE, country=COUNTRY)
+        metadata = {
+            "id": app_id,
+            "name": app_details.get('title'),
+            "icon": app_details.get('icon')
+        }
+        
+        # Ensure directory exists (it might not yet if this is first run, but we usually create it later. Let's make sure)
+        history_dir = os.path.join("dashboard", "public", "history", app_id)
+        os.makedirs(history_dir, exist_ok=True)
+        
+        with open(os.path.join(history_dir, "metadata.json"), "w") as f:
+            json.dump(metadata, f)
+            
+        print(f"Saved metadata (icon) for {app_id}")
+            
+    except Exception as e:
+        print(f"Warning: Could not fetch metadata: {e}")
+
     print(f"Fetching {fetch_count} most relevant reviews for {app_id}...")
     
     # Fetch reviews
