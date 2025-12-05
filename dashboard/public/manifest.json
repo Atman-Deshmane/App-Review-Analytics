@@ -86,6 +86,13 @@
             "2025-12-05_50reviews"
         ]
     },
+    "com.netflix.mediaclient": {
+        "name": "com.netflix.mediaclient",
+        "latest": "2025-12-05_100reviews",
+        "versions": [
+            "2025-12-05_100reviews"
+        ]
+    },
     "in.farmguide.farmerapp.central": {
         "name": "in.farmguide.farmerapp.central",
         "latest": "2025-12-03_300reviews",
