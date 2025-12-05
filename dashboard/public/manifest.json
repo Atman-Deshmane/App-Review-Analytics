@@ -1,6 +1,7 @@
 {
     "com.vlv.aravali": {
         "name": "com.vlv.aravali",
+        "icon": null,
         "latest": "2025-12-03_50reviews",
         "versions": [
             "2025-12-03_50reviews",
@@ -8,8 +9,17 @@
             "2025-12-03_100reviews"
         ]
     },
+    "com.spotify.music": {
+        "name": "Spotify: Music and Podcasts",
+        "icon": "https://play-lh.googleusercontent.com/7ynvVIRdhJNAngCg_GI7i8TtH8BqkJYmffeUHsG-mJOdzt1XLvGmbsKuc5Q1SInBjDKN",
+        "latest": "2025-12-05_200reviews",
+        "versions": [
+            "2025-12-05_200reviews"
+        ]
+    },
     "com.meesho.supply": {
         "name": "com.meesho.supply",
+        "icon": null,
         "latest": "2025-12-03_200reviews",
         "versions": [
             "2025-12-03_200reviews"
@@ -17,6 +27,7 @@
     },
     "com.application.zomato": {
         "name": "com.application.zomato",
+        "icon": null,
         "latest": "2025-12-05_50reviews",
         "versions": [
             "2025-12-05_50reviews",
@@ -26,6 +37,7 @@
     },
     "in.juspay.nammayatri": {
         "name": "in.juspay.nammayatri",
+        "icon": null,
         "latest": "2025-12-05_200reviews",
         "versions": [
             "2025-12-05_200reviews"
@@ -33,6 +45,7 @@
     },
     "com.whatsapp": {
         "name": "com.whatsapp",
+        "icon": null,
         "latest": "2025-12-03_300reviews",
         "versions": [
             "2025-12-03_300reviews"
@@ -40,6 +53,7 @@
     },
     "com.larksuite.suite": {
         "name": "com.larksuite.suite",
+        "icon": null,
         "latest": "2025-12-03_300reviews",
         "versions": [
             "2025-12-03_300reviews"
@@ -47,6 +61,7 @@
     },
     "com.ubercab": {
         "name": "com.ubercab",
+        "icon": null,
         "latest": "2025-12-04_50reviews",
         "versions": [
             "2025-12-04_50reviews"
@@ -54,6 +69,7 @@
     },
     "com.nextbillion.groww": {
         "name": "Groww",
+        "icon": null,
         "latest": "2025-12-02_25reviews_v2",
         "versions": [
             "2025-12-02_25reviews_v2",
@@ -67,6 +83,7 @@
     },
     "com.zerodha.kite3": {
         "name": "Kite by Zerodha",
+        "icon": null,
         "latest": "2025-12-02_10reviews",
         "versions": [
             "2025-12-02_10reviews"
@@ -74,6 +91,7 @@
     },
     "com.flipkart.android": {
         "name": "com.flipkart.android",
+        "icon": null,
         "latest": "2025-12-03_200reviews",
         "versions": [
             "2025-12-03_200reviews"
@@ -81,6 +99,7 @@
     },
     "com.duolingo": {
         "name": "com.duolingo",
+        "icon": null,
         "latest": "2025-12-05_50reviews",
         "versions": [
             "2025-12-05_50reviews"
@@ -88,6 +107,7 @@
     },
     "com.netflix.mediaclient": {
         "name": "com.netflix.mediaclient",
+        "icon": null,
         "latest": "2025-12-05_100reviews",
         "versions": [
             "2025-12-05_100reviews"
@@ -95,6 +115,7 @@
     },
     "com.kotak811mobilebankingapp.instantsavingsupiscanandpayrecharge": {
         "name": "com.kotak811mobilebankingapp.instantsavingsupiscanandpayrecharge",
+        "icon": null,
         "latest": "2025-12-05_200reviews",
         "versions": [
             "2025-12-05_200reviews"
@@ -102,6 +123,7 @@
     },
     "in.farmguide.farmerapp.central": {
         "name": "in.farmguide.farmerapp.central",
+        "icon": null,
         "latest": "2025-12-03_300reviews",
         "versions": [
             "2025-12-03_300reviews"
@@ -109,6 +131,7 @@
     },
     "com.google.android.apps.bard": {
         "name": "com.google.android.apps.bard",
+        "icon": null,
         "latest": "2025-12-03_100reviews",
         "versions": [
             "2025-12-03_100reviews"
@@ -116,6 +139,7 @@
     },
     "com.formulaone.production": {
         "name": "com.formulaone.production",
+        "icon": null,
         "latest": "2025-12-03_300reviews",
         "versions": [
             "2025-12-03_300reviews"
@@ -123,6 +147,7 @@
     },
     "com.phonepe.app": {
         "name": "com.phonepe.app",
+        "icon": null,
         "latest": "2025-12-05_200reviews",
         "versions": [
             "2025-12-05_200reviews"
@@ -130,6 +155,7 @@
     },
     "com.olacabs.customer": {
         "name": "com.olacabs.customer",
+        "icon": null,
         "latest": "2025-12-05_200reviews",
         "versions": [
             "2025-12-05_200reviews"
@@ -137,6 +163,7 @@
     },
     "com.instagram.android": {
         "name": "com.instagram.android",
+        "icon": null,
         "latest": "2025-12-03_50reviews",
         "versions": [
             "2025-12-03_50reviews"
@@ -144,6 +171,7 @@
     },
     "in.swiggy.android": {
         "name": "in.swiggy.android",
+        "icon": null,
         "latest": "2025-12-03_200reviews",
         "versions": [
             "2025-12-03_200reviews"
@@ -151,6 +179,7 @@
     },
     "com.dot.app.sancharsaathi": {
         "name": "Sanchar Saathi",
+        "icon": null,
         "latest": "2025-12-03_100reviews",
         "versions": [
             "2025-12-03_100reviews"

@@ -1,0 +1,90 @@
+[
+    {
+        "date":"2025-11-25 21:39:50",
+        "rating":5,
+        "review_text":"First off, I love Spotify. Second, I play one playlist, and an ad says enjoy the next 30 minutes of uninterrupted listening. Then, halfway through listening to my song, I decided I wanted to swap playlist. As I do so,I get another ad? Also, I love having the free skips, but I feel like maybe have 10 skips instead of 6? I also wish I could download one of my playlists, but I dont want to pay for the Spotify Premium every month. Overall, I love Spotify and will keep using it.",
+        "thumbs_up_count":2814,
+        "title":null,
+        "id":1,
+        "theme":"Free Version Restrictions",
+        "sentiment":"Positive",
+        "tag":"Excessive Ads"
+    },
+    {
+        "date":"2025-11-25 03:58:46",
+        "rating":5,
+        "review_text":"Spotify is an amazing music streaming app!\ud83c\udfb5\ud83c\udfb6 It's got an insane library pop song, playlist , and podcasts that cater to every note and test. The discover weekly and Release Rader playlist are always on point, introduction me to new artists and tracks I love. The UI is sleek and user- friend, making I want to listen to . Overall, Spotify is a must-have app four music lovers! \u263a\ufe0f\ud83e\udef6",
+        "thumbs_up_count":465,
+        "title":null,
+        "id":2,
+        "theme":"Music Library & Discovery",
+        "sentiment":"Positive",
+        "tag":"Positive Feedback"
+    },
+    {
+        "date":"2025-11-26 06:32:45",
+        "rating":1,
+        "review_text":"Spotify has become extremely frustrating to use. It\u2019s supposed to be a music app, but these days I feel like I\u2019m listening to ads more than actual songs. There\u2019s an ad after every single track, and on top of that, songs even get interrupted in the middle just so another ad can play. It completely ruins the experience. Spotify is meant for songs, but right now it feels like an advertisement platform with occasional music. The constant interruptions, excessive ads, and broken flow make it unbeara",
+        "thumbs_up_count":349,
+        "title":null,
+        "id":3,
+        "theme":"Constant Ads & Interruptions",
+        "sentiment":"Negative",
+        "tag":"Song Interruption"
+    },
+    {
+        "date":"2025-11-30 16:11:24",
+        "rating":1,
+        "review_text":"Greediest app which I ever used. It changed from limiting 30 minutes of listening time to not being able to replay a song or seek back nor even able to listen to more than 1 song from my own playlist. This is peak greediness. If anyone is wondering if I exhausted my free skip etc. counts... This was my 3 minute experience using this app after a month of not using it.",
+        "thumbs_up_count":169,
+        "title":null,
+        "id":4,
+        "theme":"Free Version Restrictions",
+        "sentiment":"Negative",
+        "tag":"No Playback Control"
+    },
+    {
+        "date":"2025-11-30 17:16:37",
+        "rating":1,
+        "review_text":"I have been a Spotify premium user for a few years, but the new plans and pricings are just horrible. The only thing that is holding me on to Spotify is the music recommendations which by far seems to better than other major streaming platforms. On the other hand it comes nowhere near the sound quality of apple music which provides better quality lossless audio for cheaper prices and also has plans which make sense to buy. Lossless audio is fine but new plans are just horrible and disappointing",
+        "thumbs_up_count":96,
+        "title":null,
+        "id":5,
+        "theme":"New Plans & Pricing",
+        "sentiment":"Negative",
+        "tag":"Value Proposition"
+    },
+    {
+        "date":"2025-11-29 03:40:01",
+        "rating":1,
+        "review_text":"This would instantly be a 5 star actually but recently the free version has become so bad and unusable that I'm actually having to consider changing the app I use which wasn't the case in the beginning. Now until you pay you can't enjoy listening to the music you love which is really bad. Update: If you want to listen to music with no control while being bombed by ads that are completely irrelevant to you, this app is for you",
+        "thumbs_up_count":45,
+        "title":null,
+        "id":6,
+        "theme":"Free Version Restrictions",
+        "sentiment":"Negative",
+        "tag":"No Playback Control"
+    },
+    {
+        "date":"2025-11-29 02:36:31",
+        "rating":1,
+        "review_text":"it's worse than anything possible, like when I click on the saved songs I could only listen to the preview but not the song and the update of only changing into 6 songs per hour and it's stupid to do that. like the old version where u could simply click on the saved song and listen to it only rather than shifting to an other playlist completely. I'm gonna delete the app if these things are not fixed.",
+        "thumbs_up_count":17,
+        "title":null,
+        "id":7,
+        "theme":"Free Version Restrictions",
+        "sentiment":"Negative",
+        "tag":"No Playback Control"
+    },
+    {
+        "date":"2025-11-25 14:13:22",
+        "rating":3,
+        "review_text":"I've been using this app for many years butnrecently I had been getting horror podcast ads,and the audio clips in the background are so annoying. there's one ad that has loud knocking in the background,and loud knocking specifically triggers me. so I reported it saying the content was unpleasant, but I kept getting the same ad,maybe like five times or more,even after reporting EVERY SINGLE time and then it kept adding more and more horror ads. spotify team, take reportings seriously, fix this",
+        "thumbs_up_count":5,
+        "title":null,
+        "id":8,
+        "theme":"Other",
+        "sentiment":"Negative",
+        "tag":"Other"
+    }
+]
