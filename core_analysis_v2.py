@@ -95,7 +95,7 @@ def step1_strategic_themes(reviews_text, current_date_str, manual_themes=None):
         
         if isinstance(themes, list):
             themes.append("Other") # Programmatically add Other
-            print(f"Themes Identified: {themes}")
+            print(f"[HIGHLIGHT] Themes Identified: {', '.join(themes)}")
             return themes
         else:
             print("Error: Model did not return a list.")
@@ -106,8 +106,19 @@ def step1_strategic_themes(reviews_text, current_date_str, manual_themes=None):
         traceback.print_exc()
         return ["Uncategorized", "Other"]
 
-def step2_classify_reviews(reviews_text, themes):
+def step2_classify_reviews(reviews_text, themes, df=None):
     print("Step 2: Classifying Reviews & Sentiment (Global Context)...")
+    
+    # --- Highlight Logic ---
+    if df is not None:
+        try:
+            top_reviews = df.sort_values(by='thumbs_up_count', ascending=False).head(3)
+            for _, row in top_reviews.iterrows():
+                short_review = (row['review_text'][:75] + '...') if len(row['review_text']) > 75 else row['review_text']
+                print(f"[HIGHLIGHT] Top Review: \"{short_review}\" ({row['thumbs_up_count']} Likes)")
+        except Exception as e:
+            print(f"Warning: Could not highlight reviews: {e}")
+    # -----------------------
     
     prompt = f"""
     You are the Strategic Advisor to the CEO of Groww.
@@ -318,7 +329,8 @@ def main():
     themes = step1_strategic_themes(reviews_text, current_date_str, manual_themes)
     
     # Step 2
-    classification_results = step2_classify_reviews(reviews_text, themes)
+    # Step 2
+    classification_results = step2_classify_reviews(reviews_text, themes, df=df_top_300)
     df_classification = pd.DataFrame(classification_results)
     
     # Merge Classification

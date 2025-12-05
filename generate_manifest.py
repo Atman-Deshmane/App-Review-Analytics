@@ -42,7 +42,7 @@ def generate_manifest():
             if app_id.startswith('.'):
                 continue
                 
-            print(f"Scanning App: {app_id}")
+            # print(f"Scanning App: {app_id}")
             
             versions = []
             for entry in os.listdir(app_dir):

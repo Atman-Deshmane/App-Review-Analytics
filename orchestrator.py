@@ -94,6 +94,12 @@ def run_script(script_name, args=None, job_id=None):
             line = line.strip()
             if line:
                 print(line) # Print to local console
+                
+                # Filter Noise for Frontend
+                noise_keywords = ["Scanning App", "File content", "uploading", "replacing"]
+                if any(keyword in line for keyword in noise_keywords):
+                    continue
+                
                 # Send to Firebase as status update
                 update_status(line, job_id=job_id)
 
