@@ -100,6 +100,13 @@
             "2025-12-03_300reviews"
         ]
     },
+    "com.phonepe.app": {
+        "name": "com.phonepe.app",
+        "latest": "2025-12-05_200reviews",
+        "versions": [
+            "2025-12-05_200reviews"
+        ]
+    },
     "com.instagram.android": {
         "name": "com.instagram.android",
         "latest": "2025-12-03_50reviews",
