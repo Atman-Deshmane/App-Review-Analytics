@@ -35,13 +35,39 @@ const formatLogMessage = (rawLog: string): { message: string; highlight?: string
         if (pattern.test(rawLog)) return null;
     }
 
-    // Transform logs into engaging messages
-    if (rawLog.includes('Fetching') || rawLog.includes('fetching')) {
-        const countMatch = rawLog.match(/(\d+)/);
-        const count = countMatch ? countMatch[1] : '';
-        return { message: `📡 Intercepting ${count} signals from Play Store...` };
+    // Transform logs into engaging messages (User Logic)
+
+    if (rawLog.includes("Fetching")) {
+        return { message: "📡 Intercepting app signals from Play Store..." };
     }
 
+    if (rawLog.includes("Identifying Strategic Themes")) {
+        return { message: "🧠 AI Neural Core: Pattern Recognition Active..." };
+    }
+
+    if (rawLog.includes("Analyzing Theme")) {
+        // Extract theme name "Analyzing Theme: Pricing..." -> "🔍 Deep Dving: Pricing"
+        const themeMatch = rawLog.split(":")[1] || "Data";
+        const theme = themeMatch.replace(/\.{3}$/, '').trim(); // Remove trailing dots if any
+        return {
+            message: `🔍 Analyzing Segment:`,
+            highlight: theme
+        };
+    }
+
+    if (rawLog.includes("Tagging")) {
+        return { message: "🏷️ Semantic Tagging & Sentiment Scoring..." };
+    }
+
+    if (rawLog.includes("Archiving")) {
+        return { message: "💾 Encrypting and Securing Data Vault..." };
+    }
+
+    if (rawLog.includes("Sending email")) {
+        return { message: "📨 Dispatching Executive Briefing..." };
+    }
+
+    // Keep some existing useful mappings that don't conflict
     if (rawLog.includes('Themes Identified') || rawLog.includes('Themes:')) {
         const themesMatch = rawLog.match(/\[([^\]]+)\]/);
         if (themesMatch) {
@@ -51,47 +77,6 @@ const formatLogMessage = (rawLog: string): { message: string; highlight?: string
                 highlight: themes.join(' • ')
             };
         }
-        return { message: `🧠 AI analyzing patterns in user feedback...` };
-    }
-
-    if (rawLog.includes('Classifying') || rawLog.includes('Classified')) {
-        const countMatch = rawLog.match(/(\d+)/);
-        return { message: `🔬 Classifying ${countMatch ? countMatch[1] : ''} reviews with neural networks...` };
-    }
-
-    if (rawLog.includes('Tagging') || rawLog.includes('Tags')) {
-        return { message: `🏷️ Applying semantic tags to feedback...` };
-    }
-
-    if (rawLog.includes('Analyzing Theme')) {
-        const themeMatch = rawLog.match(/Theme:\s*(.+?)\.{3}/);
-        return {
-            message: `🔍 Deep-diving into:`,
-            highlight: themeMatch ? themeMatch[1] : 'category'
-        };
-    }
-
-    if (rawLog.includes('Generated Tags')) {
-        const tagsMatch = rawLog.match(/\[([^\]]+)\]/);
-        if (tagsMatch) {
-            const tags = tagsMatch[1].split(',').map(t => t.trim().replace(/'/g, '')).slice(0, 4);
-            return {
-                message: `✨ Discovered sub-patterns:`,
-                highlight: tags.join(' • ')
-            };
-        }
-    }
-
-    if (rawLog.includes('Archiving') || rawLog.includes('archive')) {
-        return { message: `💾 Encrypting and securing analysis...` };
-    }
-
-    if (rawLog.includes('Sending email') || rawLog.includes('email')) {
-        const emailMatch = rawLog.match(/to\s+([^\s]+@[^\s]+)/);
-        return {
-            message: `📨 Dispatching executive summary...`,
-            highlight: emailMatch ? `to ${emailMatch[1]}` : ''
-        };
     }
 
     if (rawLog.includes('Report generated')) {
@@ -104,39 +89,6 @@ const formatLogMessage = (rawLog: string): { message: string; highlight?: string
 
     if (rawLog.includes('Firebase initialized')) {
         return { message: `🔥 Secure connection established` };
-    }
-
-    if (rawLog.includes('Starting') && rawLog.includes('Orchestrator')) {
-        return { message: `🚀 Initializing AI analysis pipeline...` };
-    }
-
-    if (rawLog.includes('Loading') || rawLog.includes('Preparing Data')) {
-        return { message: `📂 Loading raw feedback data...` };
-    }
-
-    if (rawLog.includes('Prepared') && rawLog.includes('reviews')) {
-        const countMatch = rawLog.match(/(\d+)/);
-        return { message: `📋 ${countMatch ? countMatch[1] : ''} reviews ready for AI processing` };
-    }
-
-    if (rawLog.includes('Analysis complete') || rawLog.includes('Saved to')) {
-        return { message: `💎 Insights crystallized and saved` };
-    }
-
-    if (rawLog.includes('Step 1') || rawLog.includes('Strategic Themes')) {
-        return { message: `🎯 Phase 1: Identifying strategic themes...` };
-    }
-
-    if (rawLog.includes('Step 2') || rawLog.includes('Sentiment')) {
-        return { message: `💭 Phase 2: Analyzing sentiment patterns...` };
-    }
-
-    if (rawLog.includes('Step 3') || rawLog.includes('Dashboard-Ready')) {
-        return { message: `🎨 Phase 3: Preparing dashboard visualization...` };
-    }
-
-    if (rawLog.includes('Step 5') || rawLog.includes('Weekly Pulse')) {
-        return { message: `📰 Phase 4: Generating leadership report...` };
     }
 
     // For any unmatched but interesting logs
