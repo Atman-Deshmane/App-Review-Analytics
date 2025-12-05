@@ -12,8 +12,9 @@
     "com.spotify.music": {
         "name": "Spotify: Music and Podcasts",
         "icon": "https://play-lh.googleusercontent.com/7ynvVIRdhJNAngCg_GI7i8TtH8BqkJYmffeUHsG-mJOdzt1XLvGmbsKuc5Q1SInBjDKN",
-        "latest": "2025-12-05_200reviews",
+        "latest": "2025-12-05_200reviews_v2",
         "versions": [
+            "2025-12-05_200reviews_v2",
             "2025-12-05_200reviews"
         ]
     },
