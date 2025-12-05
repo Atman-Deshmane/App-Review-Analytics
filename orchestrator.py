@@ -349,6 +349,12 @@ def main():
     run_script("generate_manifest.py", job_id=args.job_id)
     
     print(f"[{datetime.datetime.now()}] Pipeline completed successfully.")
+    
+    # Wait for FTP deployment to fully propagate before signaling completion
+    print(f"[{datetime.datetime.now()}] Waiting for deployment propagation...")
+    time.sleep(2)
+    
+    # Final status - this triggers the frontend redirect
     update_status("COMPLETED", progress=100, job_id=args.job_id)
 
 if __name__ == "__main__":

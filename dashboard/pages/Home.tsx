@@ -17,6 +17,7 @@ const Home: React.FC = () => {
     // Config State
     const [targetAppId, setTargetAppId] = useState('');
     const [jobId, setJobId] = useState('');
+    const [reviewCount, setReviewCount] = useState(100);
 
     // Loading State
     const [jobStatus, setJobStatus] = useState<JobStatus>({ status: 'Initializing...', progress: 0, last_update: '' });
@@ -48,15 +49,14 @@ const Home: React.FC = () => {
 
     const startAnalysis = async (config: AnalysisConfig) => {
         setViewState('LOADING');
+        setReviewCount(config.count);
         const newJobId = `job_${Date.now()}`;
         setJobId(newJobId);
-        setLogs(prev => [...prev, `Starting analysis for ${targetAppId}...`]);
-
-
+        setLogs(['🚀 Initializing analysis pipeline...']);
 
         try {
             // Trigger GitHub Dispatch
-            setLogs(prev => [...prev, `Dispatching workflow... (Job ID: ${newJobId})`]);
+            setLogs(prev => [...prev, `📡 Connecting to cloud infrastructure...`]);
 
             await triggerAnalysis({
                 appId: targetAppId,
@@ -68,43 +68,63 @@ const Home: React.FC = () => {
                 endDate: config.endDate
             });
 
-            setLogs(prev => [...prev, `Workflow dispatched successfully.`]);
+            setLogs(prev => [...prev, `✅ Cloud workflow activated successfully`]);
+            setLogs(prev => [...prev, `🔗 Establishing real-time monitoring...`]);
 
             // Subscribe to Firebase
             const unsubscribe = subscribeToJob(newJobId, (data) => {
                 setJobStatus(data);
-                setLogs(prev => [...prev, `[${newJobId}] ${data.status}`]);
 
-                if (data.status === 'COMPLETED' || data.progress === 100) {
-                    // Add a delay to allow for deployment propagation
-                    setLogs(prev => [...prev, `Waiting for deployment propagation...`]);
+                // Add status to logs
+                if (data.status && !data.status.includes('[STATUS]')) {
+                    setLogs(prev => [...prev, data.status]);
+                }
+
+                // Check for completion - multiple ways to detect
+                const isCompleted =
+                    data.status?.toUpperCase().includes('COMPLETED') ||
+                    data.progress >= 100 ||
+                    data.status?.includes('100%');
+
+                if (isCompleted) {
+                    setLogs(prev => [...prev, `🎉 Analysis complete! Preparing dashboard...`]);
+
+                    // Generate version string
+                    const today = new Date().toISOString().split('T')[0];
+                    const version = `${today}_${config.count}reviews`;
+
+                    // Wait for dramatic effect + deployment propagation
                     setTimeout(() => {
-                        navigate(`/dashboard?app=${targetAppId}&version=${new Date().toISOString().split('T')[0]}_${config.count}reviews`);
-                    }, 5000); // Increased delay to 5 seconds
+                        setLogs(prev => [...prev, `🚀 Redirecting to your insights...`]);
+
+                        // Force redirect after another second
+                        setTimeout(() => {
+                            navigate(`/dashboard?app=${targetAppId}&version=${version}`);
+                        }, 1000);
+                    }, 2000);
+
+                    // Unsubscribe after completion
+                    if (unsubscribe) unsubscribe();
                 }
             });
-
-            // Cleanup subscription on unmount (not handled here fully for simplicity)
 
         } catch (error: any) {
             console.error("Failed to start analysis:", error);
             const errorMessage = error.message || String(error);
             setDebugError(errorMessage);
-            setLogs(prev => [...prev, `> [FATAL ERROR] ${errorMessage}`]);
+            setLogs(prev => [...prev, `⛔ [FATAL ERROR] ${errorMessage}`]);
         }
     };
 
     if (viewState === 'LOADING') {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white p-4">
-                <TerminalLoader status={jobStatus.status} progress={jobStatus.progress} logs={logs} error={debugError} />
-                <div className="mt-8 text-center space-y-2">
-                    <p className="text-slate-400 text-sm">Estimated time remaining: ~2 minutes</p>
-                    <p className="text-slate-500 text-xs">
-                        You can close this window. We'll email you the link when it's ready.
-                    </p>
-                </div>
-            </div>
+            <TerminalLoader
+                status={jobStatus.status}
+                progress={jobStatus.progress}
+                logs={logs}
+                error={debugError}
+                reviewCount={reviewCount}
+            />
         );
     }
 
