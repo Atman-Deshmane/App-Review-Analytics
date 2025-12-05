@@ -72,6 +72,13 @@
             "2025-12-03_200reviews"
         ]
     },
+    "com.duolingo": {
+        "name": "com.duolingo",
+        "latest": "2025-12-05_50reviews",
+        "versions": [
+            "2025-12-05_50reviews"
+        ]
+    },
     "in.farmguide.farmerapp.central": {
         "name": "in.farmguide.farmerapp.central",
         "latest": "2025-12-03_300reviews",

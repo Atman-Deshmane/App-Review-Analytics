@@ -1,0 +1,90 @@
+[
+    {
+        "date":"2025-11-22 09:28:20",
+        "rating":5,
+        "review_text":"It's really good to learn a language. I'm learning German from this. Normally, even if you go for a course, you need to spend some time alone memorizing the words. But in here, there's just enuff exercises to make you fluent at the same time being not boring. I've been addicted to learning German which I thought I would never say. All you need is 20 min everyday, and the energy system is good as well, if you want to practice more than 20 min, you watch a single short ad. Would recommend.",
+        "thumbs_up_count":765,
+        "title":null,
+        "id":1,
+        "theme":"Fun & Effective Learning",
+        "sentiment":"Positive",
+        "tag":"Engaging Learning"
+    },
+    {
+        "date":"2025-11-27 06:08:40",
+        "rating":5,
+        "review_text":"It's a great learning app. which enhance your language skills, no matter whatever language is it. it will provide you all sort of things, like exercises and speaking assessment are the best to learn your favourite language. by setting time goals for a week or more you get rewards and to achieve it more often you get addicted to it that's a best part of this app. good learning platform with almost every possible language, the new version with super duolingo makes it so much fun. must try.",
+        "thumbs_up_count":184,
+        "title":null,
+        "id":2,
+        "theme":"Fun & Effective Learning",
+        "sentiment":"Positive",
+        "tag":"Effective Exercises"
+    },
+    {
+        "date":"2025-12-01 09:41:31",
+        "rating":5,
+        "review_text":"I've been using Duolingo to learn Japanese, and I'm absolutely loving it! The app makes language learning engaging and fun, with bite-sized lessons that fit perfectly into my schedule. It's not just about Japanese; Duolingo also offers a variety of languages and even includes subjects like chess, mathematics, and basic economics. It\u2019s a fantastic platform for anyone wanting to pick up new skills. Happy learning!",
+        "thumbs_up_count":95,
+        "title":null,
+        "id":3,
+        "theme":"Fun & Effective Learning",
+        "sentiment":"Positive",
+        "tag":"Content Variety"
+    },
+    {
+        "date":"2025-11-24 13:39:39",
+        "rating":4,
+        "review_text":"Firstly Would I recommend the app: yes Would I recommend the payed service: yes The app is great for learning one.. or twelve languages, and will give you back what you put in. now for the minor negatives: I would love to see more options post competition of the courses; even a \"words of the week\" section where you build a bank of words to study would do wonders. Second: some courses have weird priorities, as an example: Wizard (Valho) was one of the first words I learned in the Finish course.",
+        "thumbs_up_count":93,
+        "title":null,
+        "id":4,
+        "theme":"Course Gaps & Structure",
+        "sentiment":"Positive",
+        "tag":"Curriculum Structure"
+    },
+    {
+        "date":"2025-11-25 11:11:26",
+        "rating":3,
+        "review_text":"EDIT: Removing 2 stars from my previous review. The app used to have hearts that remained as long as you got everything correct, now it's got this stupid energy system that runs out regardless of how much you get right. That's not rewarding, it's frustrating. You know what else is frustrating? When I say EXACTLY what the app wants me to say it fails to hear me correctly and I get the answer wrong. Why do I only get 3 attempts? I should be able to speak until I get it right on speaking exercises.",
+        "thumbs_up_count":21,
+        "title":null,
+        "id":5,
+        "theme":"Technical Issues\/Bugs",
+        "sentiment":"Negative",
+        "tag":"Voice Recognition"
+    },
+    {
+        "date":"2025-11-30 07:11:59",
+        "rating":4,
+        "review_text":"I really loved it but the problem is that it was more fun when there was no subscription option . now its more likely to depend on subscription which make it kind of boring and difficult for those who cant pay..I used to use it as a hobby but just because of subscription and full of ads it has become limited and the next day or moment we might forget it",
+        "thumbs_up_count":16,
+        "title":null,
+        "id":6,
+        "theme":"Too Many Ads\/Paywall",
+        "sentiment":"Negative",
+        "tag":"Subscription Required"
+    },
+    {
+        "date":"2025-11-30 05:40:40",
+        "rating":2,
+        "review_text":"The icons and the characters of the app are not showing on my smartphone. I have tried uninstalling and installing it again but it doesn't help. Everything works fine on my tablet though although it is a little inconvenient because of the landscape orientation. I hope this gets rectified soon. It is so much more convenient on my smartphone instead of a tablet.",
+        "thumbs_up_count":13,
+        "title":null,
+        "id":7,
+        "theme":"Technical Issues\/Bugs",
+        "sentiment":"Negative",
+        "tag":"Missing Visuals"
+    },
+    {
+        "date":"2025-11-26 19:59:22",
+        "rating":2,
+        "review_text":"It helps to learn vocabulary but doesn't explain anything about grammar or sentence structure which is super important if you're trying to learn\/speak a new language. also, the number of ads is just ruining the experience. I get it that I'm using the free version, but that's too many ads for the amount of learning time allowed daily.",
+        "thumbs_up_count":11,
+        "title":null,
+        "id":8,
+        "theme":"Too Many Ads\/Paywall",
+        "sentiment":"Negative",
+        "tag":"Excessive Ads"
+    }
+]
