@@ -135,6 +135,13 @@
             "2025-12-05_200reviews"
         ]
     },
+    "com.swishapp": {
+        "name": "com.swishapp",
+        "latest": "2025-12-06_100reviews",
+        "versions": [
+            "2025-12-06_100reviews"
+        ]
+    },
     "com.instagram.android": {
         "name": "com.instagram.android",
         "latest": "2025-12-03_50reviews",
