@@ -123,6 +123,7 @@ jobs:
         working-directory: ./dashboard
         run: |
           npm ci
+          npm run build
         env:
           # Firebase Config
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
@@ -136,6 +137,15 @@ jobs:
           VITE_GITHUB_TOKEN: ${{ secrets.VITE_GITHUB_TOKEN }}
           VITE_GITHUB_OWNER: ${{ secrets.VITE_GITHUB_OWNER }}
           VITE_GITHUB_REPO: ${{ secrets.VITE_GITHUB_REPO }}
+
+      - name: 🔍 Debug File Structure
+        run: |
+          echo "Listing root..."
+          ls -la
+          echo "Listing dashboard..."
+          ls -la dashboard/
+          echo "Listing dashboard/dist (if exists)..."
+          ls -la dashboard/dist/ || echo "Dist folder missing!"
           
       # --- 3. DEPLOY TO HOSTINGER ---
       - name: FTP Deploy
@@ -143,6 +153,8 @@ jobs:
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: dashboard/dist/
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dashboard/dist/
           server-dir: ./
