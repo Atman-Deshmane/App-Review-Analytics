@@ -27,7 +27,7 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         // Load Manifest with Cache Busting
-        fetch(`${import.meta.env.BASE_URL}manifest.json?t=${Date.now()}`)
+        fetch('/reviews/manifest.json?t=' + Date.now())
             .then(res => res.json())
             .then(data => setHistory(data))
             .catch(err => console.error("Failed to load history:", err));

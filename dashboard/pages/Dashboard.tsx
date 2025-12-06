@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
             setError(null);
             try {
                 // 1. Fetch Manifest
-                const manifestRes = await fetch(`${import.meta.env.BASE_URL}manifest.json`);
+                const manifestRes = await fetch('/reviews/manifest.json?t=' + Date.now());
                 if (!manifestRes.ok) throw new Error("Failed to load manifest");
                 const manifestData = await manifestRes.json();
                 setManifest(manifestData);
@@ -67,7 +67,7 @@ const Dashboard: React.FC = () => {
                 }
 
                 // 3. Fetch Data
-                const dataPath = `${import.meta.env.BASE_URL}history/${appId}/${targetVersion}/reviews_analyzed_v2.json`;
+                const dataPath = `/reviews/history/${appId}/${targetVersion}/reviews_analyzed_v2.json`;
                 const res = await fetch(`${dataPath}?t=${Date.now()}`);
                 if (!res.ok) throw new Error(`Failed to load data from ${dataPath}`);
                 const text = await res.text();
@@ -286,7 +286,7 @@ const Dashboard: React.FC = () => {
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="flex items-center space-x-3">
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${review.sentiment === 'Positive' ? 'bg-emerald-500' :
-                                                        review.sentiment === 'Negative' ? 'bg-rose-500' : 'bg-slate-400'
+                                                    review.sentiment === 'Negative' ? 'bg-rose-500' : 'bg-slate-400'
                                                     }`}>
                                                     {review.score}
                                                 </div>

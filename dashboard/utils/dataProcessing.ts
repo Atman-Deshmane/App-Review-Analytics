@@ -120,7 +120,8 @@ export const processReviews = (rawReviews: RawReview[], appId: string): Analyzed
       summary: `Analysis of ${data.volume} reviews related to ${theme}`,
       examples: topReviews.map(r => r.review_text),
       sentiment_distribution,
-      clusters
+      clusters,
+      tags: clusters
     };
   });
 

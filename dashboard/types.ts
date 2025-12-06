@@ -69,6 +69,7 @@ export interface ThemeAnalysis {
     positiveCount: number; // Added for gradient
     negativeCount: number; // Added for gradient
   }>;
+  tags?: any[]; // Added to prevent TS error when compatible with ThemeMetric
 }
 
 export interface AnalyzedData {
