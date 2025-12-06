@@ -5,7 +5,7 @@ import Dashboard from './pages/Dashboard';
 
 const App: React.FC = () => {
     return (
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <BrowserRouter basename="/reviews">
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<Dashboard />} />

@@ -105,7 +105,8 @@ const Home: React.FC = () => {
 
                         // Redirect after delay
                         setTimeout(() => {
-                            navigate(`/dashboard?app=${targetAppId}&version=${version}&t=${Date.now()}`);
+                            // Force hard redirect to ensure assets reload
+                            window.location.href = `/reviews/dashboard?app=${targetAppId}&version=${version}`;
                         }, 15000); // 15s Delay for Deployment
                     }, 2000); // 2s delay for "Preparing dashboard..." message
 
@@ -211,8 +212,12 @@ const Home: React.FC = () => {
                                                     <div className="font-semibold text-slate-900 truncate pr-4">
                                                         {app.name || id}
                                                     </div>
-                                                    <div className="text-[10px] text-slate-500 truncate font-mono mt-0.5">
+                                                    <div className="text-[10px] text-slate-500 truncate font-mono mt-0.5 mb-1">
                                                         {id}
+                                                    </div>
+                                                    <div className="flex items-center text-emerald-600 text-xs font-medium">
+                                                        <Star size={12} className="mr-1 fill-current" />
+                                                        Ready Instantly
                                                     </div>
 
                                                     {/* Hover Action */}
