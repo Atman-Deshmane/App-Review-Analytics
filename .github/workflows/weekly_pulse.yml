@@ -155,8 +155,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dashboard/dist/
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dashboard/dist/
           server-dir: ./
           
       - name: Send Notification Email (Decoupled)
