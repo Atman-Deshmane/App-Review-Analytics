@@ -154,8 +154,11 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: dashboard/dist/
+          local-dir: ./dashboard/dist/
           server-dir: ./
+          protocol: ftps
+          port: 21
+          timeout: 300000
           
       - name: Send Notification Email (Decoupled)
         if: success()
