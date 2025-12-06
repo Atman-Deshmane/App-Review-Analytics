@@ -146,11 +146,11 @@ const Dashboard: React.FC = () => {
                     </button>
                     <button onClick={() => setActiveTab('themes')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === 'themes' ? 'bg-indigo-600 text-white shadow-indigo-900/20 shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
                         <PieChart size={20} className={activeTab === 'themes' ? 'text-indigo-200' : 'text-slate-500 group-hover:text-white'} />
-                        <span className="font-medium">Themes</span>
+                        <span className="font-medium">Themes & Insights</span>
                     </button>
                     <button onClick={() => setActiveTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === 'reviews' ? 'bg-indigo-600 text-white shadow-indigo-900/20 shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
                         <MessageSquare size={20} className={activeTab === 'reviews' ? 'text-indigo-200' : 'text-slate-500 group-hover:text-white'} />
-                        <span className="font-medium">Reviews</span>
+                        <span className="font-medium">All Reviews</span>
                     </button>
                 </nav>
 
@@ -160,7 +160,8 @@ const Dashboard: React.FC = () => {
                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">History</div>
                         <div className="space-y-1 max-h-40 overflow-y-auto custom-scrollbar">
                             {manifest[appId].versions.map((v) => {
-                                const [date] = v.split('_');
+                                const [date, countStr] = v.split('_');
+                                const count = countStr ? countStr.replace('reviews', '') : '0';
                                 return (
                                     <button
                                         key={v}
@@ -171,7 +172,8 @@ const Dashboard: React.FC = () => {
                                         }}
                                         className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors flex justify-between items-center ${version === v ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
                                     >
-                                        <span>{new Date(date).toLocaleDateString()}</span>
+                                        <span>{new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                        <span className="opacity-50 text-[10px]">{count} revs</span>
                                     </button>
                                 );
                             })}
@@ -203,6 +205,13 @@ const Dashboard: React.FC = () => {
                         </h1>
                     </div>
                     <div className="flex items-center space-x-6">
+                        <div className="hidden md:block text-right">
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Likes</div>
+                            <div className="text-sm font-bold text-slate-800 flex items-center justify-end">
+                                <ThumbsUp size={14} className="mr-1 text-slate-400" />
+                                {data.metadata.totalLikes.toLocaleString()}
+                            </div>
+                        </div>
                         <div className="hidden md:block text-right">
                             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Volume</div>
                             <div className="text-sm font-bold text-slate-800 flex items-center justify-end">

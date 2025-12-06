@@ -68,6 +68,7 @@ export interface ThemeAnalysis {
     sentiment: number;
     positiveCount: number; // Added for gradient
     negativeCount: number; // Added for gradient
+    reviews: RawReview[];
   }>;
   tags?: any[]; // Added to prevent TS error when compatible with ThemeMetric
 }

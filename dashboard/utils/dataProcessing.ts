@@ -80,10 +80,10 @@ export const processReviews = (rawReviews: RawReview[], appId: string): Analyzed
     });
 
     // Calculate Clusters (group by tag)
-    const clusterMap = new Map<string, { volume: number; sentimentSum: number; totalLikes: number; positiveCount: number; negativeCount: number }>();
+    const clusterMap = new Map<string, { volume: number; sentimentSum: number; totalLikes: number; positiveCount: number; negativeCount: number; reviews: RawReview[] }>();
     data.reviews.forEach(r => {
       const tag = r.tag || 'Other';
-      const current = clusterMap.get(tag) || { volume: 0, sentimentSum: 0, totalLikes: 0, positiveCount: 0, negativeCount: 0 };
+      const current = clusterMap.get(tag) || { volume: 0, sentimentSum: 0, totalLikes: 0, positiveCount: 0, negativeCount: 0, reviews: [] };
       let score = 0;
       if (r.sentiment === 'Positive') {
         score = 1;
@@ -97,6 +97,7 @@ export const processReviews = (rawReviews: RawReview[], appId: string): Analyzed
       current.volume++;
       current.sentimentSum += score;
       current.totalLikes += r.thumbs_up_count;
+      current.reviews.push(r);
       clusterMap.set(tag, current);
     });
 
@@ -106,7 +107,8 @@ export const processReviews = (rawReviews: RawReview[], appId: string): Analyzed
       totalLikes: cData.totalLikes,
       sentiment: cData.volume > 0 ? cData.sentimentSum / cData.volume : 0,
       positiveCount: cData.positiveCount,
-      negativeCount: cData.negativeCount
+      negativeCount: cData.negativeCount,
+      reviews: cData.reviews
     })).sort((a, b) => b.totalLikes - a.totalLikes); // Sort by Impact (Total Likes)
 
     return {
