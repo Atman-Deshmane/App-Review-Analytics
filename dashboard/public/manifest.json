@@ -162,6 +162,14 @@
             "2025-12-05_200reviews"
         ]
     },
+    "com.swishapp": {
+        "name": "Swish: 10-Min Food Delivery",
+        "icon": "https://play-lh.googleusercontent.com/25ZhjfNrL8iOrvNmW4MuHOIUpo9fNrJGJf83k0yGc_N-p-h0IV_xy-bzct6Y6siEGxc",
+        "latest": "2025-12-06_200reviews",
+        "versions": [
+            "2025-12-06_200reviews"
+        ]
+    },
     "com.instagram.android": {
         "name": "com.instagram.android",
         "icon": null,
