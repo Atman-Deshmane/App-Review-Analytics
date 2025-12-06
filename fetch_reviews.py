@@ -139,6 +139,10 @@ def process_and_save(raw_reviews: list, start_date: datetime, end_date: datetime
     # Convert to DataFrame
     df = pd.DataFrame(raw_reviews)
     
+    # +1 Vote Correction: Add 1 to each review's thumbsUpCount to account for reviewer's own vote
+    df['thumbsUpCount'] = df['thumbsUpCount'] + 1
+    print("[PROCESS] Applied +1 vote correction (reviewer's own vote).")
+    
     # Ensure date is datetime
     df['at'] = pd.to_datetime(df['at'])
     

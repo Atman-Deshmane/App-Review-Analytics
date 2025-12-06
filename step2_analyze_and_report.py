@@ -4,6 +4,7 @@ import pandas as pd
 import google.generativeai as genai
 from dotenv import load_dotenv
 import time
+import threading
 
 # 1. Setup & Model
 load_dotenv()
@@ -106,7 +107,40 @@ def analyze_and_report():
     {json.dumps(unique_tags)}
     """
     
-    cluster_response_text = generate_content_with_fallback(cluster_prompt)
+    # === Non-Blocking Matrix Loader ===
+    # Run LLM analysis in background thread while showing visual feedback
+    cluster_response_holder = {'result': None, 'error': None}
+    
+    def run_clustering():
+        try:
+            cluster_response_holder['result'] = generate_content_with_fallback(cluster_prompt)
+        except Exception as e:
+            cluster_response_holder['error'] = e
+    
+    # Start AI analysis in background
+    analysis_thread = threading.Thread(target=run_clustering)
+    analysis_thread.start()
+    
+    # Visual feedback: Scan top 10 reviews while AI works
+    top_reviews = df.head(10)
+    for idx, (_, review) in enumerate(top_reviews.iterrows()):
+        if not analysis_thread.is_alive():
+            break  # AI finished early, stop visual feedback
+        
+        review_snippet = str(review.get('review_text', ''))[:50]
+        print(f"[STATUS] 🔍 Scanning: {review_snippet}...")
+        time.sleep(1)
+    
+    # If visual logs finished but AI still running
+    if analysis_thread.is_alive():
+        print("[STATUS] ⚙️ Identifying Top Themes...")
+        analysis_thread.join()  # Wait for completion
+    
+    # Check for errors
+    if cluster_response_holder['error']:
+        raise cluster_response_holder['error']
+    
+    cluster_response_text = cluster_response_holder['result']
     
     try:
         theme_mapping_raw = json.loads(cluster_response_text)

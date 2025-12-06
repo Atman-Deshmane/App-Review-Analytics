@@ -1,6 +1,7 @@
 import smtplib
 import json
 import os
+import datetime
 import markdown
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -9,10 +10,70 @@ from premailer import transform
 
 load_dotenv()
 
+# Firebase setup for final COMPLETED status
+FIREBASE_AVAILABLE = False
+db = None
+try:
+    import firebase_admin
+    from firebase_admin import credentials, db as firebase_db
+    
+    firebase_creds = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+    firebase_db_url = os.getenv("FIREBASE_DB_URL")
+    
+    if firebase_creds and firebase_db_url:
+        # Parse JSON credentials
+        if firebase_creds.startswith('{'):
+            cred_dict = json.loads(firebase_creds)
+            cred = credentials.Certificate(cred_dict)
+        else:
+            cred = credentials.Certificate(firebase_creds)
+        
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(cred, {'databaseURL': firebase_db_url})
+        
+        db = firebase_db
+        FIREBASE_AVAILABLE = True
+        print("Firebase initialized for notification script.")
+except Exception as e:
+    print(f"Firebase not available in notification script: {e}")
+
+
+def update_firebase_completed(job_id, version_id):
+    """Set COMPLETED status in Firebase - the final trigger for frontend redirect."""
+    if not FIREBASE_AVAILABLE or not job_id:
+        print("Skipping Firebase update: Not available or no job_id")
+        return
+    
+    try:
+        ref = db.reference(f'jobs/{job_id}')
+        ref.update({
+            'status': 'COMPLETED',
+            'progress': 100,
+            'result_version': version_id,
+            'last_update': datetime.datetime.now().isoformat()
+        })
+        print(f"✅ Firebase status set to COMPLETED (100%) - Version: {version_id}")
+    except Exception as e:
+        print(f"❌ Failed to update Firebase: {e}")
+
+
 def main():
     try:
+        # Read version info from file (written by orchestrator)
+        version_id = None
+        job_id = None
+        if os.path.exists("version_info.txt"):
+            with open("version_info.txt", "r") as f:
+                lines = f.read().strip().split('\n')
+                version_id = lines[0] if len(lines) > 0 else None
+                job_id = lines[1] if len(lines) > 1 else None
+            print(f"Read version_info.txt: version={version_id}, job_id={job_id}")
+        
         if not os.path.exists("email_payload.json"):
             print("Skipping email: email_payload.json not found.")
+            # Still trigger COMPLETED if we have version info
+            if version_id and job_id:
+                update_firebase_completed(job_id, version_id)
             return
 
         with open("email_payload.json", "r") as f:
@@ -28,6 +89,9 @@ def main():
 
         if not recipient or not os.getenv("EMAIL_SENDER"):
             print("Skipping: Missing credentials/recipient.")
+            # Still trigger COMPLETED
+            if version_id and job_id:
+                update_firebase_completed(job_id, version_id)
             return
 
         # --- Generate Pro HTML ---
@@ -141,9 +205,26 @@ def main():
                 server.send_message(msg)
         
         print(f"✅ Email successfully sent to {recipient}")
+        
+        # === FINAL TRIGGER: Set COMPLETED status in Firebase ===
+        # This ensures frontend redirect only happens AFTER email is sent + FTP is complete
+        if version_id and job_id:
+            update_firebase_completed(job_id, version_id)
 
     except Exception as e:
         print(f"❌ Email failed: {e}")
+        # Still try to trigger COMPLETED even if email fails
+        try:
+            if os.path.exists("version_info.txt"):
+                with open("version_info.txt", "r") as f:
+                    lines = f.read().strip().split('\n')
+                    version_id = lines[0] if len(lines) > 0 else None
+                    job_id = lines[1] if len(lines) > 1 else None
+                if version_id and job_id:
+                    update_firebase_completed(job_id, version_id)
+        except Exception as e2:
+            print(f"Failed to trigger COMPLETED: {e2}")
+
 
 if __name__ == "__main__":
     main()
