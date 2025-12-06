@@ -2,6 +2,7 @@ import smtplib
 import json
 import os
 import datetime
+import argparse
 import markdown
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -57,7 +58,42 @@ def update_firebase_completed(job_id, version_id):
         print(f"❌ Failed to update Firebase: {e}")
 
 
+def update_firebase_error(job_id):
+    """Set ERROR status in Firebase - unlocks UI on pipeline failure."""
+    if not FIREBASE_AVAILABLE or not job_id:
+        print("Skipping Firebase error update: Not available or no job_id")
+        return False
+    
+    try:
+        ref = db.reference(f'jobs/{job_id}')
+        ref.update({
+            'status': 'Analysis Failed',
+            'progress': 100,
+            'last_update': datetime.datetime.now().isoformat()
+        })
+        print(f"⚠️ Firebase status set to 'Analysis Failed' for job: {job_id}")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to update Firebase error status: {e}")
+        return False
+
+
 def main():
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Send notification email and update Firebase status')
+    parser.add_argument('--status', type=str, help='Status mode: ERROR to mark job as failed')
+    parser.add_argument('--job_id', type=str, help='Firebase Job ID for error handling')
+    args = parser.parse_args()
+    
+    # Handle ERROR mode (pipeline failure)
+    if args.status == 'ERROR':
+        print("⚠️ Pipeline failure detected. Updating Firebase...")
+        if args.job_id:
+            update_firebase_error(args.job_id)
+        else:
+            print("No job_id provided for error handling.")
+        return  # Do NOT send email on failure
+    
     try:
         # Read version info from file (written by orchestrator)
         version_id = None

@@ -75,7 +75,8 @@ def update_status(message, progress=None, job_id=None):
 
 def run_script(script_name, args=None, job_id=None):
     print(f"[{datetime.datetime.now()}] Running {script_name}...")
-    cmd = [sys.executable, script_name]
+    # Use -u flag to disable Python output buffering (critical for real-time logs)
+    cmd = [sys.executable, "-u", script_name]
     if args:
         cmd.extend(args)
     
@@ -103,8 +104,8 @@ def run_script(script_name, args=None, job_id=None):
                 # Send to Firebase as status update (only [STATUS] lines)
                 if "[STATUS]" in line:
                     update_status(line, job_id=job_id)
-                    # Throttle updates for frontend readability
-                    time.sleep(2)
+                    # Throttle updates for frontend readability (Slow-Mo Replay)
+                    time.sleep(1.5)
 
         # Wait for completion
         return_code = process.wait()
