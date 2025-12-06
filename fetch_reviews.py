@@ -105,13 +105,14 @@ def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
     }
     
     # If title exists in raw data, map it. Otherwise create empty.
-    if 'title' in df_filtered.columns:
+    # If title exists in raw data, map it. Otherwise create empty.
+    if 'title' in df.columns:
         cols_to_keep['title'] = 'title'
     else:
-        df_filtered['title'] = None # Placeholder
+        df['title'] = None # Placeholder
         cols_to_keep['title'] = 'title'
 
-    df_final = df_filtered.rename(columns=cols_to_keep)[list(cols_to_keep.values())]
+    df_final = df.rename(columns=cols_to_keep)[list(cols_to_keep.values())]
     
     # Sort by thumbs_up_count (desc), then date
     df_final = df_final.sort_values(by=['thumbs_up_count', 'date'], ascending=[False, True])
@@ -126,7 +127,7 @@ def fetch_reviews(app_id, fetch_count, start_date=None, end_date=None):
         print(f"Date Range: {df_final['date'].min()} to {df_final['date'].max()}")
     else:
         print("Date Range: N/A")
-    print(f"Filtered Count: {len(df_filtered)}")
+    print(f"Filtered Count: {len(df)}")
     print(f"Final Count (after sort): {len(df_final)}")
     print(f"Max Thumbs Up found: {df_final['thumbs_up_count'].max() if not df_final.empty else 0}")
     print("========================")
