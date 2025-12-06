@@ -207,9 +207,13 @@ const Dashboard: React.FC = () => {
                             </div>
                             <div className="space-y-1 max-h-40 overflow-y-auto custom-scrollbar">
                                 {manifest[appId].versions.map((v) => {
-                                    const [date, countStr] = v.split('_');
-                                    const count = countStr ? countStr.replace('reviews', '') : '0';
-                                    const formattedDate = new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+                                    // Parse: YYYY-MM-DD_NNNreviews or YYYY-MM-DD_NNNreviews_v2
+                                    const parts = v.split('_');
+                                    const date = parts[0];
+                                    const countPart = parts[1] || '';
+                                    const versionTag = parts[2] || ''; // e.g., 'v2', 'v3'
+                                    const count = countPart.replace('reviews', '');
+                                    const formattedDate = new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
                                     return (
                                         <button
@@ -223,7 +227,10 @@ const Dashboard: React.FC = () => {
                                                 ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
                                                 : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
                                         >
-                                            <span>{formattedDate}</span>
+                                            <span>
+                                                {formattedDate}
+                                                {versionTag && <span className="ml-1 opacity-60">• {versionTag}</span>}
+                                            </span>
                                             <span className="opacity-50 text-[10px]">{count} revs</span>
                                         </button>
                                     );

@@ -363,7 +363,9 @@ def main():
             "recipient": args.email,
             "subject": f"Weekly Pulse: {app_name} Review Insights",
             "body_html": email_body_html,
-            "body_md": report_content
+            "body_md": report_content,
+            "app_name": app_name,
+            "dashboard_url": dashboard_url
         }
         
         with open('email_payload.json', 'w') as f:
@@ -379,8 +381,16 @@ def main():
         time.sleep(2)
         
         # Final status - this triggers the frontend redirect
-        update_status("COMPLETED: Deployment & Email Queued", progress=100, job_id=args.job_id)
-        print("[STATUS] COMPLETED (100%)")
+        # Include result_version so frontend knows exact folder
+        if FIREBASE_AVAILABLE and args.job_id:
+            ref = db.reference(f'jobs/{args.job_id}')
+            ref.update({
+                'status': 'COMPLETED',
+                'progress': 100,
+                'result_version': version_id,
+                'last_update': datetime.datetime.now().isoformat()
+            })
+        print(f"[STATUS] COMPLETED (100%) - Version: {version_id}")
     except Exception as e:
         print(f"Error sending final status: {e}")
 

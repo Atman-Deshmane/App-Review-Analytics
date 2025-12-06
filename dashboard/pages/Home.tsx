@@ -91,21 +91,23 @@ const Home: React.FC = () => {
                 if (isCompleted) {
                     setLogs(prev => [...prev, `🎉 Analysis complete! Preparing dashboard...`]);
 
-                    // Generate version string
-                    const today = new Date().toISOString().split('T')[0];
-                    const version = `${today}_${config.count}reviews`;
+                    // Read version from Firebase (Source of Truth)
+                    const resultVersion = data.result_version;
+
+                    if (!resultVersion) {
+                        console.warn("No result_version in Firebase, falling back to default.");
+                    }
+
+                    // Final version string - use Firebase value or fallback
+                    const finalVersion = resultVersion || `${new Date().toISOString().split('T')[0]}_${config.count}reviews`;
 
                     // Wait for dramatic effect + deployment propagation
                     setTimeout(() => {
                         setLogs(prev => [...prev, `🚀 Redirecting to your insights...`]);
 
-                        // Construct target URL
-                        // const today = new Date().toISOString().split('T')[0]; // Already defined above
-                        // const version = `${today}_${config.count}reviews`; // Already defined above
-
-                        // Redirect after delay
+                        // Redirect after delay using authoritative version
                         setTimeout(() => {
-                            navigate(`/dashboard?app=${targetAppId}&version=${version}&t=${Date.now()}`);
+                            navigate(`/dashboard?app=${targetAppId}&version=${finalVersion}&t=${Date.now()}`);
                         }, 15000); // 15s Delay for Deployment
                     }, 2000); // 2s delay for "Preparing dashboard..." message
 

@@ -23,6 +23,7 @@ export interface JobStatus {
     status: string;
     progress: number;
     last_update: string;
+    result_version?: string; // Added for version control
 }
 
 export const subscribeToJob = (jobId: string, callback: (data: JobStatus) => void) => {
