@@ -137,8 +137,9 @@
     },
     "com.swishapp": {
         "name": "com.swishapp",
-        "latest": "2025-12-06_100reviews_v3",
+        "latest": "2025-12-06_50reviews",
         "versions": [
+            "2025-12-06_50reviews",
             "2025-12-06_100reviews_v3",
             "2025-12-06_100reviews_v2",
             "2025-12-06_100reviews"
