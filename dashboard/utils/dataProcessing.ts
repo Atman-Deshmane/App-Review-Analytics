@@ -160,7 +160,7 @@ export const processReviews = (rawReviews: RawReview[], appId: string): Analyzed
     sentiment_likes_distribution // Return new distribution
   };
 };
-};
+
 
 export const calculateSentimentPercentage = (count: number, total: number): number => {
   if (total === 0) return 0;
