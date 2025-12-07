@@ -15,8 +15,8 @@ if not GEMINI_API_KEY:
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Use gemini-2.5-flash-preview-09-2025 as requested (closest match to "gemini 2.5 flash" in available models)
-MODEL_NAME = "gemini-2.5-flash-preview-09-2025"
+# Use gemini-2.0-flash as stable, higher-throughput model
+MODEL_NAME = "gemini-2.0-flash"
 
 generation_config = {
     "response_mime_type": "application/json"

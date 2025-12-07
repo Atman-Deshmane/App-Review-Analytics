@@ -16,8 +16,8 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # Model Configuration
 # Prioritize 2.5 preview, fallback to 2.0 flash exp if needed
-MODEL_NAME_PRIMARY = "gemini-2.5-flash-preview-09-2025"
-MODEL_NAME_FALLBACK = "gemini-2.0-flash-exp"
+MODEL_NAME_PRIMARY = "gemini-2.0-flash"
+MODEL_NAME_FALLBACK = "gemini-1.5-flash"
 
 def get_model(model_name):
     return genai.GenerativeModel(

@@ -24,7 +24,7 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Use the specific model requested, with fallback
-MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-2.5-flash-preview-09-2025")
+MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-2.0-flash")
 
 generation_config = {
     "response_mime_type": "application/json"
