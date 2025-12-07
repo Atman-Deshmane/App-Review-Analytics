@@ -287,11 +287,8 @@ const Dashboard: React.FC = () => {
                                 {new Date(data.metadata.date_range.start).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {new Date(data.metadata.date_range.end).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                             </div>
                         </div>
-                        <div className="hidden md:block text-right relative group">
-                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-end">
-                                Total Volume
-                                <span className="ml-1 w-3.5 h-3.5 rounded-full bg-slate-200 text-slate-500 text-[8px] font-bold flex items-center justify-center cursor-help" title="Includes the reviewer's own vote (+1 per review) to reflect true community impact.">i</span>
-                            </div>
+                        <div className="hidden md:block text-right">
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Volume</div>
                             <div className="text-sm font-bold text-slate-800 flex items-center justify-end">
                                 <ThumbsUp size={14} className="mr-1 text-slate-400" />
                                 {data.metadata.totalLikes.toLocaleString()} Likes

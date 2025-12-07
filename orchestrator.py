@@ -75,8 +75,7 @@ def update_status(message, progress=None, job_id=None):
 
 def run_script(script_name, args=None, job_id=None):
     print(f"[{datetime.datetime.now()}] Running {script_name}...")
-    # Use -u flag to disable Python output buffering (critical for real-time logs)
-    cmd = [sys.executable, "-u", script_name]
+    cmd = [sys.executable, script_name]
     if args:
         cmd.extend(args)
     
@@ -101,11 +100,8 @@ def run_script(script_name, args=None, job_id=None):
                 if any(keyword in line for keyword in noise_keywords):
                     continue
                 
-                # Send to Firebase as status update (only [STATUS] lines)
-                if "[STATUS]" in line:
-                    update_status(line, job_id=job_id)
-                    # Throttle updates for frontend readability (Slow-Mo Replay)
-                    time.sleep(1.5)
+                # Send to Firebase as status update
+                update_status(line, job_id=job_id)
 
         # Wait for completion
         return_code = process.wait()
@@ -383,22 +379,18 @@ def main():
         # Wait for deployment propagation
         print(f"[{datetime.datetime.now()}] Waiting for deployment propagation...")
         time.sleep(2)
-        # Set intermediate status DEPLOYING_DASHBOARD (90%)
-        # Final COMPLETED status will be set by send_notification.py after email + FTP
+        
+        # Final status - this triggers the frontend redirect
+        # Include result_version so frontend knows exact folder
         if FIREBASE_AVAILABLE and args.job_id:
             ref = db.reference(f'jobs/{args.job_id}')
             ref.update({
-                'status': 'DEPLOYING_DASHBOARD',
-                'progress': 90,
+                'status': 'COMPLETED',
+                'progress': 100,
                 'result_version': version_id,
                 'last_update': datetime.datetime.now().isoformat()
             })
-        
-        # Write version_info.txt for send_notification to read
-        with open('version_info.txt', 'w') as f:
-            f.write(f"{version_id}\n{args.job_id or ''}")
-        
-        print(f"[STATUS] DEPLOYING_DASHBOARD (90%) - Version: {version_id}")
+        print(f"[STATUS] COMPLETED (100%) - Version: {version_id}")
     except Exception as e:
         print(f"Error sending final status: {e}")
 

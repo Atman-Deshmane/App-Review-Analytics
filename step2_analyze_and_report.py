@@ -106,16 +106,6 @@ def analyze_and_report():
     {json.dumps(unique_tags)}
     """
     
-    # === Visual Feedback: Scan Top 5 Reviews (Sequential, No Threading) ===
-    # Print top 5 reviews BEFORE LLM call, with flush=True for immediate output
-    print("[STATUS] 🔍 Analyzing Top Reviews...", flush=True)
-    top_5_reviews = df.nlargest(5, 'thumbs_up_count')
-    for idx, (_, review) in enumerate(top_5_reviews.iterrows()):
-        review_snippet = str(review.get('review_text', ''))[:60]
-        print(f"[STATUS] 🔍 Scanning: {review_snippet}...", flush=True)
-    
-    # Now run the actual LLM clustering (no threading)
-    print("[STATUS] ⚙️ Identifying Top Themes...", flush=True)
     cluster_response_text = generate_content_with_fallback(cluster_prompt)
     
     try:
@@ -127,7 +117,7 @@ def analyze_and_report():
             for tag in tags:
                 tag_to_theme[tag] = theme
                 mapped_count += 1
-        print(f"Mapped {mapped_count}/{len(unique_tags)} tags.", flush=True)
+        print(f"Mapped {mapped_count}/{len(unique_tags)} tags.")
     except json.JSONDecodeError:
         print("Error parsing clustering response.")
         print(cluster_response_text)

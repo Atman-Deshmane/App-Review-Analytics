@@ -101,9 +101,6 @@ jobs:
             CMD="$CMD --end_date $END_DATE"
           fi
           
-          # Export JOB_ID for failure handler
-          echo "JOB_ID=$JOB_ID" >> $GITHUB_ENV
-          
           echo "Running: $CMD"
           eval $CMD
         
@@ -117,10 +114,10 @@ jobs:
           git push
 
       # --- 2. BUILD DASHBOARD ---
-      - name: Set up Node.js 20
+      - name: Set up Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '18'
           
       - name: Install and Build Dashboard
         working-directory: ./dashboard
@@ -167,13 +164,3 @@ jobs:
         with:
           name: history-archive
           path: dashboard/public/history/
-
-      # --- FAILURE HANDLER: Unlock UI if pipeline fails ---
-      - name: Handle Pipeline Failure
-        if: failure()
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
-        run: |
-          echo "Pipeline failed. Notifying Firebase to unlock UI..."
-          python utils/send_notification.py --status ERROR --job_id ${{ env.JOB_ID }}
