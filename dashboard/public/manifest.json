@@ -101,6 +101,13 @@
             "2025-12-05_50reviews"
         ]
     },
+    "com.lenskart.app": {
+        "name": "com.lenskart.app",
+        "latest": "2025-12-07_200reviews",
+        "versions": [
+            "2025-12-07_200reviews"
+        ]
+    },
     "com.netflix.mediaclient": {
         "name": "com.netflix.mediaclient",
         "latest": "2025-12-05_100reviews",
