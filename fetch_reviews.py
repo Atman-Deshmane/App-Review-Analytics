@@ -139,6 +139,11 @@ def process_and_save(raw_reviews: list, start_date: datetime, end_date: datetime
     # Convert to DataFrame
     df = pd.DataFrame(raw_reviews)
     
+    # +1 Vote Logic: Account for the reviewer's own implicit vote
+    # This is applied BEFORE any filtering/sorting to ensure fair ranking
+    df['thumbsUpCount'] = df['thumbsUpCount'] + 1
+    print("[PROCESS] Applied +1 vote logic (reviewer's own voice)")
+    
     # Ensure date is datetime
     df['at'] = pd.to_datetime(df['at'])
     
