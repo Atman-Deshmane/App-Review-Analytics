@@ -114,10 +114,10 @@ jobs:
           git push
 
       # --- 2. BUILD DASHBOARD ---
-      - name: Set up Node.js 18
+      - name: Set up Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           
       - name: Install and Build Dashboard
         working-directory: ./dashboard
