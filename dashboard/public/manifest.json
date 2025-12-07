@@ -17,8 +17,9 @@
     },
     "net.one97.paytm": {
         "name": "net.one97.paytm",
-        "latest": "2025-12-07_100reviews",
+        "latest": "2025-12-07_50reviews",
         "versions": [
+            "2025-12-07_50reviews",
             "2025-12-07_100reviews"
         ]
     },
