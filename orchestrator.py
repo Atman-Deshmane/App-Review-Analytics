@@ -380,19 +380,25 @@ def main():
         print(f"[{datetime.datetime.now()}] Waiting for deployment propagation...")
         time.sleep(2)
         
-        # Final status - this triggers the frontend redirect
-        # Include result_version so frontend knows exact folder
+        # HANDOFF: Set status to DEPLOYING_DASHBOARD (not COMPLETED)
+        # The notification script will set COMPLETED after FTP deployment finishes
         if FIREBASE_AVAILABLE and args.job_id:
             ref = db.reference(f'jobs/{args.job_id}')
             ref.update({
-                'status': 'COMPLETED',
-                'progress': 100,
-                'result_version': version_id,
+                'status': 'DEPLOYING_DASHBOARD',
+                'progress': 90,
                 'last_update': datetime.datetime.now().isoformat()
             })
-        print(f"[STATUS] COMPLETED (100%) - Version: {version_id}")
+        print(f"[STATUS] DEPLOYING_DASHBOARD (90%) - Version: {version_id}")
+        
+        # Persist state for notification script to read
+        with open('version_info.txt', 'w') as f:
+            f.write(f"{version_id}\n")
+            f.write(f"{args.job_id or ''}\n")
+        print(f"[{datetime.datetime.now()}] Version info saved for notification handoff.")
+        
     except Exception as e:
-        print(f"Error sending final status: {e}")
+        print(f"Error in handoff: {e}")
 
 if __name__ == "__main__":
     main()
