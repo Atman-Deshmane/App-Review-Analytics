@@ -45,6 +45,12 @@ def generate_with_retry(model_instance, prompt, max_retries=5, initial_cooldown=
     for attempt in range(max_retries):
         try:
             response = model_instance.generate_content(prompt)
+            try:
+                if hasattr(response, 'usage_metadata'):
+                    usage = response.usage_metadata
+                    print(f"[METRICS] Tokens used: {usage.total_token_count} (Prompt: {usage.prompt_token_count}, Output: {usage.candidates_token_count})")
+            except Exception:
+                pass # distinct from retry logic errors
             return response
         except Exception as e:
             error_str = str(e).lower()
