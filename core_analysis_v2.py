@@ -24,7 +24,7 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Use the specific model requested, with fallback
-MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-2.5-flash-preview-09-2025")
+MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-2.5-flash-lite")
 
 generation_config = {
     "response_mime_type": "application/json"
@@ -34,6 +34,31 @@ model = genai.GenerativeModel(
     model_name=MODEL_NAME,
     generation_config=generation_config
 )
+
+# Retry helper for rate limits (429 errors)
+def generate_with_retry(model_instance, prompt, max_retries=5, initial_cooldown=30):
+    """
+    Wraps model.generate_content with retry logic for rate limit errors.
+    Retries up to max_retries times, sleeping for cooldown seconds on 429 errors.
+    """
+    cooldown = initial_cooldown
+    for attempt in range(max_retries):
+        try:
+            response = model_instance.generate_content(prompt)
+            return response
+        except Exception as e:
+            error_str = str(e).lower()
+            if '429' in error_str or 'rate limit' in error_str or 'resource exhausted' in error_str:
+                if attempt < max_retries - 1:
+                    print(f"[STATUS] ⚠️ Rate limit hit. Cooling down for {cooldown}s... (Attempt {attempt + 1}/{max_retries})")
+                    time.sleep(cooldown)
+                    cooldown *= 2  # Exponential backoff
+                else:
+                    print(f"[STATUS] ❌ Rate limit exceeded after {max_retries} attempts.")
+                    raise
+            else:
+                # Non-rate-limit error, raise immediately
+                raise
 
 def step0_prepare_data():
     print("Step 0: Loading and Preparing Data...")
@@ -90,7 +115,7 @@ def step1_strategic_themes(reviews_text, current_date_str, manual_themes=None):
     """
     
     try:
-        response = model.generate_content(prompt)
+        response = generate_with_retry(model, prompt)
         themes = json.loads(response.text)
         
         if isinstance(themes, list):
@@ -137,7 +162,7 @@ def step2_classify_reviews(reviews_text, themes, df=None):
     
     try:
         # Increase token limit if needed, but 2.5 flash should handle it.
-        response = model.generate_content(prompt)
+        response = generate_with_retry(model, prompt)
         text = response.text
         # Clean up potential markdown code blocks
         if text.startswith("```json"):
@@ -197,7 +222,7 @@ def step3_deep_dive_tags(df_classified, themes):
         """
         
         try:
-            response = model.generate_content(prompt)
+            response = generate_with_retry(model, prompt)
             result = json.loads(response.text)
             
             defined_tags = result.get('defined_tags', [])
@@ -299,7 +324,7 @@ def step5_generate_report(df_final, themes, current_date_str, app_name="App"):
     # Call Gemini
     try:
         model_text = genai.GenerativeModel(MODEL_NAME)
-        response = model_text.generate_content(prompt)
+        response = generate_with_retry(model_text, prompt)
         return response.text
     except Exception as e:
         print(f"Error generating report with Gemini: {e}")

@@ -114,10 +114,10 @@ jobs:
           git push
 
       # --- 2. BUILD DASHBOARD ---
-      - name: Set up Node.js 18
+      - name: Set up Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           
       - name: Install and Build Dashboard
         working-directory: ./dashboard
@@ -154,8 +154,10 @@ jobs:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
         run: |
-          pip install markdown python-dotenv
+          pip install markdown python-dotenv firebase-admin premailer
           python utils/send_notification.py
 
       - name: Upload History Artifact
