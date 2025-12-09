@@ -45,6 +45,13 @@
             "2025-12-03_300reviews"
         ]
     },
+    "app.telecrm.enterprise3.in": {
+        "name": "app.telecrm.enterprise3.in",
+        "latest": "2025-12-09_200reviews",
+        "versions": [
+            "2025-12-09_200reviews"
+        ]
+    },
     "com.larksuite.suite": {
         "name": "com.larksuite.suite",
         "latest": "2025-12-03_300reviews",
