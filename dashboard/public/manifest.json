@@ -40,8 +40,9 @@
     },
     "com.whatsapp": {
         "name": "com.whatsapp",
-        "latest": "2025-12-03_300reviews",
+        "latest": "2025-12-12_300reviews",
         "versions": [
+            "2025-12-12_300reviews",
             "2025-12-03_300reviews"
         ]
     },
