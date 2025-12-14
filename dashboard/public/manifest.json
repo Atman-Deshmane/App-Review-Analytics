@@ -108,8 +108,9 @@
     },
     "com.duolingo": {
         "name": "com.duolingo",
-        "latest": "2025-12-05_50reviews",
+        "latest": "2025-12-14_100reviews",
         "versions": [
+            "2025-12-14_100reviews",
             "2025-12-05_50reviews"
         ]
     },
