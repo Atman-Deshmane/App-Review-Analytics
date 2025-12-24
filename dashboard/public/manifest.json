@@ -130,6 +130,13 @@
             "2025-12-03_300reviews"
         ]
     },
+    "com.popclub.android": {
+        "name": "com.popclub.android",
+        "latest": "2025-12-24_50reviews",
+        "versions": [
+            "2025-12-24_50reviews"
+        ]
+    },
     "com.google.android.apps.bard": {
         "name": "com.google.android.apps.bard",
         "latest": "2025-12-03_100reviews",
