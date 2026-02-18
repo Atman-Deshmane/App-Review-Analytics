@@ -80,8 +80,9 @@
     },
     "com.instagram.android": {
         "name": "com.instagram.android",
-        "latest": "2025-12-03_50reviews",
+        "latest": "2026-02-18_200reviews",
         "versions": [
+            "2026-02-18_200reviews",
             "2025-12-03_50reviews"
         ]
     },
