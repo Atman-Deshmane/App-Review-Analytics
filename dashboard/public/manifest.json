@@ -151,6 +151,13 @@
             "2025-12-04_50reviews"
         ]
     },
+    "net.kusik.wristchess": {
+        "name": "net.kusik.wristchess",
+        "latest": "2026-02-19_200reviews",
+        "versions": [
+            "2026-02-19_200reviews"
+        ]
+    },
     "com.netflix.mediaclient": {
         "name": "com.netflix.mediaclient",
         "latest": "2025-12-05_100reviews",

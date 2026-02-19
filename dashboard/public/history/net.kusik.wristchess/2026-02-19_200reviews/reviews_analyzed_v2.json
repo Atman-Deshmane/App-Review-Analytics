@@ -1,0 +1,79 @@
+[
+    {
+        "date":"2026-02-17 04:15:56",
+        "rating":2,
+        "review_text":"could be fun if the controls weren't broken",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":1,
+        "theme":"App Functionality",
+        "sentiment":"Negative",
+        "tag":"Broken Controls"
+    },
+    {
+        "date":"2026-02-15 08:10:55",
+        "rating":3,
+        "review_text":"Its good but I can't uninstall the app after",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":2,
+        "theme":"App Functionality",
+        "sentiment":"Negative",
+        "tag":"Uninstall Issues"
+    },
+    {
+        "date":"2026-02-13 20:24:40",
+        "rating":5,
+        "review_text":"It was great",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":3,
+        "theme":"General Feedback",
+        "sentiment":"Positive",
+        "tag":"Positive Feedback"
+    },
+    {
+        "date":"2026-02-12 17:37:25",
+        "rating":5,
+        "review_text":"Wow it's very good",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":4,
+        "theme":"General Feedback",
+        "sentiment":"Positive",
+        "tag":"Positive Feedback"
+    },
+    {
+        "date":"2026-02-07 18:16:28",
+        "rating":5,
+        "review_text":"AWSOME!",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":5,
+        "theme":"General Feedback",
+        "sentiment":"Positive",
+        "tag":"Positive Feedback"
+    },
+    {
+        "date":"2026-02-04 00:38:56",
+        "rating":5,
+        "review_text":"Awesome",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":6,
+        "theme":"General Feedback",
+        "sentiment":"Positive",
+        "tag":"Positive Feedback"
+    },
+    {
+        "date":"2026-01-20 20:09:23",
+        "rating":5,
+        "review_text":"I'm buns at chess so I use hint so I look good",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":7,
+        "theme":"Other",
+        "sentiment":"Positive",
+        "tag":"Other"
+    }
+]
