@@ -125,6 +125,13 @@
             "2025-12-08_200reviews"
         ]
     },
+    "com.magicstudio.android": {
+        "name": "com.magicstudio.android",
+        "latest": "2026-03-10_200reviews",
+        "versions": [
+            "2026-03-10_200reviews"
+        ]
+    },
     "com.whatsapp": {
         "name": "com.whatsapp",
         "latest": "2025-12-12_300reviews",
