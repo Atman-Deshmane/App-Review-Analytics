@@ -124,6 +124,13 @@
             "2025-12-03_100reviews"
         ]
     },
+    "com.healthifyme.basic": {
+        "name": "com.healthifyme.basic",
+        "latest": "2026-03-15_200reviews",
+        "versions": [
+            "2026-03-15_200reviews"
+        ]
+    },
     "xyz.penpencil.physicswala": {
         "name": "xyz.penpencil.physicswala",
         "latest": "2025-12-08_50reviews",
