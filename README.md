@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 📊 App Review Insights Analyzer
 
@@ -422,4 +422,3 @@ This project was built as **Milestone 2** of the [NextLeap AI Bootcamp](https://
 **🌐 [Live Dashboard](https://100cr.cloud/reviews/)** · **📧 [Weekly reports, automated](https://github.com/Atman-Deshmane/App-Review-Analytics/actions)** · **🤖 Powered by Gemini AI**
 
 </div>
-]]>
