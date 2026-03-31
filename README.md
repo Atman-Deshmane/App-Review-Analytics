@@ -1,441 +1,425 @@
+<![CDATA[<div align="center">
+
 # 📊 App Review Insights Analyzer
 
-> **🌐 Live Demo:** [https://100cr.cloud/reviews/](https://100cr.cloud/reviews/)
+### _From noise to signal — in one pipeline._
 
-An intelligent, automated system that transforms app store reviews into actionable insights for product and leadership teams. Built for **NextLeap AI Bootcamp Milestone 2**.
+**Turn thousands of Play Store reviews into a weekly leadership briefing, powered by Gemini AI.**
+
+[![Live Dashboard](https://img.shields.io/badge/🌐_Live_Demo-100cr.cloud-4f46e5?style=for-the-badge)](https://100cr.cloud/reviews/)
+[![GitHub Actions](https://img.shields.io/badge/CI/CD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/Atman-Deshmane/App-Review-Analytics/actions)
+[![Gemini AI](https://img.shields.io/badge/AI-Gemini_2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 
 ---
 
-## 🎯 Overview
+<img src="assets/dashboard_overview.png" alt="Dashboard Overview — Groww review analytics with theme distribution, sentiment scores, and historical tracking" width="90%"/>
 
-This project automates the complete workflow of collecting, analyzing, and reporting on Google Play Store reviews using AI-powered insights. It extracts strategic themes, generates weekly leadership reports, and delivers them via email with interactive dashboards.
+<br/>
 
-### Key Features
+*Real dashboard output — 300 reviews analyzed, 5 themes extracted, sentiment mapped. All automated.*
 
-- 🤖 **AI-Powered Analysis**: Uses Google's Gemini 2.5 Flash for intelligent theme extraction and sentiment analysis
-- 📈 **Interactive Dashboard**: Beautiful React-based visualization with filtering, search, and historical comparisons
-- 📧 **Automated Email Reports**: Weekly pulse reports delivered automatically with dynamic dashboard links
-- 🔄 **CI/CD Pipeline**: Fully automated via GitHub Actions with scheduled runs and manual triggers
-- 🌐 **Live Deployment**: Hosted on Hostinger with continuous deployment
-- 🎨 **Dark Mode Support**: Responsive design with both light and dark themes
+</div>
+
+---
+
+## 💡 The Problem
+
+Product teams drown in app reviews. Thousands of them. Every week.
+
+Most review dashboards show you **stars and counts**. But what leadership actually needs is:
+
+> *"What are users frustrated about this week? What should we fix next? Show me the quotes."*
+
+Manually reading 300+ reviews, grouping them into themes, picking quotes, and writing a report takes **hours**. And it's the kind of work nobody wants to do every Monday morning.
+
+**This project does it in ~4 minutes. Fully automated. Zero human intervention.**
+
+---
+
+## 🎯 What It Does
+
+One pipeline. Five stages. Complete automation.
+
+```
+Paste a Play Store link
+       ↓
+  Fetch 300 reviews (ranked by helpfulness)
+       ↓
+  AI identifies 5 strategic themes
+       ↓
+  Every review gets classified + sentiment-tagged
+       ↓
+  Weekly pulse report + email + live dashboard
+```
+
+**The output is a one-page leadership briefing** with:
+- 📌 Top 3 themes with impact scores
+- 💬 3 real user quotes that tell the story
+- ⚡ 3 specific, actionable recommendations
+- 📧 Delivered to your inbox. Every Monday. Automatically.
+
+---
+
+## 🖥️ Live Demo
+
+> **🌐 [https://100cr.cloud/reviews/](https://100cr.cloud/reviews/)**
+
+Paste any Play Store app link → Configure → Watch the AI work in real-time → Get your dashboard.
+
+<div align="center">
+
+| Home — Paste & Analyze | Themes & Sentiment Clusters |
+|:---:|:---:|
+| <img src="assets/home_page.png" alt="Home page with search bar to paste Play Store links" width="100%"/> | <img src="assets/themes_insights.png" alt="Theme analysis showing strategic themes with sentiment bubble clusters" width="100%"/> |
+
+</div>
 
 ---
 
 ## 🏗️ Architecture
 
-### System Components
+This isn't a notebook. It's a **production-grade pipeline** with CI/CD, real-time status tracking, and automated deployment.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       GitHub Actions Workflow                    │
-│  (Scheduled: Weekly | Manual: workflow_dispatch)                 │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                         orchestrator.py                          │
-│  Coordinates the entire pipeline with status tracking           │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-        ┌─────────────────────┼─────────────────────┐
-        ↓                     ↓                     ↓
-┌──────────────┐    ┌──────────────────┐    ┌──────────────┐
-│ fetch_reviews│    │ core_analysis_v2 │    │ archive_     │
-│     .py      │ →  │      .py         │ →  │  history     │
-│              │    │                  │    │              │
-│ Scrapes Play │    │ AI Analysis:     │    │ Versions &   │
-│ Store data   │    │ • Themes         │    │ Manifest     │
-│              │    │ • Tags           │    │              │
-│              │    │ • Sentiment      │    │              │
-└──────────────┘    └──────────────────┘    └──────────────┘
-                              ↓
-        ┌─────────────────────┼─────────────────────┐
-        ↓                     ↓                     ↓
-┌──────────────┐    ┌──────────────────┐    ┌──────────────┐
-│ Email Report │    │ Generate Manifest│    │ Deploy to    │
-│  (HTML/Text) │    │  (history.json)  │    │  Hostinger   │
-└──────────────┘    └──────────────────┘    └──────────────┘
+                        ┌──────────────────────────────────┐
+                        │     GitHub Actions (CI/CD)       │
+                        │  Schedule: Weekly | On-Demand    │
+                        └──────────────┬───────────────────┘
+                                       │
+                        ┌──────────────▼───────────────────┐
+                        │        orchestrator.py            │
+                        │  Pipeline coordinator + status    │
+                        │  tracking via Firebase RTDB       │
+                        └──────────────┬───────────────────┘
+                                       │
+              ┌────────────────────────┼────────────────────────┐
+              │                        │                        │
+   ┌──────────▼──────────┐  ┌─────────▼──────────┐  ┌─────────▼──────────┐
+   │   fetch_reviews.py  │  │ core_analysis_v2.py│  │  generate_manifest │
+   │                     │  │                     │  │       .py          │
+   │ • Scan & Filter     │  │ • Gemini 2.5 Flash  │  │ • Version control  │
+   │ • Sort by helpful-  │→ │ • Theme discovery   │→ │ • History tracking │
+   │   ness (thumbs up)  │  │ • Sentiment tagging │  │ • Manifest.json    │
+   │ • Date-range filter │  │ • Deep-dive tags    │  │                    │
+   │ • App metadata      │  │ • Report generation │  │                    │
+   └─────────────────────┘  └─────────────────────┘  └────────────────────┘
+                                       │
+              ┌────────────────────────┼────────────────────────┐
+              │                        │                        │
+   ┌──────────▼──────────┐  ┌─────────▼──────────┐  ┌─────────▼──────────┐
+   │  Email Notification │  │  Archive to History │  │  FTP Deploy to     │
+   │  (HTML + Markdown)  │  │  (Versioned folders)│  │  Hostinger         │
+   │  + Dashboard Link   │  │  + Git commit/push  │  │  (Live Dashboard)  │
+   └─────────────────────┘  └─────────────────────┘  └────────────────────┘
 ```
 
-### Tech Stack
+### How It's Different
 
-**Backend (Python)**
-- `google-play-scraper` - Review data collection
-- `google-generativeai` - Gemini AI integration
-- `pandas` - Data processing
-- `firebase-admin` - Real-time status updates
-- `smtplib` - Email delivery
-
-**Frontend (React + TypeScript)**
-- React 18 with TypeScript
-- Recharts for data visualization
-- Tailwind CSS for styling
-- Vite for build tooling
-
-**Infrastructure**
-- GitHub Actions for CI/CD
-- Hostinger for web hosting
-- Firebase Realtime Database for status tracking
-- FTP deployment
+| Feature | Typical Approach | This Project |
+|:---|:---|:---|
+| **Review Selection** | Latest reviews (often low-effort/fake) | **Most helpful** — sorted by thumbs-up count |
+| **Theme Detection** | Manual categories | **AI-discovered** — Gemini identifies themes from content |
+| **Execution** | Manual notebook run | **Fully automated** — GitHub Actions on schedule |
+| **Output** | CSV dump | **Executive-ready briefing** + interactive dashboard |
+| **Deployment** | None | **Live at [100cr.cloud/reviews](https://100cr.cloud/reviews/)** with FTP CI/CD |
+| **Status Tracking** | None | **Real-time** via Firebase Realtime Database |
 
 ---
 
-## 📦 Installation & Setup
+## 📧 Sample Email Report
+
+The system generates and emails a formatted weekly pulse. Here's a real output:
+
+```
+Subject: Weekly Pulse: Groww Review Insights
+
+──────────────────────────────────────────────
+
+## Weekly App Review Pulse: Groww Leadership Briefing
+Reporting Period: Nov 20 to Nov 26
+
+### Executive Summary
+User demand for sophisticated data visualization (Total Asset View,
+GIFT Nifty) is driving the majority of actionable sentiment friction.
+Core trading execution reliability faces persistent scrutiny.
+
+### Top Themes (Ranked by User Impact)
+
+| Theme                                    | Impact Score | Top Quote Votes |
+|:-----------------------------------------|:-------------|:----------------|
+| Platform Features, UX & Data Viz         | 21,708       | 9,652           |
+| Account, Onboarding & Fund Management    | 9,644        | 3,572           |
+| Trading & Investment Execution           | 6,804        | 874             |
+| Customer Support & Transparency          | 3,947        | 819             |
+| Mutual Funds & Long-Term Wealth          | 2,413        | 1,180           |
+
+### Recommended Actions
+1. Accelerate "Total Asset Value" dashboard view
+2. Audit real-time trading data feeds for latency
+3. Leverage MF automation success in marketing campaigns
+
+──────────────────────────────────────────────
+
+                [ Open Interactive Dashboard → ]
+```
+
+---
+
+## 🧠 AI Analysis — Under the Hood
+
+The analysis pipeline uses **Google Gemini 2.5 Flash** across 4 sequential AI stages:
+
+### Stage 1: Strategic Theme Discovery
+```
+Input: 300 review texts (ranked by helpfulness)
+Prompt: "Categorize into 5 high-level, plain-English buckets"
+Output: ["App Glitches", "Feature Requests", "Charges & Fees", "Customer Support", "Other"]
+```
+> **Design decision:** We enforce plain English labels ("Login Issues", not "Authentication Friction") to keep reports accessible to non-technical leadership.
+
+### Stage 2: Global Classification
+Every review gets mapped to one theme + one sentiment (Positive/Negative).
+The full review corpus is sent as context — so the AI classifies with **global awareness**, not review-by-review.
+
+### Stage 3: Deep-Dive Tagging
+For each theme, a separate AI call generates **3-6 granular sub-tags** (e.g., under "App Glitches" → "App Crash", "Slow Loading", "OTP Failure"). Every review gets mapped to a tag — this powers the dashboard's drill-down.
+
+### Stage 4: Report Generation
+All aggregated data (theme stats, impact scores, top quotes) is fed to Gemini to write a concise leadership briefing with executive summary, quotes, and recommendations.
+
+> **Rate limit handling:** All AI calls use exponential backoff (30s → 60s → 120s) with up to 5 retries. Token usage is logged per call.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|:------|:-----------|:--------|
+| **AI Engine** | Google Gemini 2.5 Flash | Theme extraction, classification, report writing |
+| **Data Collection** | `google-play-scraper` | Play Store review fetching with pagination |
+| **Data Processing** | `pandas` | Filtering, ranking, merging |
+| **Dashboard** | React 18 + TypeScript + Tailwind CSS | Interactive visualization |
+| **Build** | Vite | Fast bundling for production |
+| **Animations** | Framer Motion | Smooth UI transitions |
+| **CI/CD** | GitHub Actions | Automated weekly runs + on-demand triggers |
+| **Status Tracking** | Firebase Realtime Database | Live progress updates to frontend |
+| **Hosting** | Hostinger (FTP deploy) | Production dashboard at 100cr.cloud |
+| **Email** | SMTP (Gmail) | Formatted HTML report delivery |
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Python 3.11+
-- Node.js 18+ (for dashboard development)
-- Gemini API Key
-- Firebase Project (for status tracking)
-- Email Account (Gmail recommended)
+- Node.js 18+ (for dashboard)
+- [Gemini API Key](https://ai.google.dev/)
 
-### Backend Setup
+### 1. Clone & Install
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Atman-Deshmane/App-Review-Analytics.git
-   cd App-Review-Analytics
-   ```
+```bash
+git clone https://github.com/Atman-Deshmane/App-Review-Analytics.git
+cd App-Review-Analytics
 
-2. **Install Python dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+# Python backend
+pip install -r requirements.txt
 
-3. **Configure environment variables:**
-   Create a `.env` file in the root directory:
-   ```env
-   # Gemini AI
-   GEMINI_API_KEY_NEXTLEAP=your_gemini_api_key
-   GEMINI_MODEL_NAME=gemini-2.5-flash-preview-09-2025
-   
-   # Email Configuration
-   EMAIL_SENDER=your_email@gmail.com
-   EMAIL_PASSWORD=your_app_password
-   EMAIL_RECIPIENT=recipient@example.com
-   
-   # Firebase (for status tracking)
-   FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
-   FIREBASE_DB_URL=https://your-project.firebaseio.com
-   ```
+# Dashboard frontend
+cd dashboard && npm install && cd ..
+```
 
-### Frontend Setup (Dashboard)
+### 2. Configure Environment
 
-1. **Navigate to dashboard directory:**
-   ```bash
-   cd dashboard
-   ```
+Create `.env` in the root:
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+```env
+# Required
+GEMINI_API_KEY_NEXTLEAP=your_gemini_api_key
 
-3. **Configure Firebase:**
-   Create `dashboard/.env`:
-   ```env
-   VITE_FIREBASE_API_KEY=your_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=your-project-id
-   VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-   VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
-   VITE_FIREBASE_APP_ID=1:123456789:web:abcdef
-   VITE_FIREBASE_DB_URL=https://your-project.firebaseio.com
-   
-   VITE_GITHUB_TOKEN=your_github_token
-   VITE_GITHUB_OWNER=Atman-Deshmane
-   VITE_GITHUB_REPO=App-Review-Analytics
-   ```
+# Email (optional — for report delivery)
+EMAIL_SENDER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+EMAIL_RECIPIENT=recipient@example.com
 
-4. **Run development server:**
-   ```bash
-   npm run dev
-   ```
+# Firebase (optional — for real-time status tracking)
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
+FIREBASE_DB_URL=https://your-project.firebaseio.com
+```
 
----
-
-## 🚀 Usage
-
-### Manual Local Execution
-
-Run the complete pipeline locally:
+### 3. Run the Pipeline
 
 ```bash
 python orchestrator.py \
   --app_id com.nextbillion.groww \
   --count 200 \
   --themes "auto" \
-  --email recipient@example.com
+  --email you@example.com
 ```
 
 **Parameters:**
-- `--app_id`: Google Play Store app ID
-- `--count`: Number of reviews to fetch (default: 200)
-- `--themes`: Comma-separated themes or "auto" for AI detection
-- `--email`: Email address for report delivery
-- `--start_date`: Optional start date (YYYY-MM-DD)
-- `--end_date`: Optional end date (YYYY-MM-DD)
-- `--job_id`: Optional job ID for status tracking
+| Flag | Default | Description |
+|:-----|:--------|:------------|
+| `--app_id` | `com.nextbillion.groww` | Play Store package ID |
+| `--count` | `200` | Number of reviews to fetch |
+| `--themes` | `auto` | `auto` for AI detection, or comma-separated list |
+| `--email` | — | Recipient for the report email |
+| `--start_date` | 2 weeks ago | `YYYY-MM-DD` format |
+| `--end_date` | Today | `YYYY-MM-DD` format |
+| `--job_id` | — | Firebase job ID for status tracking |
 
-### Automated Execution (GitHub Actions)
+### 4. Run the Dashboard Locally
 
-**Scheduled Run:**
-- Automatically runs weekly (configurable in `.github/workflows/weekly_pulse.yml`)
-
-**Manual Trigger:**
-1. Go to GitHub Actions → "Weekly Review Analysis"
-2. Click "Run workflow"
-3. Configure parameters:
-   - App ID (default: Groww)
-   - Review count
-   - Email recipient
-   - Date range (optional)
+```bash
+cd dashboard
+npm run dev
+# → Open http://localhost:5173/reviews/
+```
 
 ---
 
-## 📊 Output & Deliverables
+## 🔄 Automated Weekly Runs (GitHub Actions)
 
-### 1. Weekly Pulse Report (`weekly_pulse_report.md`)
+The pipeline runs automatically every **Monday at 9:00 AM IST** via GitHub Actions.
 
-A concise, executive-ready markdown report containing:
-- **Executive Summary**: Key insights in 2-3 sentences
-- **Top Themes**: Top 3-5 themes with impact scores
-- **Voice of Customer**: Impactful user quotes
-- **Recommended Actions**: 3 specific, actionable recommendations
+**Manual trigger:**
+1. Go to [Actions → Weekly App Review Pulse](https://github.com/Atman-Deshmane/App-Review-Analytics/actions)
+2. Click **"Run workflow"**
+3. Configure: app ID, review count, email, date range
+4. The pipeline fetches → analyzes → archives → deploys → emails
 
-### 2. Email Report
-
-Professional HTML email with:
-- Embedded report content
-- Interactive dashboard button with dynamic URL
-- Light/Dark mode support
-- Beautiful gradient button design
-
-### 3. Interactive Dashboard
-
-Features:
-- **Theme Distribution**: Visual breakdown of review themes
-- **Sentiment Analysis**: Positive/Negative/Neutral counts
-- **Tag Explorer**: Drill down into specific issues
-- **Search & Filtering**: Find specific reviews
-- **Historical Comparison**: Compare across different analysis runs
-- **Export**: Download filtered data as CSV
-
-### 4. Data Files
-
-- `temp_reviews_raw.csv`: Raw scraped reviews
-- `temp_reviews_analyzed.json`: AI-tagged and categorized reviews
-- `dashboard/public/history/{app_id}/{version}/`: Archived analysis results
-
----
-
-## 📈 Analysis Methodology
-
-### Step 1: Data Collection
-- Fetches "Most Relevant" reviews from Google Play Store
-- Filters by date range (default: last 2 weeks)
-- Sorts by helpfulness (thumbs up count)
-- Captures: content, rating, date, thumbs up count
-
-### Step 2: AI-Powered Theme Extraction
-Uses Gemini AI to:
-1. **Identify Strategic Themes** (5 max)
-   - Auto-discovers themes from review content
-   - Uses plain English labels (e.g., "Login Issues", "Customer Support")
-   - Avoids corporate jargon
-
-2. **Classify Reviews**
-   - Assigns each review to one theme
-   - Determines sentiment (Positive/Negative/Neutral)
-   - Global context analysis
-
-3. **Deep-Dive Tagging**
-   - Generates 3-6 specific tags per theme
-   - Maps every review to a granular tag
-   - Dashboard-ready categorization
-
-### Step 3: Report Generation
-- Aggregates theme statistics
-- Calculates impact scores (sum of thumbs up)
-- Selects top quotes per theme
-- Generates actionable recommendations via AI
-
----
-
-## 🔧 Configuration
-
-### Supported Apps
-
-Currently configured for:
-- **Groww** (default)
-- **Meesho**
-- **Flipkart**
-- **Amazon Shopping**
-- **Formula 1**
-
-Add more in `orchestrator.py`:
-```python
-APP_NAMES = {
-    "your.app.id": "App Display Name",
-}
+**What happens automatically:**
+```
+GitHub Actions triggers → orchestrator.py runs
+  → Reviews fetched and analyzed
+  → Results archived to history/ (versioned: 2026-03-30_300reviews)
+  → Git commit + push (history data)
+  → Dashboard rebuilt and deployed via FTP
+  → Email sent with report + dashboard link
 ```
 
 ### GitHub Secrets Required
 
-Set in repository settings → Secrets:
-- `GEMINI_API_KEY_NEXTLEAP`
-- `EMAIL_SENDER`
-- `EMAIL_PASSWORD`
-- `EMAIL_RECIPIENT`
-- `FIREBASE_SERVICE_ACCOUNT`
-- `FIREBASE_DB_URL`
-- `FTP_SERVER`
-- `FTP_USERNAME`
-- `FTP_PASSWORD`
-- All `VITE_*` environment variables
+| Secret | Purpose |
+|:-------|:--------|
+| `GEMINI_API_KEY_NEXTLEAP` | Gemini AI access |
+| `EMAIL_SENDER` / `EMAIL_PASSWORD` / `EMAIL_RECIPIENT` | Report delivery |
+| `FIREBASE_SERVICE_ACCOUNT` / `FIREBASE_DB_URL` | Real-time status |
+| `FTP_SERVER` / `FTP_USERNAME` / `FTP_PASSWORD` | Dashboard deployment |
+| `VITE_FIREBASE_*` | Dashboard Firebase config |
+| `VITE_GITHUB_TOKEN` / `VITE_GITHUB_OWNER` / `VITE_GITHUB_REPO` | Dashboard data fetch |
 
 ---
 
-## 🎨 Dashboard Features
+## 📊 Dashboard Features
 
-### Theme Analysis
-- Pie chart showing theme distribution
-- Bar chart for impact scores
-- Sentiment breakdown per theme
+### Overview
+- **KPI Cards** — Total reviews, average rating, sentiment score, critical issues count
+- **Dominant Themes** — Bar visualization with sentiment indicators
+- **Sentiment Split** — Positive/Neutral/Negative by community voice (likes)
+
+### Themes & Insights
+- **Strategic Theme Cards** — Impact score + sentiment split per theme
+- **Sentiment Cluster Bubbles** — Interactive bubbles sized by volume, colored by sentiment gradient (red↔green)
+- **Topic Inspector** — Click any bubble to see matching user verbatim in a slide-out panel
 
 ### Review Explorer
-- Searchable table with all reviews
-- Filter by theme, tag, sentiment, rating
-- Sort by date or helpfulness
+- Full review table with search, filter by theme/tag/sentiment/rating
+- Rating badge, date, thumbs-up count, app version
 
-### Historical Analysis
-- Version selector dropdown
-- Compare metrics across time periods
-- Trend visualization
-
-### Export & Share
-- CSV export of filtered reviews
-- Shareable dashboard URLs with query parameters
-- Print-friendly layout
+### History & Versioning
+- **Sidebar version selector** — Browse past analysis runs (e.g., "30 Mar • 300 revs")
+- **URL-based navigation** — `?app=com.nextbillion.groww&version=2026-03-30_300reviews`
+- **Multi-app support** — 23 apps analyzed and counting
 
 ---
 
-## 🔄 CI/CD Pipeline
+## 📂 Project Structure
 
-### GitHub Actions Workflow
-
-**Triggers:**
-- Schedule: Weekly (Sunday 12:00 UTC)
-- Manual: `workflow_dispatch`
-- Push to main (deployment only)
-
-**Steps:**
-1. Setup Python & Node.js environments
-2. Install dependencies
-3. Run orchestrator pipeline
-4. Build React dashboard
-5. Deploy to Hostinger via FTP
-6. Send email report
-
-**Deployment:**
-- Automatic on push to `main`
-- Deploys to: `https://100cr.cloud/reviews/`
-- Includes all analysis history
-
----
-
-## 📧 Email Report Format
-
-### Subject
 ```
-Weekly App Review Pulse: [App Name] ([Date Range])
-```
-
-### Content
-- Plain text version for compatibility
-- HTML version with styling
-- Dark mode support
-- Interactive button with dynamic dashboard link
-
-### Button URL Format
-```
-https://100cr.cloud/reviews/dashboard?app={app_id}&version={version_id}
-
-Example:
-https://100cr.cloud/reviews/dashboard?app=com.nextbillion.groww&version=2025-12-03_200reviews
+App-Review-Analytics/
+├── orchestrator.py              # Pipeline coordinator
+├── fetch_reviews.py             # Play Store scraper (Scan & Filter)
+├── core_analysis_v2.py          # Gemini AI analysis engine
+├── generate_manifest.py         # Version manifest generator
+├── requirements.txt             # Python dependencies
+│
+├── dashboard/                   # React + TypeScript frontend
+│   ├── App.tsx                  # Main app (Router + Dashboard)
+│   ├── pages/Home.tsx           # Landing page (search + config)
+│   ├── components/
+│   │   ├── ConfigModal.tsx      # Analysis configuration UI
+│   │   ├── TerminalLoader.tsx   # Real-time progress terminal
+│   │   ├── BubbleViz.tsx        # Sentiment cluster visualization
+│   │   ├── ReviewDrawer.tsx     # Side panel review inspector
+│   │   └── ThemeCard.tsx        # Theme summary card
+│   ├── utils/
+│   │   ├── firebase.ts          # Firebase RTDB subscription
+│   │   ├── githubApi.ts         # GitHub Actions dispatch
+│   │   └── dataProcessing.ts   # Review data transformation
+│   └── public/history/          # Archived analysis results
+│       ├── com.nextbillion.groww/
+│       ├── com.meesho.supply/
+│       └── ... (23 apps)
+│
+├── utils/
+│   └── send_notification.py     # Decoupled email sender
+│
+├── .github/workflows/
+│   ├── weekly_pulse.yml         # Main CI/CD pipeline
+│   └── deploy.yml               # Dashboard-only deploy
+│
+├── history/                     # Legacy analysis archive
+├── email_draft.txt              # Sample email output
+└── assets/                      # README screenshots
 ```
 
 ---
 
 ## ⚠️ Known Limitations
 
-- **Rate Limits**: Gemini API has rate limits; conservative batch sizes used
-- **Review Scraping**: Limited to publicly available reviews (no login required)
-- **Date Filtering**: Play Store doesn't provide exact timestamps; filtered by approximate dates
-- **Language**: Currently optimized for English reviews
-- **Preview Model**: Using `gemini-2.5-flash-preview-09-2025` which may change
+- **Rate Limits** — Gemini API has per-minute quotas; the pipeline uses exponential backoff but may stall on free-tier keys with large review counts
+- **Review Language** — Optimized for English reviews; non-English reviews may reduce theme accuracy
+- **Date Precision** — Play Store doesn't expose exact timestamps; dates are approximate
+- **Review Freshness** — Sorting by "Most Relevant" biases toward established, high-engagement reviews over very recent ones (this is intentional — see design rationale below)
+
+### 🎯 Design Rationale: Why "Most Helpful" Over "Newest"
+
+Most review analysis tools sort by newest. We deliberately don't:
+
+1. **Newest reviews are often low-effort** — "good app 👍" or "bad app 👎" with no actionable content
+2. **Many newest reviews may be fake/incentivized** — especially for popular apps
+3. **"Most Helpful" reviews are community-vetted** — high thumbs-up count means real users agree
+4. **Coverage is still recent** — most helpful reviews from the last 12 weeks overlap heavily with recent reviews
+5. **Impact scoring uses thumbs-up** — a review with 5,000 likes represents 5,000+ users' sentiment, not just one
 
 ---
 
-## 🐛 Troubleshooting
+## 🤝 Built For
 
-### Common Issues
+This project was built as **Milestone 2** of the [NextLeap AI Bootcamp](https://www.nextleap.app/), demonstrating:
 
-**Issue**: Email not sending
-- Check `EMAIL_SENDER` and `EMAIL_PASSWORD` in `.env`
-- For Gmail, use App Password (not regular password)
-- Enable "Less secure app access" or use OAuth2
-
-**Issue**: GitHub Action fails
-- Verify all secrets are set correctly
-- Check Firebase credentials format
-- Review workflow logs for specific errors
-
-**Issue**: Dashboard not loading data
-- Ensure `history.json` manifest is generated
-- Check browser console for errors
-- Verify GitHub API token has repo access
-
-**Issue**: Model not found error
-- Update `GEMINI_MODEL_NAME` to a valid model
-- Check available models: `gemini-1.5-flash`, `gemini-1.5-pro`
-
----
-
-## 🤝 Contributing
-
-This project was built for NextLeap AI Bootcamp Milestone 2. Contributions are welcome!
-
-### Development Workflow
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test locally
-5. Submit a pull request
-
----
-
-## 📄 License
-
-This project is part of NextLeap AI Bootcamp coursework.
+| Skill Area | What's Demonstrated |
+|:-----------|:-------------------|
+| **LLMs & Prompting** | Multi-stage Gemini prompting: theme discovery → classification → tagging → report writing |
+| **Summarization** | Condensing 300 reviews into a 250-word executive briefing |
+| **AI Workflow Automation** | End-to-end pipeline: Import → Group → Generate Note → Draft Email |
+| **Production Engineering** | CI/CD, Firebase RTDB, FTP deployment, version control |
 
 ---
 
 ## 👨‍💻 Author
 
 **Atman Deshmane**
-- GitHub: [@Atman-Deshmane](https://github.com/Atman-Deshmane)
-- Project: [App Review Analytics](https://github.com/Atman-Deshmane/App-Review-Analytics)
+
+[![GitHub](https://img.shields.io/badge/GitHub-@Atman--Deshmane-181717?style=flat-square&logo=github)](https://github.com/Atman-Deshmane)
 
 ---
 
-## 🙏 Acknowledgments
+<div align="center">
 
-- **NextLeap** for the AI Bootcamp program
-- **Google Gemini** for the AI capabilities
-- **Play Store Scraper** library maintainers
-- All open-source contributors
+### ⭐ If this helped you, consider starring the repo!
 
----
+**🌐 [Live Dashboard](https://100cr.cloud/reviews/)** · **📧 [Weekly reports, automated](https://github.com/Atman-Deshmane/App-Review-Analytics/actions)** · **🤖 Powered by Gemini AI**
 
-**🌐 Live Dashboard:** [https://100cr.cloud/reviews/](https://100cr.cloud/reviews/)
+</div>
+]]>
