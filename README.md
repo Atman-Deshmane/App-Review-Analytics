@@ -1,24 +1,22 @@
-<div align="center">
-
 # 📊 App Review Insights Analyzer
 
-### _From noise to signal — in one pipeline._
-
-**Turn thousands of Play Store reviews into a weekly leadership briefing, powered by Gemini AI.**
-
-[![Live Dashboard](https://img.shields.io/badge/🌐_Live_Demo-100cr.cloud-4f46e5?style=for-the-badge)](https://100cr.cloud/reviews/)
-[![GitHub Actions](https://img.shields.io/badge/CI/CD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/Atman-Deshmane/App-Review-Analytics/actions)
-[![Gemini AI](https://img.shields.io/badge/AI-Gemini_2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
+<p align="center">
+  <em>From noise to signal — in one pipeline.</em>
+  <br/><br/>
+  <strong>Turn thousands of Play Store reviews into a weekly leadership briefing, powered by Gemini AI.</strong>
+  <br/><br/>
+  <a href="https://100cr.cloud/reviews/"><img src="https://img.shields.io/badge/🌐_Live_Demo-100cr.cloud-4f46e5?style=for-the-badge" alt="Live Dashboard"/></a>
+  <a href="https://github.com/Atman-Deshmane/App-Review-Analytics/actions"><img src="https://img.shields.io/badge/CI/CD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions"/></a>
+  <a href="https://ai.google.dev/"><img src="https://img.shields.io/badge/AI-Gemini_2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini AI"/></a>
+</p>
 
 ---
 
-<img src="assets/dashboard_overview.png" alt="Dashboard Overview — Groww review analytics with theme distribution, sentiment scores, and historical tracking" width="90%"/>
-
-<br/>
-
-*Real dashboard output — 300 reviews analyzed, 5 themes extracted, sentiment mapped. All automated.*
-
-</div>
+<p align="center">
+  <img src="assets/dashboard_overview.png" alt="Dashboard Overview — Groww review analytics with theme distribution, sentiment scores, and historical tracking" width="90%"/>
+  <br/>
+  <em>Real dashboard output — 300 reviews analyzed, 5 themes extracted, sentiment mapped. All automated.</em>
+</p>
 
 ---
 
@@ -66,13 +64,9 @@ Paste a Play Store link
 
 Paste any Play Store app link → Configure → Watch the AI work in real-time → Get your dashboard.
 
-<div align="center">
-
 | Home — Paste & Analyze | Themes & Sentiment Clusters |
 |:---:|:---:|
 | <img src="assets/home_page.png" alt="Home page with search bar to paste Play Store links" width="100%"/> | <img src="assets/themes_insights.png" alt="Theme analysis showing strategic themes with sentiment bubble clusters" width="100%"/> |
-
-</div>
 
 ---
 
@@ -415,10 +409,8 @@ This project was built as **Milestone 2** of the [NextLeap AI Bootcamp](https://
 
 ---
 
-<div align="center">
-
-### ⭐ If this helped you, consider starring the repo!
-
-**🌐 [Live Dashboard](https://100cr.cloud/reviews/)** · **📧 [Weekly reports, automated](https://github.com/Atman-Deshmane/App-Review-Analytics/actions)** · **🤖 Powered by Gemini AI**
-
-</div>
+<p align="center">
+  <strong>⭐ If this helped you, consider starring the repo!</strong>
+  <br/><br/>
+  <strong>🌐 <a href="https://100cr.cloud/reviews/">Live Dashboard</a></strong> · <strong>📧 <a href="https://github.com/Atman-Deshmane/App-Review-Analytics/actions">Weekly reports, automated</a></strong> · <strong>🤖 Powered by Gemini AI</strong>
+</p>
