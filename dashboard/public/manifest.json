@@ -164,8 +164,9 @@
     },
     "com.ubercab": {
         "name": "com.ubercab",
-        "latest": "2025-12-04_50reviews",
+        "latest": "2026-04-01_300reviews",
         "versions": [
+            "2026-04-01_300reviews",
             "2025-12-04_50reviews"
         ]
     },
