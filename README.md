@@ -68,6 +68,10 @@ Paste any Play Store app link → Configure → Watch the AI work in real-time �
 |:---:|:---:|
 | <img src="assets/home_page.png" alt="Home page with search bar to paste Play Store links" width="100%"/> | <img src="assets/themes_insights.png" alt="Theme analysis showing strategic themes with sentiment bubble clusters" width="100%"/> |
 
+| Configure Analysis | Deep-Dive: Subcategory Bubbles |
+|:---:|:---:|
+| <img src="assets/config_modal.png" alt="Configure Analysis modal with depth, date range, themes, and email options" width="100%"/> | <img src="assets/themes_subcategories.png" alt="Sentiment clusters showing subcategory bubbles for App Glitches theme" width="100%"/> |
+
 ---
 
 ## 🏗️ Architecture
