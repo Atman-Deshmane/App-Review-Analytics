@@ -139,14 +139,22 @@ jobs:
           VITE_GITHUB_REPO: ${{ secrets.VITE_GITHUB_REPO }}
           
       # --- 3. DEPLOY TO HOSTINGER ---
-      - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: FTP Deploy (with retry)
+        uses: nick-fields/retry@v3
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dashboard/dist/
-          server-dir: ./
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: |
+            npx @samkirkland/ftp-deploy \
+              --server ${{ secrets.FTP_SERVER }} \
+              --username ${{ secrets.FTP_USERNAME }} \
+              --password "${{ secrets.FTP_PASSWORD }}" \
+              --local-dir ./dashboard/dist/ \
+              --server-dir ./ \
+              --protocol ftps \
+              --port 21 \
+              --timeout 300000
           
       - name: Send Notification Email (Decoupled)
         if: success()
