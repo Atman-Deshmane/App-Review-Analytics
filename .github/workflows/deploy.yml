@@ -41,18 +41,19 @@ jobs:
           VITE_GITHUB_OWNER: ${{ secrets.VITE_GITHUB_OWNER }}
           VITE_GITHUB_REPO: ${{ secrets.VITE_GITHUB_REPO }}
           
-      # --- DEPLOY TO HOSTINGER VIA SFTP ---
-      - name: Install lftp
-        run: sudo apt-get update && sudo apt-get install -y lftp
-
-      - name: 📂 Deploy via SFTP
-        run: |
-          lftp -c "
-            set sftp:auto-confirm yes;
-            set net:max-retries 5;
-            set net:reconnect-interval-base 10;
-            set net:timeout 60;
-            open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} -p ${{ secrets.FTP_PORT || '65002' }} sftp://${{ secrets.FTP_SERVER }};
-            mirror -R --verbose --delete --parallel=3 ./dashboard/dist/ ./;
-            quit
-          "
+      - name: 📂 FTP Deploy to Hostinger (with retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: |
+            npx @samkirkland/ftp-deploy \
+              --server ${{ secrets.FTP_SERVER }} \
+              --username ${{ secrets.FTP_USERNAME }} \
+              --password "${{ secrets.FTP_PASSWORD }}" \
+              --local-dir ./dashboard/dist/ \
+              --server-dir ./ \
+              --protocol ftps \
+              --port 21 \
+              --timeout 300000
