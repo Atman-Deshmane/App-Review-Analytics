@@ -51,8 +51,8 @@ jobs:
             set sftp:auto-confirm yes;
             set net:max-retries 5;
             set net:reconnect-interval-base 10;
-            set net:timeout 30;
-            open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} sftp://${{ secrets.FTP_SERVER }};
-            mirror -R --verbose --delete --parallel=5 ./dashboard/dist/ ./;
+            set net:timeout 60;
+            open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} -p ${{ secrets.FTP_PORT || '65002' }} sftp://${{ secrets.FTP_SERVER }};
+            mirror -R --verbose --delete --parallel=3 ./dashboard/dist/ ./;
             quit
           "
