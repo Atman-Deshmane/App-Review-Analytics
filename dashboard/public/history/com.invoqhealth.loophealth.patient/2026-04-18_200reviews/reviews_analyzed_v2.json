@@ -1,0 +1,112 @@
+[
+    {
+        "date":"2026-04-06 15:46:50",
+        "rating":1,
+        "review_text":"Update on 6th april I have not given any update on my claim for more than 2 months, aftwr asking for update I am completely ignored. The reason we get is you claim happened during changing of insurer, this is such a basic hygiene if you are running such business. Older review- Privacy concerns 1. My insurance details were suddenly changed 2. Insurance shows under process but policy exists 3. No updates on insurance claim",
+        "thumbs_up_count":1,
+        "title":null,
+        "id":1,
+        "theme":"Claim Process Issues",
+        "sentiment":"Negative",
+        "tag":"Claim Update Delay"
+    },
+    {
+        "date":"2026-04-15 08:46:07",
+        "rating":5,
+        "review_text":"Very Helpful",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":2,
+        "theme":"Positive Experience",
+        "sentiment":"Positive",
+        "tag":"Helpful"
+    },
+    {
+        "date":"2026-04-14 08:52:57",
+        "rating":1,
+        "review_text":"don't any one buy this policy if u but u stuck My claim rejected ...no any support. no response from customer care totally bad service",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":3,
+        "theme":"Claim Process Issues",
+        "sentiment":"Negative",
+        "tag":"Claim Rejection"
+    },
+    {
+        "date":"2026-04-13 11:08:01",
+        "rating":5,
+        "review_text":"good for users",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":4,
+        "theme":"Positive Experience",
+        "sentiment":"Positive",
+        "tag":"User Friendly"
+    },
+    {
+        "date":"2026-04-11 08:42:41",
+        "rating":1,
+        "review_text":"every 2 days the app is showing an updated really pathetic application of people who work in a loop They are so greedy that they even eat reburisment money of maternity. they didn't deserve one star.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":5,
+        "theme":"App Performance",
+        "sentiment":"Negative",
+        "tag":"Frequent Updates"
+    },
+    {
+        "date":"2026-04-09 18:19:14",
+        "rating":1,
+        "review_text":"Need option for negative ratings also which shows below 0 ratings like -1,-2,-10 loop health is truly an unprofessional and irresponsible app and it's working system poor response at chat support, responding after 30-45 minutes when you initiate the chat request and they are coming for only 3-5 minutes, leaving th chat without responding to our query this shows the irresponsible behaviour of their whole system Claim process is also too lengthy, asking 15-16 documents in separate manner",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":6,
+        "theme":"Claim Process Issues",
+        "sentiment":"Negative",
+        "tag":"Customer Support Response"
+    },
+    {
+        "date":"2026-04-05 10:45:50",
+        "rating":5,
+        "review_text":"query solved satisfaction",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":7,
+        "theme":"Positive Experience",
+        "sentiment":"Positive",
+        "tag":"Query Solved"
+    },
+    {
+        "date":"2026-04-05 06:13:16",
+        "rating":5,
+        "review_text":"excellent service \ud83d\udc4f",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":8,
+        "theme":"Positive Experience",
+        "sentiment":"Positive",
+        "tag":"Great Service"
+    },
+    {
+        "date":"2026-04-04 16:33:50",
+        "rating":5,
+        "review_text":"super app very helpful",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":9,
+        "theme":"Positive Experience",
+        "sentiment":"Positive",
+        "tag":"Helpful"
+    },
+    {
+        "date":"2026-04-04 16:12:11",
+        "rating":5,
+        "review_text":"I love this app. They did my full body check up at a discounted price. I got my reports right away. They also provide you a care plan after your results and you can choose to consult a doctor on the app only. I booked an appointment and got a free consultation on the same day. Everything that costs thousands in normal clinics and hospitals they did do at an affordable price. Thank you loop.",
+        "thumbs_up_count":0,
+        "title":null,
+        "id":10,
+        "theme":"Positive Experience",
+        "sentiment":"Positive",
+        "tag":"Good Value"
+    }
+]

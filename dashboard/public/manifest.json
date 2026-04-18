@@ -182,6 +182,13 @@
             "2025-12-09_200reviews"
         ]
     },
+    "com.invoqhealth.loophealth.patient": {
+        "name": "com.invoqhealth.loophealth.patient",
+        "latest": "2026-04-18_200reviews",
+        "versions": [
+            "2026-04-18_200reviews"
+        ]
+    },
     "com.swishapp": {
         "name": "com.swishapp",
         "latest": "2025-12-06_50reviews_v3",
