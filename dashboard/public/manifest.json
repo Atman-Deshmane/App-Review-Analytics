@@ -130,8 +130,9 @@
     },
     "com.nextbillion.groww": {
         "name": "Groww",
-        "latest": "2026-06-01_300reviews",
+        "latest": "2026-06-08_300reviews",
         "versions": [
+            "2026-06-08_300reviews",
             "2026-06-01_300reviews",
             "2026-05-25_300reviews",
             "2026-05-18_300reviews",
