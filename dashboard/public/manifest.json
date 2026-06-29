@@ -279,5 +279,12 @@
         "versions": [
             "2025-12-03_100reviews"
         ]
+    },
+    "com.ecffri.arrows": {
+        "name": "com.ecffri.arrows",
+        "latest": "2026-06-29_200reviews",
+        "versions": [
+            "2026-06-29_200reviews"
+        ]
     }
 }
