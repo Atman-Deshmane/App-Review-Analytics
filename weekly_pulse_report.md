@@ -1,26 +1,29 @@
 ## Weekly App Review Pulse: Groww Leadership Briefing
-**Reporting Period:** 21 Sep 2026 to 04 Oct 2026
+
+**Reporting Period:** 28 Sep 2026 to 11 Oct 2026
 
 ### Executive Summary
-This reporting period highlights significant user dissatisfaction with Customer Support, indicated by an exceptionally high impact score. While App Performance is also a concern, the overwhelming volume of positive "Other" reviews suggests a strong underlying user base. Addressing the critical customer support gaps and app stability issues is paramount to retaining user trust and preventing churn.
+
+This reporting period sees a significant surge in "Other" themes, driven by negative sentiment, despite positive feedback on App Performance. Customer Support continues to be a critical area of concern, with users expressing extreme dissatisfaction and a lack of resolution. Opportunities exist to address trading feature requests and to proactively communicate on charges and fees.
 
 ### 1. Top Themes & Strategic Insights
 
-*   **Customer Support (Impact Score: 394, Review Count: 9):** This is the most critical theme this period. Despite a low review count, the extremely high impact score, driven by a strongly negative quote, signifies a major pain point for users. The lack of response to complaints is severely damaging user sentiment and trust.
-*   **Other (Impact Score: 207, Review Count: 237):** This theme, encompassing the vast majority of reviews, shows a largely positive sentiment. The presence of a highly-voted positive quote about the app's UI and performance, coupled with a 4.8 rating, indicates that the core Groww experience is appreciated by many. However, this positive sentiment is at risk if key issues are not addressed.
-*   **App Performance (Impact Score: 90, Review Count: 30):** This theme presents a clear area for improvement. Users are experiencing significant issues with app stability, especially during live trading sessions, and disruptive UI changes that negatively impact their trading flow. This is particularly concerning for an app handling financial transactions.
+*   **Other (Impact Score: 134, Review Count: 177):** This theme, despite its broad categorization, dominates the review landscape this period. The high impact score and review count suggest a significant undercurrent of user sentiment, largely driven by negative experiences as highlighted by the top quote. This requires deeper investigation to pinpoint the specific drivers behind this dominant "Other" theme.
+
+*   **App Performance (Impact Score: 70, Review Count: 72):** Groww's app performance remains a strong positive, with users consistently praising its speed and user-friendly interface. The "good app fast processing and very friendly gui.full satisfaction dhasu app mst download kro" quote, with 7 votes, exemplifies this satisfaction. Maintaining and further enhancing this core strength is crucial.
+
+*   **Customer Support (Impact Score: 35, Review Count: 16):** This remains a critical pain point. The extremely negative quote regarding unresolved issues and poor service, garnering 16 votes, underscores a significant breakdown in customer experience. The repeated nature of the issue mentioned in the quote is particularly concerning.
 
 ### 2. Voice of the Customer (Quotes)
 
-*   "Worst customer care service, no reply for last few of my complaints till now" - **Customer Support** (Votes: 374)
-    *   *This quote starkly illustrates the severity of the customer support issues and is the primary driver of the high impact score for this theme.*
-*   "options chain keep getting stuck in live session! No stability. They change layout at will which affect trading flow. Fno section's layout has been changed which has made it more difficult and cluttered to execute trades on top of it it's glitchy. can't believe an app with do many subscribers can do such a poor job and can be so glitchy especially an app which deals with trading. when their customer care was approached the only answer they had was \"sorry for inconvenience\"." - **App Performance** (Votes: 48)
-    *   *This comprehensive quote details critical performance and UI issues that directly hinder trading activities and highlights the inadequacy of customer support in resolving these problems.*
-*   "Enable Renting Stocks & Login Otp option - via Email also @ not only via mobile otp . Most sims ( networks) are not allowing otp if recharge expired and we are forced to recharge - and such times we are facing problem to login to groww on new devices. Other Apps like Dhann, Upstox etc providing both Mobile + Gmail Login otps too. Only Groww is troubling without any customer friendly improvement. If this continues - will close all groww accounts." - **Login & Account Issues** (Votes: 24)
-    *   *This quote highlights a significant usability and login barrier, suggesting a lack of customer-centricity and a risk of churn if not addressed, especially when compared to competitor offerings.*
+*   **Customer Support:** "very bad experience worst customer service can't show my investment properly which I've dinner through their app only. They can't fetch external portfolio , that's a seperate issue all together. Complained multiple times , shared CAMS statement 3 times , still no response , no intent to fix the problem. shame on you. The same happened again in 1st wk of October after March, and similar response from them like \"Do whatever you want we won't try to fix anything\"" - This quote, with 16 votes, vividly illustrates the severe frustration and lack of resolution users are experiencing with customer support.
+
+*   **Charges and Fees:** "After the budget, the charges and taxes rates aren't affordable for the middle class (even for all classes), it is imposing too much taxes and charges (on all buying and selling)... This is very disappointing... I think the government should look into it..." - With 25 votes, this quote highlights user concerns about affordability and the impact of external factors (budgetary changes) on their trading costs.
+
+*   **Trading Features:** "you need to add points measuring tool in groww chart , a candle how much point have moved how we can measure" - This user, with 8 votes, is providing a specific and actionable suggestion for a highly desired trading feature, indicating a need for enhanced charting tools.
 
 ### 3. Recommended Actions
 
-*   **Immediately address the customer support backlog:** Prioritize investigating and responding to all outstanding complaints. Implement a clear escalation process and performance metrics for the support team to ensure timely and effective resolution.
-*   **Stabilize and optimize app performance:** Conduct a thorough review of app stability, particularly for live trading features and the F&O section. Roll back or refine recent UI changes that have negatively impacted trading flow, and establish a more user-centric approach to feature updates.
-*   **Enhance login and account security options:** Explore the feasibility of implementing email OTP as an alternative login method to mitigate issues with mobile OTP delivery, as highlighted by user feedback and competitor offerings.
+*   **Deep Dive into "Other" Themes:** Conduct a thorough analysis of the reviews categorized under "Other" to identify the specific underlying issues driving this high volume of feedback and its negative impact. Prioritize understanding and addressing these root causes.
+*   **Escalate Customer Support Issues:** Implement an immediate review of the customer support process, focusing on the recurring and unresolved issues highlighted in the user feedback. Consider dedicated teams or enhanced escalation protocols for complex cases.
+*   **Evaluate Trading Feature Request:** Prioritize the user's request for a points measuring tool on charts. Gather further user feedback on this and similar charting enhancements to inform the product roadmap for trading features.
