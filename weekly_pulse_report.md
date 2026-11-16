@@ -1,27 +1,29 @@
 ## Weekly App Review Pulse: Groww Leadership Briefing
-**Reporting Period:** 26 Oct 2026 to 08 Nov 2026
+**Reporting Period:** 02 Nov 2026 to 15 Nov 2026
 
 ### Executive Summary
-User experience continues to be the dominant theme, with a significant number of reviews highlighting UI navigation. App performance, though fewer in count, is generating strong negative sentiment and requires immediate attention to mitigate potential user churn.
+This reporting period highlights significant user dissatisfaction with App Performance and Withdrawal Issues, with these themes drawing the most user attention and driving negative sentiment. The "Other" theme, while having the highest review count, points to a clear opportunity for enhanced reporting features.
 
 ### 1. Top Themes & Strategic Insights
 
-*   **User Experience (Impact: 510, Reviews: 222):** This remains the most discussed area, indicating a large volume of user interaction and feedback. While positive comments about UI exist, a recurring pain point is the lack of a dedicated home button, which negatively impacts navigation efficiency when searching for multiple stocks or funds.
+*   **Other (Impact Score: 378, Review Count: 229):** This theme continues to dominate user feedback in terms of volume. The core request revolves around the lack of a custom date range for viewing stock P&L. This indicates a strong user desire for more granular financial reporting and a potential gap in current feature offerings.
 
-*   **App Performance (Impact: 367, Reviews: 38):** Despite a lower review count, the impact score is substantial, and the top quote points to severe performance issues, with users perceiving the app as "slow for trading." This is a critical area that could directly affect user retention and trading activity.
+*   **App Performance (Impact Score: 360, Review Count: 39):** Despite a lower review count compared to "Other," App Performance carries a substantial impact score. The feedback is critical, with users citing app slowness, buffering, and potential trading losses. Critically, there's a perception that negative reviews are ignored by customer support, damaging user trust.
 
-*   **Customer Support (Impact: 78, Reviews: 19):** While the impact and review count are lower, the qualitative feedback is concerning. Users report confusion due to conflicting information from AI and live agents, and issues with MTF interest and square-off warnings, indicating a potential breakdown in communication and transparency.
+*   **Withdrawal Issues (Impact Score: 170, Review Count: 11):** While the review count is low, the impact score is significant, driven by user frustration with lengthy approval times for withdrawals and a high failure rate of payment methods. Delays in crediting funds after selling stocks further exacerbate this negative experience.
 
 ### 2. Voice of the Customer (Quotes)
 
-*   **User Experience:** "Great app, best UI hands down. One point of feedback would be that there's no home button anywhere, so when you search multiple stocks/funds back to back, you need to continuously tap back and go through all the stocks you have searched till you reach home" - This highlights a specific, actionable UX friction point.
+*   **"Honest review : worst payment method provided by any stock broker. As a customer you have to wait for 4 days just to get approved to withdraw money from your account. And just to be clear that payment method fails for 8/10 times. One other thing, once you sell your stocks, then your amount don't get credited in your wallet. 20% amount is credited 2 days later. This shows how strong the payment methods are"** (Votes: 60) - This quote encapsulates the severe pain points related to withdrawal processes and payment reliability.
 
-*   **App Performance:** "worst app... i thought my mobile was slow.. actually this app is slow for trading.." - This quote powerfully conveys the frustration and negative perception of the app's speed, directly impacting core functionality.
+*   **"Team is not responding to negative reviews they respond to positive only for their benefit, app is very slow, pausing and buffering which is very dangerous to trading and causing losses. They don't care and don't give value to our review/remarks."** (Votes: 58) - This quote directly addresses the critical issues of app performance and the perceived lack of responsiveness from customer support, highlighting a potential trust deficit.
 
-*   **Customer Support:** "One of the worst trading platforms! Groww charges MTF interest yet keeps sending confusing square-off warnings despite sufficient funds. Poor communication, zero transparency, and unreliable customer support. The AI agent says one thing, while the live agent says something completely different. Extremely frustrating and disappointing customer service!" - This quote encapsulates multiple issues within customer support, pointing to a lack of clarity and trust.
+*   **"very bad experience with US investing. the time taken for conversion and depositing the amount is like forever. the app says 3 days, it's been a week and still it's in progress. no use of raising queries and tickets as no one responds. please don't use groww for US investing. it's a horrible app. no use of having the biggest client when u can't provide basic facilities in your app.. if i had an option to give zero stars, I would have given it."** (Votes: 57) - This quote points to a specific area of concern within US Investing, highlighting significant delays and a lack of communication, leading to strong negative recommendations.
 
 ### 3. Recommended Actions
 
-*   **Prioritize UX Navigation Improvements:** Investigate and implement a clear, easily accessible "home" button or a more intuitive navigation flow to address user feedback on repeated back-taps.
-*   **Conduct Urgent App Performance Audit:** Allocate resources for a thorough performance analysis to identify and resolve the root causes of trading slowness. This is crucial for user satisfaction and trading confidence.
-*   **Enhance Customer Support Communication & Training:** Review AI chatbot responses against live agent protocols to ensure consistency. Provide additional training for support staff on MTF policies and square-off procedures to improve transparency and reduce user confusion.
+*   **Prioritize and expedite a solution for the custom date range P&L reporting feature:** Given the high volume of feedback in the "Other" category, this is a clear opportunity to enhance user satisfaction and feature parity.
+
+*   **Conduct an immediate deep dive into the withdrawal process and payment gateway performance:** Address the reported delays, failure rates, and fund crediting issues to rebuild user trust in critical financial transactions.
+
+*   **Implement a comprehensive strategy to address App Performance concerns and enhance customer support responsiveness:** This includes investigating the root cause of slowness and buffering, and ensuring a proactive and empathetic response to negative reviews to mitigate damage to brand reputation.
